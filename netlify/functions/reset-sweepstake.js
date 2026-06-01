@@ -5,7 +5,7 @@ exports.handler = async (event) => {
   try {
     const payload = JSON.parse(event.body || '{}');
     const pin = String(payload.pin || '').trim();
-    const adminPin = String(process.env.ADMIN_PIN || '1234').trim();
+    const adminPin = String(process.env.ADMIN_PIN || '2620').trim();
     if (pin !== adminPin) return response(403, { ok:false, error:'Wrong admin PIN.' });
     const state = freshState();
     await saveState(state);
