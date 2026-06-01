@@ -1,6 +1,6 @@
 const { getStore } = require('@netlify/blobs');
 
-const STORE_NAME = 'wc2026_sweepstake_shared_v4';
+const STORE_NAME = 'wc2026_sweepstake_shared_v7';
 const STATE_KEY = 'state';
 
 const DEFAULT_TEAMS = [
@@ -20,7 +20,7 @@ const DEFAULT_TEAMS = [
 
 function freshState() {
   return {
-    version: 4,
+    version: 7,
     createdAt: new Date().toISOString(),
     teams: DEFAULT_TEAMS.map(t => ({...t, taken:false, playerName:null, playerEmail:null, paymentRef:null, drawnAt:null})),
     draws: []
@@ -32,9 +32,6 @@ function normaliseState(state) {
     return freshState();
   }
 
-  // Repair older/corrupted saved states where the team objects exist but the
-  // visible name/group fields are missing. This keeps any draw history/taken
-  // flags but restores the labels needed by the wheel.
   state.teams = DEFAULT_TEAMS.map((defaultTeam, index) => {
     const existing = state.teams[index] || {};
     return {
@@ -42,8 +39,8 @@ function normaliseState(state) {
       group: existing.group || defaultTeam.group,
       name: existing.name || existing.team || existing.country || defaultTeam.name,
       taken: Boolean(existing.taken),
-      playerName: existing.playerName || existing.player?.name || null,
-      playerEmail: existing.playerEmail || existing.player?.email || null,
+      playerName: existing.playerName || (existing.player && existing.player.name) || null,
+      playerEmail: existing.playerEmail || (existing.player && existing.player.email) || null,
       paymentRef: existing.paymentRef || null,
       drawnAt: existing.drawnAt || null
     };
@@ -55,11 +52,24 @@ function normaliseState(state) {
     group: draw.group || ''
   }));
 
+  state.version = 7;
   return state;
 }
 
+function getBlobStore() {
+  const siteID = process.env.NETLIFY_SITE_ID || process.env.SITE_ID || process.env.BLOBS_SITE_ID;
+  const token = process.env.NETLIFY_AUTH_TOKEN || process.env.NETLIFY_API_TOKEN || process.env.BLOBS_TOKEN;
+
+  // Some Netlify deployments provide the Blobs context automatically.
+  // If not, manual siteID/token environment variables make it work reliably.
+  if (siteID && token) {
+    return getStore({ name: STORE_NAME, siteID, token });
+  }
+  return getStore(STORE_NAME);
+}
+
 async function getState() {
-  const store = getStore(STORE_NAME);
+  const store = getBlobStore();
   let state = null;
   try {
     state = await store.get(STATE_KEY, { type: 'json' });
@@ -73,8 +83,8 @@ async function getState() {
 }
 
 async function saveState(state) {
-  const store = getStore(STORE_NAME);
-  await store.setJSON(STATE_KEY, state);
+  const store = getBlobStore();
+  await store.setJSON(STATE_KEY, normaliseState(state));
   return state;
 }
 
