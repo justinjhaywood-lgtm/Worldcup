@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>World Cup 2026 Sweepstake Generator</title>
+  <style>
+    :root{--bg:#071c17;--panel:#0d2f28;--panel2:#123d34;--green:#36d399;--gold:#ffcf5a;--red:#ff6b6b;--text:#f6fff9;--muted:#b8d8cd;--line:rgba(255,255,255,.13);--shadow:0 24px 70px rgba(0,0,0,.35);--radius:22px}
+    *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);background:radial-gradient(circle at top left,rgba(54,211,153,.22),transparent 35%),radial-gradient(circle at bottom right,rgba(255,207,90,.18),transparent 30%),linear-gradient(135deg,#04110f,var(--bg));min-height:100vh}.wrap{max-width:1180px;margin:0 auto;padding:28px 18px 70px}.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:22px;align-items:stretch}.card{background:linear-gradient(180deg,rgba(18,61,52,.92),rgba(13,47,40,.92));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}.intro{padding:34px}.badge{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(54,211,153,.35);background:rgba(54,211,153,.12);padding:8px 12px;border-radius:999px;color:#cfffea;font-weight:700;font-size:13px}h1{margin:18px 0 10px;font-size:clamp(34px,6vw,64px);line-height:.94;letter-spacing:-2px}.subtitle{font-size:18px;color:var(--muted);max-width:740px;line-height:1.55}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:26px}.stat{padding:16px;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:18px}.stat strong{display:block;font-size:28px;color:var(--gold)}.stat span{color:var(--muted);font-size:13px}.steps{padding:26px;display:grid;gap:14px}.step{display:grid;grid-template-columns:42px 1fr;gap:12px;align-items:start}.num{width:42px;height:42px;border-radius:14px;background:var(--green);color:#042017;display:grid;place-items:center;font-weight:900}.step h3{margin:1px 0 5px;font-size:17px}.step p{margin:0;color:var(--muted);line-height:1.42;font-size:14px}.main{display:grid;grid-template-columns:1fr 390px;gap:22px;margin-top:22px;align-items:start}.wheelBox{padding:22px;text-align:center;position:relative}.wheelHolder{position:relative;max-width:610px;margin:0 auto;aspect-ratio:1/1}canvas{width:100%;height:100%;display:block;filter:drop-shadow(0 18px 28px rgba(0,0,0,.45))}.pointer{position:absolute;left:50%;top:-4px;transform:translateX(-50%);width:0;height:0;border-left:22px solid transparent;border-right:22px solid transparent;border-top:44px solid var(--gold);z-index:5;filter:drop-shadow(0 4px 4px rgba(0,0,0,.45))}.centreButton{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:126px;height:126px;border-radius:999px;border:8px solid rgba(255,255,255,.14);background:radial-gradient(circle at 30% 20%,#fff6cf,var(--gold) 42%,#d99100);color:#211704;display:grid;place-items:center;text-align:center;font-weight:950;letter-spacing:.4px;box-shadow:0 12px 28px rgba(0,0,0,.4);user-select:none}.resultBanner{margin-top:18px;padding:18px;border-radius:18px;background:rgba(255,207,90,.12);border:1px solid rgba(255,207,90,.35);min-height:80px;display:grid;place-items:center}.resultBanner h2{margin:0;font-size:28px;color:var(--gold)}.resultBanner p{margin:4px 0 0;color:var(--muted)}.side{padding:22px}label{display:block;font-size:13px;color:#d8fff0;font-weight:750;margin:13px 0 7px}input,select{width:100%;padding:13px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:var(--text);outline:none;font-size:15px}input::placeholder{color:rgba(255,255,255,.45)}button{border:0;border-radius:16px;padding:13px 16px;font-weight:900;cursor:pointer;background:var(--green);color:#032018;transition:transform .12s ease,opacity .12s ease,background .12s ease}button:hover{transform:translateY(-1px)}button:disabled{opacity:.45;cursor:not-allowed;transform:none}.secondary{background:rgba(255,255,255,.1);color:var(--text);border:1px solid var(--line)}.danger{background:rgba(255,107,107,.18);color:#ffd7d7;border:1px solid rgba(255,107,107,.38)}.goldPay{width:100%;margin-top:8px;background:linear-gradient(180deg,#ffd95e,#f2b705);color:#172c66;border:2px solid #ffe586;box-shadow:0 10px 22px rgba(0,0,0,.28);display:flex;align-items:center;justify-content:center;gap:10px;font-size:16px}.paypalLogo{font-weight:1000;letter-spacing:-1px}.paypalLogo .pay{color:#003087}.paypalLogo .pal{color:#009cde}.payBox{margin-top:16px;padding:15px;border-radius:18px;background:rgba(0,0,0,.17);border:1px solid var(--line)}.small{color:var(--muted);font-size:13px;line-height:1.45}.notice{padding:12px 14px;border-radius:14px;background:rgba(54,211,153,.1);border:1px solid rgba(54,211,153,.28);color:#d4ffef;margin:13px 0;font-size:13px;line-height:1.42}.warn{background:rgba(255,207,90,.10);border-color:rgba(255,207,90,.32);color:#ffe8a6}.draws{margin-top:22px;padding:22px}table{width:100%;border-collapse:collapse;overflow:hidden;border-radius:14px}th,td{padding:11px 10px;border-bottom:1px solid var(--line);text-align:left;font-size:14px}th{color:#ddfff2;background:rgba(255,255,255,.07)}td{color:var(--muted)}.admin{margin-top:22px;padding:22px}details summary{cursor:pointer;font-weight:900;color:#f7fffb}.hidden{display:none!important}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.foot{margin-top:18px;color:rgba(255,255,255,.52);font-size:12px;line-height:1.45}@media(max-width:940px){.hero,.main{grid-template-columns:1fr}.stats{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="card intro">
+        <div class="badge">⚽ World Cup 2026 Sweepstake</div>
+        <h1>Pay. Spin. Reveal your team.</h1>
+        <p class="subtitle">A simple sweepstake generator for the 48-team World Cup. Players enter their details, pay by PayPal Pool, then spin the roulette wheel to draw one remaining team.</p>
+        <div class="stats">
+          <div class="stat"><strong id="statRemaining">48</strong><span>teams remaining</span></div>
+          <div class="stat"><strong id="statTaken">0</strong><span>teams drawn</span></div>
+          <div class="stat"><strong id="statPot">£0</strong><span>estimated pot</span></div>
+        </div>
+      </div>
+      <div class="card steps">
+        <div class="step"><div class="num">1</div><div><h3>Enter player details</h3><p>Name and email are recorded with the draw.</p></div></div>
+        <div class="step"><div class="num">2</div><div><h3>Pay entry fee</h3><p>Use the gold PayPal Pool button.</p></div></div>
+        <div class="step"><div class="num">3</div><div><h3>Spin the wheel</h3><p>The selected team is saved to the shared Netlify site and removed from future spins.</p></div></div>
+      </div>
+    </section>
+
+    <section class="main">
+      <div class="card wheelBox">
+        <div class="wheelHolder">
+          <div class="pointer"></div>
+          <canvas id="wheel" width="900" height="900" aria-label="Sweepstake roulette wheel"></canvas>
+          <div class="centreButton">WORLD<br>CUP<br>DRAW</div>
+        </div>
+        <div class="resultBanner" id="resultBanner"><div><h2>Loading teams…</h2><p>Please wait.</p></div></div>
+      </div>
+
+      <aside class="card side">
+        <h2 style="margin:0 0 4px">Player Entry</h2>
+        <p class="small">Entry fee: <strong id="feeLabel">£5.00</strong>. After paying, return here and unlock your draw.</p>
+        <label for="playerName">Player name</label>
+        <input id="playerName" placeholder="e.g. Chris Guest" autocomplete="name" />
+        <label for="playerEmail">Email address</label>
+        <input id="playerEmail" type="email" placeholder="name@example.com" autocomplete="email" />
+        <div class="payBox">
+          <a href="https://www.paypal.com/pool/9pFSWweTFK?sr=accr" target="_blank" rel="noopener" style="text-decoration:none">
+            <button type="button" class="goldPay"><span class="paypalLogo"><span class="pay">Pay</span><span class="pal">Pal</span></span> Pay entry via PayPal Pool</button>
+          </a>
+          <button id="unlockBtn" class="secondary" style="width:100%;margin-top:10px">I have paid - unlock my draw</button>
+          <p class="small" id="payHint">This is a trust-based PayPal Pool model. The website records the draw once the player unlocks and spins.</p>
+        </div>
+        <button id="spinBtn" style="width:100%;margin-top:14px" disabled>Spin the wheel</button>
+        <div id="errorBox" class="notice warn hidden"></div>
+      </aside>
+    </section>
+
+    <section class="card draws">
+      <h2 style="margin:0 0 12px">Draw record</h2>
+      <div style="overflow:auto">
+        <table>
+          <thead><tr><th>Date/time</th><th>Player</th><th>Team</th></tr></thead>
+          <tbody id="drawTable"><tr><td colspan="3">Loading draw record…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card admin">
+      <details>
+        <summary>Admin settings</summary>
+        <div id="adminLogin">
+          <label for="adminPin">Admin PIN</label>
+          <input id="adminPin" type="password" placeholder="Enter admin PIN" />
+          <button id="resetBtn" class="danger" style="margin-top:10px">Reset sweepstake</button>
+        </div>
+        <p class="foot">Admin reset is protected by the Netlify environment variable <strong>ADMIN_PIN</strong>. If this is not set, the fallback PIN is 1234.</p>
+      </details>
+    </section>
+  </div>
+
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const canvas=$('wheel'); const ctx=canvas.getContext('2d');
+  const PAYPAL_POOL_URL='https://www.paypal.com/pool/9pFSWweTFK?sr=accr';
+  const ENTRY_FEE=5; const CURRENCY='GBP';
+  let state={teams:[],draws:[]}; let rotation=0; let spinning=false; let paid=false; let currentPaymentRef='PAYPAL-POOL-TRUST'; let lastAvailableBeforeSpin=[];
+  const TWO=Math.PI*2;
+
+  function moneySymbol(){return CURRENCY==='GBP'?'£':CURRENCY==='EUR'?'€':'$'}
+  function escapeHtml(str){return String(str||'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));}
+  function showError(msg){$('errorBox').textContent=msg;$('errorBox').classList.remove('hidden')}
+  function clearError(){$('errorBox').classList.add('hidden');$('errorBox').textContent=''}
+  function availableTeams(){return (state.teams||[]).filter(t=>!t.taken)}
+
+  async function api(path, options={}){
+    const res=await fetch('/.netlify/functions/'+path,{headers:{'Content-Type':'application/json'},cache:'no-store',...options});
+    let data={}; try{data=await res.json()}catch(e){}
+    if(!res.ok || data.ok===false) throw new Error(data.error || ('Request failed: '+res.status));
+    return data;
+  }
+
+  async function loadSharedState(){
+    clearError();
+    try{
+      const data=await api('get-state');
+      state=data.state;
+      $('resultBanner').innerHTML='<div><h2>Ready to spin</h2><p>Complete the player and payment step first.</p></div>';
+      refresh();
+    }catch(err){
+      state={teams:[],draws:[]};
+      drawWheel(); renderDraws(); updateStats();
+      $('resultBanner').innerHTML='<div><h2>Setup needed</h2><p>Netlify Functions are not responding yet.</p></div>';
+      showError('The shared draw record could not be loaded. Check that the Netlify deploy includes the netlify/functions folder. '+err.message);
+    }
+  }
+
+  function updateStats(){const remaining=availableTeams().length;const taken=(state.teams||[]).length-remaining;$('statRemaining').textContent=remaining;$('statTaken').textContent=taken;$('statPot').textContent=moneySymbol()+(taken*ENTRY_FEE).toFixed(0);$('feeLabel').textContent=moneySymbol()+ENTRY_FEE.toFixed(2)}
+
+  function drawWheel(){
+    const teams=availableTeams(); const w=canvas.width,h=canvas.height,cx=w/2,cy=h/2,r=Math.min(w,h)/2-18;
+    ctx.clearRect(0,0,w,h);
+    if(!teams.length){ctx.fillStyle='#123d34';ctx.beginPath();ctx.arc(cx,cy,r,0,TWO);ctx.fill();ctx.fillStyle='#ffcf5a';ctx.font='bold 48px system-ui';ctx.textAlign='center';ctx.fillText((state.teams||[]).length?'SOLD OUT':'NO TEAMS',cx,cy);return}
+    const slice=TWO/teams.length; const palette=['#36d399','#ffcf5a','#70d6ff','#ff8fab','#b8f7d4','#ffd166','#9bf6ff','#cdb4db','#80ed99','#fca311'];
+    ctx.save();ctx.translate(cx,cy);ctx.rotate(rotation);ctx.translate(-cx,-cy);
+    teams.forEach((team,i)=>{const start=i*slice,end=start+slice;ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,start,end);ctx.closePath();ctx.fillStyle=palette[i%palette.length];ctx.fill();ctx.strokeStyle='rgba(3,32,24,.35)';ctx.lineWidth=2;ctx.stroke();ctx.save();ctx.translate(cx,cy);ctx.rotate(start+slice/2);ctx.textAlign='right';ctx.lineWidth=4;ctx.strokeStyle='rgba(255,255,255,.78)';ctx.fillStyle='#05231a';const fontSize=teams.length>36?17:teams.length>24?21:26;ctx.font=`900 ${fontSize}px system-ui`;ctx.strokeText(team.name,r-18,7);ctx.fillText(team.name,r-18,7);ctx.restore()});
+    ctx.restore();ctx.beginPath();ctx.arc(cx,cy,r,0,TWO);ctx.strokeStyle='rgba(255,255,255,.33)';ctx.lineWidth=12;ctx.stroke();
+  }
+
+  function renderDraws(){
+    if(!state.draws || !state.draws.length){$('drawTable').innerHTML='<tr><td colspan="3">No teams have been drawn yet.</td></tr>';return}
+    $('drawTable').innerHTML=state.draws.slice().reverse().map(d=>`<tr><td>${new Date(d.drawnAt).toLocaleString()}</td><td>${escapeHtml(d.playerName)}</td><td><strong>${escapeHtml(d.team)}</strong></td></tr>`).join('');
+  }
+
+  function refresh(){updateStats();drawWheel();renderDraws();$('spinBtn').disabled=!paid||spinning||!availableTeams().length}
+  function validatePlayer(){const name=$('playerName').value.trim();const email=$('playerEmail').value.trim();if(!name){alert('Please enter the player name.');return null}if(!email||!email.includes('@')){alert('Please enter a valid email address.');return null}return{name,email}}
+
+  $('unlockBtn').addEventListener('click',()=>{const player=validatePlayer();if(!player)return;paid=true;currentPaymentRef='PAYPAL-POOL-TRUST-'+Date.now();$('resultBanner').innerHTML='<div><h2>Payment marked</h2><p>Now spin the wheel to draw your team.</p></div>';refresh()});
+
+  function finalRotationForTeam(chosenName){
+    const teams=lastAvailableBeforeSpin; const idx=Math.max(0,teams.findIndex(t=>t.name===chosenName)); const slice=TWO/teams.length; const pointer=-Math.PI/2; const targetAngle=idx*slice+slice/2; let base=pointer-targetAngle; const min=rotation+TWO*7; while(base<min)base+=TWO; return base;
+  }
+
+  async function spin(){
+    const player=validatePlayer(); if(!player||!paid||spinning)return; const teams=availableTeams(); if(!teams.length){alert('All teams have been drawn.');return}
+    spinning=true;$('spinBtn').disabled=true;clearError();lastAvailableBeforeSpin=teams.slice();
+    let data;
+    try{data=await api('draw-team',{method:'POST',body:JSON.stringify({playerName:player.name,playerEmail:player.email,paymentRef:currentPaymentRef})})}
+    catch(err){spinning=false;refresh();showError(err.message);return}
+    const start=rotation; const end=finalRotationForTeam(data.draw.team); const duration=5200; const started=performance.now();
+    function easeOutCubic(t){return 1-Math.pow(1-t,3)}
+    function frame(now){const p=Math.min(1,(now-started)/duration);rotation=start+(end-start)*easeOutCubic(p);drawWheelUsingList(lastAvailableBeforeSpin);if(p<1)requestAnimationFrame(frame);else finishSpin(data)}
+    requestAnimationFrame(frame);
+  }
+
+  function drawWheelUsingList(teams){
+    const w=canvas.width,h=canvas.height,cx=w/2,cy=h/2,r=Math.min(w,h)/2-18;ctx.clearRect(0,0,w,h);if(!teams.length)return;const slice=TWO/teams.length;const palette=['#36d399','#ffcf5a','#70d6ff','#ff8fab','#b8f7d4','#ffd166','#9bf6ff','#cdb4db','#80ed99','#fca311'];ctx.save();ctx.translate(cx,cy);ctx.rotate(rotation);ctx.translate(-cx,-cy);teams.forEach((team,i)=>{const start=i*slice,end=start+slice;ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,start,end);ctx.closePath();ctx.fillStyle=palette[i%palette.length];ctx.fill();ctx.strokeStyle='rgba(3,32,24,.35)';ctx.lineWidth=2;ctx.stroke();ctx.save();ctx.translate(cx,cy);ctx.rotate(start+slice/2);ctx.textAlign='right';ctx.lineWidth=4;ctx.strokeStyle='rgba(255,255,255,.78)';ctx.fillStyle='#05231a';const fontSize=teams.length>36?17:teams.length>24?21:26;ctx.font=`900 ${fontSize}px system-ui`;ctx.strokeText(team.name,r-18,7);ctx.fillText(team.name,r-18,7);ctx.restore()});ctx.restore();ctx.beginPath();ctx.arc(cx,cy,r,0,TWO);ctx.strokeStyle='rgba(255,255,255,.33)';ctx.lineWidth=12;ctx.stroke();
+  }
+
+  function finishSpin(data){
+    state=data.state; paid=false; currentPaymentRef=''; spinning=false;
+    $('resultBanner').innerHTML=`<div><h2>${escapeHtml(data.draw.playerName)} drew ${escapeHtml(data.draw.team)}!</h2><p>Group ${escapeHtml(data.draw.group)}. This team has now been removed from future draws.</p></div>`;
+    $('playerName').value='';$('playerEmail').value='';refresh();
+  }
+
+  $('spinBtn').addEventListener('click',spin);
+  $('resetBtn').addEventListener('click',async()=>{const pin=$('adminPin').value.trim(); if(!pin){alert('Enter the admin PIN.');return} if(!confirm('Reset the sweepstake and make all teams available again?'))return; try{const data=await api('reset-sweepstake',{method:'POST',body:JSON.stringify({pin})});state=data.state;paid=false;rotation=0;$('resultBanner').innerHTML='<div><h2>Sweepstake reset</h2><p>All teams are available again.</p></div>';refresh();}catch(err){showError(err.message)}});
+
+  loadSharedState();
+})();
+</script>
+</body>
+</html>

@@ -1,42 +1,41 @@
-World Cup 2026 Sweepstake Generator - Shared Draw Version
-=========================================================
+World Cup 2026 Sweepstake Generator - Shared Draw Version v5
+============================================================
 
-IMPORTANT DEPLOYMENT NOTE
--------------------------
-This version uses Netlify Functions and Netlify Blobs so that drawn teams are shared across browsers/devices.
+This package is laid out in the most standard Netlify/Git format:
 
-Do NOT deploy this version by dragging only the finished static output folder if Netlify is not building the project. Netlify needs to install dependencies and deploy the functions.
+/public/index.html
+/netlify/functions/get-state.js
+/netlify/functions/draw-team.js
+/netlify/functions/reset-sweepstake.js
+/netlify/functions/ping.js
+/package.json
+/netlify.toml
 
-Recommended deployment options:
-
-OPTION 1 - GitHub / Git deploy
+GitHub to Netlify setup:
 1. Unzip this package.
-2. Upload the whole unzipped folder to a GitHub repository.
-3. In Netlify, choose Add new site -> Import an existing project.
-4. Connect the GitHub repository.
-5. Build command: npm install
-6. Publish directory: .
-7. Functions directory: netlify/functions
-8. Deploy.
+2. Upload the CONTENTS of the unzipped folder to the ROOT of a GitHub repo.
+   The repo root must directly show: public, netlify, package.json, netlify.toml.
+3. In Netlify: Add new site -> Import an existing project -> choose the repo.
+4. Use these build settings:
+   Base directory: leave blank
+   Build command: npm install
+   Publish directory: public
+   Functions directory: netlify/functions
+5. Deploy.
 
-OPTION 2 - Netlify CLI
-1. Install Node.js if needed.
-2. Unzip this package.
-3. Open a terminal in the unzipped folder.
-4. Run: npm install
-5. Run: npx netlify deploy --prod
-6. When asked for publish directory, use: .
+Important check:
+Open this first:
+https://YOUR-SITE.netlify.app/.netlify/functions/ping
+
+If ping returns {"ok":true}, functions are deployed.
+Then open:
+https://YOUR-SITE.netlify.app/.netlify/functions/get-state
+
+If get-state returns {"ok":true}, the shared draw record is working.
 
 Environment variable:
 ADMIN_PIN=1234
 You can change this in Netlify under Site configuration -> Environment variables.
 
-How to check functions are working:
-Open this address on your live site:
-https://YOUR-SITE-NAME.netlify.app/.netlify/functions/get-state
-
-If it returns JSON with "ok": true, the functions are working.
-If it gives a 404 or error page, the functions have not been deployed.
-
-Current PayPal Pool URL:
+PayPal Pool URL currently used:
 https://www.paypal.com/pool/9pFSWweTFK?sr=accr
