@@ -34,7 +34,7 @@ https://YOUR-SITE.netlify.app/.netlify/functions/get-state
 If get-state returns {"ok":true}, the shared draw record is working.
 
 Environment variable:
-ADMIN_PIN=1234
+ADMIN_PIN=your-admin-pin
 You can change this in Netlify under Site configuration -> Environment variables.
 
 PayPal Pool URL currently used:

@@ -10,7 +10,7 @@ exports.handler = async (event) => {
     const payload = JSON.parse(event.body || '{}');
     const playerName = clean(payload.playerName);
     const playerEmail = clean(payload.playerEmail);
-    const paymentRef = clean(payload.paymentRef || 'PAYPAL-POOL-TRUST');
+    const paymentRef = clean(payload.paymentRef || 'PAYPAL-POOL');
 
     if (!playerName) return response(400, { ok:false, error:'Player name is required.' });
     if (!playerEmail || !playerEmail.includes('@')) return response(400, { ok:false, error:'A valid email address is required.' });
