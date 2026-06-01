@@ -39,3 +39,9 @@ You can change this in Netlify under Site configuration -> Environment variables
 
 PayPal Pool URL currently used:
 https://www.paypal.com/pool/9pFSWweTFK?sr=accr
+
+
+Version 14 update:
+- Draw record teams are hidden by default.
+- Admin can use Reveal teams in draw record after all tickets are sold.
+- Admin can hide them again if needed.

@@ -23,7 +23,8 @@ function freshState() {
     version: 7,
     createdAt: new Date().toISOString(),
     teams: DEFAULT_TEAMS.map(t => ({...t, taken:false, playerName:null, playerEmail:null, paymentRef:null, drawnAt:null})),
-    draws: []
+    draws: [],
+    revealTeamsInDrawRecord: false
   };
 }
 
@@ -52,7 +53,8 @@ function normaliseState(state) {
     group: draw.group || ''
   }));
 
-  state.version = 7;
+  state.revealTeamsInDrawRecord = Boolean(state.revealTeamsInDrawRecord);
+  state.version = 8;
   return state;
 }
 
