@@ -1,0 +1,8 @@
+{
+  "name": "world-cup-2026-sweepstake-shared",
+  "version": "4.0.0",
+  "private": true,
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}
