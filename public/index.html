@@ -127,6 +127,13 @@
           <label for="adminAllocEmail">Email address</label>
           <input id="adminAllocEmail" type="email" placeholder="name@example.com" autocomplete="off" />
           <button id="allocateBtn" class="goldPay" style="margin-top:10px">Admin allocate one team</button>
+          <div class="notice warn" style="margin-top:16px">
+            <strong>Cancel entry and return team</strong><br>
+            Use this only if someone has been allocated a team in error. The entry will be removed from the draw record and the team will go back into the draw.
+          </div>
+          <label for="cancelEntrySelect">Entry to cancel</label>
+          <select id="cancelEntrySelect"><option value="">No entries available</option></select>
+          <button id="cancelEntryBtn" class="danger" style="margin-top:10px">Cancel selected entry and return team</button>
           <button id="resetBtn" class="danger" style="margin-top:10px">Reset sweepstake</button>
         </div>
         <p class="foot">Admin actions are protected by the Netlify environment variable <strong>ADMIN_PIN</strong>.</p>
@@ -185,10 +192,22 @@
 
   function renderDraws(){
     const revealTeams = !!state.revealTeamsInDrawRecord;
-    if(!state.draws || !state.draws.length){$('drawTable').innerHTML='<tr><td colspan="3">No teams have been drawn yet.</td></tr>';return}
+    if(!state.draws || !state.draws.length){$('drawTable').innerHTML='<tr><td colspan="3">No teams have been drawn yet.</td></tr>'; renderCancelOptions(); return}
     $('drawTable').innerHTML=state.draws.slice().reverse().map(d=>{
       const teamCell = revealTeams ? `<strong>${escapeHtml(d.team)}</strong>` : '<em>Hidden until all tickets are sold</em>';
       return `<tr><td>${new Date(d.drawnAt).toLocaleString()}</td><td>${escapeHtml(d.playerName)}</td><td>${teamCell}</td></tr>`;
+    }).join('');
+    renderCancelOptions();
+  }
+
+  function renderCancelOptions(){
+    const select=$('cancelEntrySelect');
+    if(!select)return;
+    const draws=state.draws||[];
+    if(!draws.length){select.innerHTML='<option value="">No entries available</option>';return}
+    select.innerHTML='<option value="">Select an entry to cancel</option>'+draws.map((d,i)=>{
+      const label=`${new Date(d.drawnAt).toLocaleString()} - ${d.playerName||'Unknown'} - ${d.team||'Unknown team'}`;
+      return `<option value="${i}">${escapeHtml(label)}</option>`;
     }).join('');
   }
 
@@ -251,16 +270,60 @@
   }
 
   async function spin(){
-    const player=activePlayer || validatePlayer(); if(!player||!paid||spinning||entriesRemaining<=0)return; const teams=availableTeams(); if(!teams.length){alert('All teams have been drawn.');return}
+    const player=activePlayer || validatePlayer();
+    if(!player||!paid||spinning||entriesRemaining<=0)return;
+    const teams=availableTeams();
+    if(!teams.length){alert('All teams have been drawn.');return}
     const confirmMsg='You are about to use 1 paid entry. '+(entriesRemaining-1)+' spin'+((entriesRemaining-1)===1?'':'s')+' will remain after this draw. Press OK to spin.';
     if(!confirm(confirmMsg))return;
-    spinning=true;$('spinBtn').disabled=true;clearError();lastAvailableBeforeSpin=teams.slice();startRouletteSound(5200);
-    let data;
-    try{data=await api('draw-team',{method:'POST',body:JSON.stringify({playerName:player.name,playerEmail:player.email,paymentRef:currentPaymentRef})})}
-    catch(err){clearRouletteSoundTimers();spinning=false;refresh();showError(err.message);return}
-    const start=rotation; const end=finalRotationForTeam(data.draw.team); const duration=5200; const started=performance.now();
+
+    // Start the visible wheel movement immediately. Earlier versions waited for
+    // the server response before animating, which could look like the button had
+    // done nothing on slower connections.
+    spinning=true;
+    $('spinBtn').disabled=true;
+    clearError();
+    lastAvailableBeforeSpin=teams.slice();
+    $('resultBanner').innerHTML='<div><h2>Spinning...</h2><p>Your team is being drawn. Please do not press back or refresh.</p></div>';
+    startRouletteSound(9000);
+
+    let data=null;
+    let apiError=null;
+    api('draw-team',{method:'POST',body:JSON.stringify({playerName:player.name,playerEmail:player.email,paymentRef:currentPaymentRef})})
+      .then(result=>{data=result})
+      .catch(err=>{apiError=err});
+
+    function waitingFrame(){
+      if(apiError){
+        clearRouletteSoundTimers();
+        spinning=false;
+        refresh();
+        showError(apiError.message || 'The draw could not be completed.');
+        return;
+      }
+      if(data){
+        settleSpin(data);
+        return;
+      }
+      rotation += 0.16;
+      drawWheelUsingList(lastAvailableBeforeSpin);
+      requestAnimationFrame(waitingFrame);
+    }
+    requestAnimationFrame(waitingFrame);
+  }
+
+  function settleSpin(data){
+    const start=rotation;
+    const end=finalRotationForTeam(data.draw.team);
+    const duration=4200;
+    const started=performance.now();
     function easeOutCubic(t){return 1-Math.pow(1-t,3)}
-    function frame(now){const p=Math.min(1,(now-started)/duration);rotation=start+(end-start)*easeOutCubic(p);drawWheelUsingList(lastAvailableBeforeSpin);if(p<1)requestAnimationFrame(frame);else finishSpin(data)}
+    function frame(now){
+      const p=Math.min(1,(now-started)/duration);
+      rotation=start+(end-start)*easeOutCubic(p);
+      drawWheelUsingList(lastAvailableBeforeSpin);
+      if(p<1)requestAnimationFrame(frame);else finishSpin(data);
+    }
     requestAnimationFrame(frame);
   }
 
@@ -315,6 +378,26 @@
   }
 
   $('allocateBtn').addEventListener('click',adminAllocateTeam);
+
+  async function adminCancelEntry(){
+    const pin=$('adminPin').value.trim();
+    const select=$('cancelEntrySelect');
+    const idx=Number(select.value);
+    if(!pin){alert('Enter the admin PIN.');return}
+    if(!Number.isInteger(idx) || idx<0 || !(state.draws||[])[idx]){alert('Select the entry you want to cancel.');return}
+    const draw=state.draws[idx];
+    const msg='Cancel this entry and return '+draw.team+' to the wheel?\n\n'+draw.playerName+' - '+draw.team+'\n\nOnly do this if the team was allocated in error.';
+    if(!confirm(msg))return;
+    clearError();
+    try{
+      const data=await api('cancel-entry',{method:'POST',body:JSON.stringify({pin,drawIndex:idx,drawnAt:draw.drawnAt,playerName:draw.playerName,playerEmail:draw.playerEmail,team:draw.team})});
+      state=data.state;
+      $('resultBanner').innerHTML=`<div><h2>Entry cancelled</h2><p>${escapeHtml(data.cancelled.team)} has been returned to the wheel.</p></div>`;
+      refresh();
+    }catch(err){showError(err.message)}
+  }
+
+  $('cancelEntryBtn').addEventListener('click',adminCancelEntry);
   $('resetBtn').addEventListener('click',async()=>{const pin=$('adminPin').value.trim(); if(!pin){alert('Enter the admin PIN.');return} if(!confirm('Reset the sweepstake and make all teams available again?'))return; try{const data=await api('reset-sweepstake',{method:'POST',body:JSON.stringify({pin})});state=data.state;paid=false;paidEntries=0;entriesRemaining=0;activePlayer=null;rotation=0;$('resultBanner').innerHTML='<div><h2>Sweepstake reset</h2><p>All teams are available again.</p></div>';refresh();}catch(err){showError(err.message)}});
 
   loadSharedState();
