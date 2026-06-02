@@ -118,6 +118,15 @@
             <button id="revealBtn" class="secondary">Reveal teams in draw record</button>
             <button id="hideTeamsBtn" class="secondary">Hide teams in draw record</button>
           </div>
+          <div class="notice warn" style="margin-top:16px">
+            <strong>Admin allocate team</strong><br>
+            Use this if someone has paid but their spin failed before a team was allocated. This will randomly allocate one remaining team and add it to the draw record.
+          </div>
+          <label for="adminAllocName">Player name</label>
+          <input id="adminAllocName" placeholder="e.g. Donald Duck" autocomplete="off" />
+          <label for="adminAllocEmail">Email address</label>
+          <input id="adminAllocEmail" type="email" placeholder="name@example.com" autocomplete="off" />
+          <button id="allocateBtn" class="goldPay" style="margin-top:10px">Admin allocate one team</button>
           <button id="resetBtn" class="danger" style="margin-top:10px">Reset sweepstake</button>
         </div>
         <p class="foot">Admin actions are protected by the Netlify environment variable <strong>ADMIN_PIN</strong>.</p>
@@ -285,6 +294,27 @@
   }
   $('revealBtn').addEventListener('click',()=>setDrawRecordReveal(true));
   $('hideTeamsBtn').addEventListener('click',()=>setDrawRecordReveal(false));
+
+  async function adminAllocateTeam(){
+    const pin=$('adminPin').value.trim();
+    const playerName=$('adminAllocName').value.trim();
+    const playerEmail=$('adminAllocEmail').value.trim();
+    if(!pin){alert('Enter the admin PIN.');return}
+    if(!playerName){alert('Enter the player name.');return}
+    if(!playerEmail || !playerEmail.includes('@')){alert('Enter a valid email address.');return}
+    if(!confirm('Allocate one random remaining team to '+playerName+'? This cannot be undone unless the sweepstake is reset.'))return;
+    clearError();
+    try{
+      const data=await api('allocate-team',{method:'POST',body:JSON.stringify({pin,playerName,playerEmail,paymentRef:'ADMIN-ALLOCATED'})});
+      state=data.state;
+      $('resultBanner').innerHTML=`<div><h2>Admin allocated ${escapeHtml(data.draw.team)}</h2><p>${escapeHtml(data.draw.playerName)} has been allocated Group ${escapeHtml(data.draw.group)}. This team has now been removed from future draws.</p></div>`;
+      $('adminAllocName').value='';
+      $('adminAllocEmail').value='';
+      refresh();
+    }catch(err){showError(err.message)}
+  }
+
+  $('allocateBtn').addEventListener('click',adminAllocateTeam);
   $('resetBtn').addEventListener('click',async()=>{const pin=$('adminPin').value.trim(); if(!pin){alert('Enter the admin PIN.');return} if(!confirm('Reset the sweepstake and make all teams available again?'))return; try{const data=await api('reset-sweepstake',{method:'POST',body:JSON.stringify({pin})});state=data.state;paid=false;paidEntries=0;entriesRemaining=0;activePlayer=null;rotation=0;$('resultBanner').innerHTML='<div><h2>Sweepstake reset</h2><p>All teams are available again.</p></div>';refresh();}catch(err){showError(err.message)}});
 
   loadSharedState();
