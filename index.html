@@ -6,7 +6,7 @@
   <title>World Cup 2026 Sweepstake Generator</title>
   <style>
     :root{--bg:#071c17;--panel:#0d2f28;--panel2:#123d34;--green:#36d399;--gold:#ffcf5a;--red:#ff6b6b;--text:#f6fff9;--muted:#b8d8cd;--line:rgba(255,255,255,.13);--shadow:0 24px 70px rgba(0,0,0,.35);--radius:22px}
-    *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);background:radial-gradient(circle at top left,rgba(54,211,153,.22),transparent 35%),radial-gradient(circle at bottom right,rgba(255,207,90,.18),transparent 30%),linear-gradient(135deg,#04110f,var(--bg));min-height:100vh}.wrap{max-width:1180px;margin:0 auto;padding:28px 18px 70px}.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:22px;align-items:stretch}.card{background:linear-gradient(180deg,rgba(18,61,52,.92),rgba(13,47,40,.92));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}.intro{padding:34px}.badge{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(54,211,153,.35);background:rgba(54,211,153,.12);padding:8px 12px;border-radius:999px;color:#cfffea;font-weight:700;font-size:13px}h1{margin:18px 0 10px;font-size:clamp(34px,6vw,64px);line-height:.94;letter-spacing:-2px}.subtitle{font-size:18px;color:var(--muted);max-width:740px;line-height:1.55}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:26px}.stat{padding:16px;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:18px}.stat strong{display:block;font-size:28px;color:var(--gold)}.stat span{color:var(--muted);font-size:13px}.payoutTile{margin-top:12px;padding:16px;border-radius:18px;background:rgba(255,207,90,.10);border:1px solid rgba(255,207,90,.34)}.payoutTile h2{margin:0 0 10px;font-size:19px;color:var(--gold)}.payoutGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.payoutItem{padding:12px;border-radius:14px;background:rgba(0,0,0,.18);border:1px solid var(--line)}.payoutItem span{display:block;color:var(--muted);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.3px}.payoutItem strong{display:block;margin-top:3px;font-size:24px;color:var(--text)}.payoutNote{margin:10px 0 0;color:#ffe8a6;font-size:13px;font-weight:800}.progressTile{margin-top:14px;padding:16px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid var(--line)}.progressHead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.progressHead h2{margin:0;font-size:19px;color:var(--gold)}.progressCount{color:#d8fff0;font-weight:900;font-size:14px}.progressBar{width:100%;height:18px;border-radius:999px;background:rgba(0,0,0,.26);border:1px solid rgba(255,255,255,.14);overflow:hidden}.progressFill{height:100%;width:0%;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:999px;transition:width .35s ease}.progressText{margin:9px 0 0;color:var(--muted);font-size:13px}.rulesTile{margin-top:12px;padding:16px;border-radius:18px;background:rgba(54,211,153,.08);border:1px solid rgba(54,211,153,.26)}.rulesTile h2{margin:0 0 10px;font-size:19px;color:#d4ffef}.rulesList{margin:0;padding-left:18px;color:var(--muted);font-size:13px;line-height:1.55}.rulesList li{margin:4px 0}@media(max-width:720px){.payoutGrid{grid-template-columns:repeat(2,1fr)}.progressHead{align-items:flex-start;flex-direction:column;gap:5px}}.steps{padding:20px;display:grid;gap:12px}.cupLogoPanel{background:rgba(255,255,255,.98);border-radius:18px;border:4px solid #064033;padding:6px;display:grid;place-items:center;min-height:210px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}.cupLogoPanel img{width:100%;max-width:340px;max-height:200px;object-fit:contain;display:block}.stepsIntro{text-align:center;margin:0 0 2px;color:#d8fff0;font-size:13px;font-weight:800;line-height:1.35}.step{display:grid;grid-template-columns:42px 1fr;gap:12px;align-items:start}.num{width:42px;height:42px;border-radius:14px;background:var(--green);color:#042017;display:grid;place-items:center;font-weight:900}.step h3{margin:1px 0 5px;font-size:17px}.step p{margin:0;color:var(--muted);line-height:1.42;font-size:14px}.main{display:grid;grid-template-columns:1fr 390px;gap:22px;margin-top:22px;align-items:start}.wheelBox{padding:22px;text-align:center;position:relative}.wheelHolder{position:relative;max-width:610px;margin:0 auto;aspect-ratio:1/1}canvas{width:100%;height:100%;display:block;filter:drop-shadow(0 18px 28px rgba(0,0,0,.45))}.pointer{position:absolute;left:50%;top:-4px;transform:translateX(-50%);width:0;height:0;border-left:22px solid transparent;border-right:22px solid transparent;border-top:44px solid var(--gold);z-index:5;filter:drop-shadow(0 4px 4px rgba(0,0,0,.45))}.centreButton{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:126px;height:126px;border-radius:999px;border:8px solid rgba(255,255,255,.14);background:radial-gradient(circle at 30% 20%,#fff6cf,var(--gold) 42%,#d99100);color:#211704;display:grid;place-items:center;text-align:center;font-weight:950;letter-spacing:.4px;box-shadow:0 12px 28px rgba(0,0,0,.4);user-select:none}.resultBanner{margin-top:18px;padding:18px;border-radius:18px;background:rgba(255,207,90,.12);border:1px solid rgba(255,207,90,.35);min-height:80px;display:grid;place-items:center}.resultBanner h2{margin:0;font-size:28px;color:var(--gold)}.resultBanner p{margin:4px 0 0;color:var(--muted)}.side{padding:22px}label{display:block;font-size:13px;color:#d8fff0;font-weight:750;margin:13px 0 7px}input,select{width:100%;padding:13px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:var(--text);outline:none;font-size:15px}input::placeholder{color:rgba(255,255,255,.45)}button{border:0;border-radius:16px;padding:13px 16px;font-weight:900;cursor:pointer;background:var(--green);color:#032018;transition:transform .12s ease,opacity .12s ease,background .12s ease}button:hover{transform:translateY(-1px)}button:disabled{opacity:.45;cursor:not-allowed;transform:none}.secondary{background:rgba(255,255,255,.1);color:var(--text);border:1px solid var(--line)}.danger{background:rgba(255,107,107,.18);color:#ffd7d7;border:1px solid rgba(255,107,107,.38)}.goldPay{width:100%;margin-top:8px;background:linear-gradient(180deg,#ffd95e,#f2b705);color:#172c66;border:2px solid #ffe586;box-shadow:0 10px 22px rgba(0,0,0,.28);display:flex;align-items:center;justify-content:center;gap:10px;font-size:16px}.paypalLogo{font-weight:1000;letter-spacing:-1px}.paypalLogo .pay{color:#003087}.paypalLogo .pal{color:#009cde}.payBox{margin-top:16px;padding:15px;border-radius:18px;background:rgba(0,0,0,.17);border:1px solid var(--line)}.small{color:var(--muted);font-size:13px;line-height:1.45}.notice{padding:12px 14px;border-radius:14px;background:rgba(54,211,153,.1);border:1px solid rgba(54,211,153,.28);color:#d4ffef;margin:13px 0;font-size:13px;line-height:1.42}.warn{background:rgba(255,207,90,.10);border-color:rgba(255,207,90,.32);color:#ffe8a6}.draws{margin-top:22px;padding:22px}table{width:100%;border-collapse:collapse;overflow:hidden;border-radius:14px}th,td{padding:11px 10px;border-bottom:1px solid var(--line);text-align:left;font-size:14px}th{color:#ddfff2;background:rgba(255,255,255,.07)}td{color:var(--muted)}.admin{margin-top:22px;padding:22px}details summary{cursor:pointer;font-weight:900;color:#f7fffb}.hidden{display:none!important}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.foot{margin-top:18px;color:rgba(255,255,255,.52);font-size:12px;line-height:1.45}@media(max-width:940px){.hero,.main{grid-template-columns:1fr}.stats{grid-template-columns:1fr}}
+    *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);background:radial-gradient(circle at top left,rgba(54,211,153,.22),transparent 35%),radial-gradient(circle at bottom right,rgba(255,207,90,.18),transparent 30%),linear-gradient(135deg,#04110f,var(--bg));min-height:100vh}.wrap{max-width:1180px;margin:0 auto;padding:28px 18px 70px}.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:22px;align-items:stretch}.card{background:linear-gradient(180deg,rgba(18,61,52,.92),rgba(13,47,40,.92));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}.intro{padding:34px}.badge{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(54,211,153,.35);background:rgba(54,211,153,.12);padding:8px 12px;border-radius:999px;color:#cfffea;font-weight:700;font-size:13px}h1{margin:18px 0 10px;font-size:clamp(34px,6vw,64px);line-height:.94;letter-spacing:-2px}.subtitle{font-size:18px;color:var(--muted);max-width:740px;line-height:1.55}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:26px}.stat{padding:16px;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:18px}.stat strong{display:block;font-size:28px;color:var(--gold)}.stat span{color:var(--muted);font-size:13px}.payoutTile{margin-top:12px;padding:16px;border-radius:18px;background:rgba(255,207,90,.10);border:1px solid rgba(255,207,90,.34)}.payoutTile h2{margin:0 0 10px;font-size:19px;color:var(--gold)}.payoutGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.payoutItem{padding:12px;border-radius:14px;background:rgba(0,0,0,.18);border:1px solid var(--line)}.payoutItem span{display:block;color:var(--muted);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.3px}.payoutItem strong{display:block;margin-top:3px;font-size:24px;color:var(--text)}.payoutNote{margin:10px 0 0;color:#ffe8a6;font-size:13px;font-weight:800}.progressTile{margin-top:14px;padding:16px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid var(--line)}.progressHead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.progressHead h2{margin:0;font-size:19px;color:var(--gold)}.progressCount{color:#d8fff0;font-weight:900;font-size:14px}.progressBar{width:100%;height:18px;border-radius:999px;background:rgba(0,0,0,.26);border:1px solid rgba(255,255,255,.14);overflow:hidden}.progressFill{height:100%;width:0%;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:999px;transition:width .35s ease}.progressText{margin:9px 0 0;color:var(--muted);font-size:13px}.rulesTile{margin-top:12px;padding:16px;border-radius:18px;background:rgba(54,211,153,.08);border:1px solid rgba(54,211,153,.26)}.rulesTile h2{margin:0 0 10px;font-size:19px;color:#d4ffef}.rulesList{margin:0;padding-left:18px;color:var(--muted);font-size:13px;line-height:1.55}.rulesList li{margin:4px 0}@media(max-width:720px){.payoutGrid{grid-template-columns:repeat(2,1fr)}.progressHead{align-items:flex-start;flex-direction:column;gap:5px}}.steps{padding:20px;display:grid;gap:12px}.cupLogoPanel{background:rgba(255,255,255,.98);border-radius:18px;border:4px solid #064033;padding:6px;display:grid;place-items:center;min-height:210px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}.cupLogoPanel img{width:100%;max-width:340px;max-height:200px;object-fit:contain;display:block}.stepsIntro{text-align:center;margin:0 0 2px;color:#d8fff0;font-size:13px;font-weight:800;line-height:1.35}.step{display:grid;grid-template-columns:42px 1fr;gap:12px;align-items:start}.num{width:42px;height:42px;border-radius:14px;background:var(--green);color:#042017;display:grid;place-items:center;font-weight:900}.step h3{margin:1px 0 5px;font-size:17px}.step p{margin:0;color:var(--muted);line-height:1.42;font-size:14px}.main{display:grid;grid-template-columns:1fr 390px;gap:22px;margin-top:22px;align-items:start}.wheelBox{padding:22px;text-align:center;position:relative}.wheelHolder{position:relative;max-width:610px;margin:0 auto;aspect-ratio:1/1}canvas{width:100%;height:100%;display:block;filter:drop-shadow(0 18px 28px rgba(0,0,0,.45))}.pointer{position:absolute;left:50%;top:-4px;transform:translateX(-50%);width:0;height:0;border-left:22px solid transparent;border-right:22px solid transparent;border-top:44px solid var(--gold);z-index:5;filter:drop-shadow(0 4px 4px rgba(0,0,0,.45))}.centreButton{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:126px;height:126px;border-radius:999px;border:8px solid rgba(255,255,255,.14);background:radial-gradient(circle at 30% 20%,#fff6cf,var(--gold) 42%,#d99100);color:#211704;display:grid;place-items:center;text-align:center;font-weight:950;letter-spacing:.4px;box-shadow:0 12px 28px rgba(0,0,0,.4);user-select:none}.resultBanner{margin-top:18px;padding:18px;border-radius:18px;background:rgba(255,207,90,.12);border:1px solid rgba(255,207,90,.35);min-height:80px;display:grid;place-items:center}.resultBanner h2{margin:0;font-size:28px;color:var(--gold)}.resultBanner p{margin:4px 0 0;color:var(--muted)}.side{padding:22px}label{display:block;font-size:13px;color:#d8fff0;font-weight:750;margin:13px 0 7px}input,select{width:100%;padding:13px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:var(--text);outline:none;font-size:15px}input::placeholder{color:rgba(255,255,255,.45)}button{border:0;border-radius:16px;padding:13px 16px;font-weight:900;cursor:pointer;background:var(--green);color:#032018;transition:transform .12s ease,opacity .12s ease,background .12s ease}button:hover{transform:translateY(-1px)}button:disabled{opacity:.45;cursor:not-allowed;transform:none}.secondary{background:rgba(255,255,255,.1);color:var(--text);border:1px solid var(--line)}.danger{background:rgba(255,107,107,.18);color:#ffd7d7;border:1px solid rgba(255,107,107,.38)}.goldPay{width:100%;margin-top:8px;background:linear-gradient(180deg,#ffd95e,#f2b705);color:#172c66;border:2px solid #ffe586;box-shadow:0 10px 22px rgba(0,0,0,.28);display:flex;align-items:center;justify-content:center;gap:10px;font-size:16px}.paypalLogo{font-weight:1000;letter-spacing:-1px}.paypalLogo .pay{color:#003087}.paypalLogo .pal{color:#009cde}.payBox{margin-top:16px;padding:15px;border-radius:18px;background:rgba(0,0,0,.17);border:1px solid var(--line)}.small{color:var(--muted);font-size:13px;line-height:1.45}.notice{padding:12px 14px;border-radius:14px;background:rgba(54,211,153,.1);border:1px solid rgba(54,211,153,.28);color:#d4ffef;margin:13px 0;font-size:13px;line-height:1.42}.warn{background:rgba(255,207,90,.10);border-color:rgba(255,207,90,.32);color:#ffe8a6}.spinWarning{margin-top:22px;padding:18px 20px;border-radius:18px;background:#fff;color:#b00020;border:4px solid #b00020;box-shadow:0 14px 35px rgba(0,0,0,.22)}.spinWarning h2{margin:0 0 8px;font-size:22px;color:#b00020}.spinWarning p{margin:0;color:#b00020;font-size:15px;font-weight:900;line-height:1.5}.draws{margin-top:22px;padding:22px}table{width:100%;border-collapse:collapse;overflow:hidden;border-radius:14px}th,td{padding:11px 10px;border-bottom:1px solid var(--line);text-align:left;font-size:14px}th{color:#ddfff2;background:rgba(255,255,255,.07)}td{color:var(--muted)}.admin{margin-top:22px;padding:22px}details summary{cursor:pointer;font-weight:900;color:#f7fffb}.hidden{display:none!important}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.foot{margin-top:18px;color:rgba(255,255,255,.52);font-size:12px;line-height:1.45}@media(max-width:940px){.hero,.main{grid-template-columns:1fr}.stats{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -77,6 +77,9 @@
         <input id="playerName" placeholder="e.g. Donald Duck" autocomplete="name" />
         <label for="playerEmail">Email address</label>
         <input id="playerEmail" type="email" placeholder="name@example.com" autocomplete="email" />
+        <label for="entriesPaid">Number of entries paid for</label>
+        <input id="entriesPaid" type="number" min="1" max="48" step="1" value="1" inputmode="numeric" />
+        <p class="small" id="entriesHint">Choose how many teams you have paid for. You will get one spin per paid entry.</p>
         <div class="payBox">
           <a href="https://www.paypal.com/pool/9pFSWweTFK?sr=accr" target="_blank" rel="noopener" style="text-decoration:none">
             <button type="button" class="goldPay"><span class="paypalLogo"><span class="pay">Pay</span><span class="pal">Pal</span></span> Pay entry via PayPal Pool</button>
@@ -85,8 +88,14 @@
           <p class="small" id="payHint">After paying through PayPal, return here and unlock your draw before spinning the wheel.</p>
         </div>
         <button id="spinBtn" style="width:100%;margin-top:14px" disabled>Spin the wheel</button>
+        <div id="entryStatus" class="notice hidden"></div>
         <div id="errorBox" class="notice warn hidden"></div>
       </aside>
+    </section>
+
+    <section class="spinWarning">
+      <h2>Important: only press Spin The Wheel once</h2>
+      <p>Please press the <strong>Spin The Wheel</strong> button once for each entry you have paid for. If you miss your team, contact <strong>Justin Haywood</strong> and we will let you know your team. The generator now counts your paid entries and only gives one spin per paid entry. We cannot add teams drawn incorrectly back into the draw.</p>
     </section>
 
     <section class="card draws">
@@ -122,7 +131,7 @@
   const canvas=$('wheel'); const ctx=canvas.getContext('2d');
   const PAYPAL_POOL_URL='https://www.paypal.com/pool/9pFSWweTFK?sr=accr';
   const ENTRY_FEE=5; const CURRENCY='GBP';
-  let state={teams:[],draws:[]}; let rotation=0; let spinning=false; let paid=false; let currentPaymentRef='PAYPAL-POOL'; let lastAvailableBeforeSpin=[];
+  let state={teams:[],draws:[]}; let rotation=0; let spinning=false; let paid=false; let currentPaymentRef='PAYPAL-POOL'; let lastAvailableBeforeSpin=[]; let paidEntries=0; let entriesRemaining=0; let activePlayer=null;
   const TWO=Math.PI*2;
 
   function moneySymbol(){return CURRENCY==='GBP'?'£':CURRENCY==='EUR'?'€':'$'}
@@ -174,21 +183,72 @@
     }).join('');
   }
 
-  function refresh(){updateStats();drawWheel();renderDraws();$('spinBtn').disabled=!paid||spinning||!availableTeams().length}
-  function validatePlayer(){const name=$('playerName').value.trim();const email=$('playerEmail').value.trim();if(!name){alert('Please enter the player name.');return null}if(!email||!email.includes('@')){alert('Please enter a valid email address.');return null}return{name,email}}
+  function updateEntryStatus(){
+    const box=$('entryStatus');
+    if(!paid || !activePlayer){box.classList.add('hidden');box.textContent='';return}
+    box.classList.remove('hidden');
+    box.innerHTML='<strong>Paid entries unlocked:</strong> '+entriesRemaining+' of '+paidEntries+' spin'+(entriesRemaining===1?'':'s')+' remaining for '+escapeHtml(activePlayer.name)+'.';
+  }
 
-  $('unlockBtn').addEventListener('click',()=>{const player=validatePlayer();if(!player)return;paid=true;currentPaymentRef='PAYPAL-POOL-'+Date.now();$('resultBanner').innerHTML='<div><h2>Payment marked</h2><p>Now spin the wheel to draw your team.</p></div>';refresh()});
+  function refresh(){updateStats();drawWheel();renderDraws();updateEntryStatus();$('spinBtn').disabled=!paid||spinning||entriesRemaining<=0||!availableTeams().length}
+  function validatePlayer(){const name=$('playerName').value.trim();const email=$('playerEmail').value.trim();if(!name){alert('Please enter the player name.');return null}if(!email||!email.includes('@')){alert('Please enter a valid email address.');return null}return{name,email}}
+  function getEntriesPaid(){const n=Math.floor(Number($('entriesPaid').value||1)); if(!Number.isFinite(n)||n<1){alert('Please enter how many entries you have paid for.');return 0} const available=availableTeams().length||48; if(n>available){alert('There are only '+available+' teams remaining. Please reduce the number of entries.');return 0} return n}
+
+  $('unlockBtn').addEventListener('click',()=>{const player=validatePlayer();if(!player)return;const entries=getEntriesPaid();if(!entries)return;paid=true;paidEntries=entries;entriesRemaining=entries;activePlayer=player;currentPaymentRef='PAYPAL-POOL-'+Date.now();$('resultBanner').innerHTML='<div><h2>Payment marked</h2><p>You have unlocked '+entries+' spin'+(entries===1?'':'s')+'. Press Spin The Wheel once per paid entry.</p></div>';refresh()});
+
+  function clearRouletteSoundTimers(){
+    rouletteSoundTimers.forEach(t=>clearTimeout(t));
+    rouletteSoundTimers=[];
+  }
+
+  function playRouletteClick(volume=0.18){
+    try{
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      if(audioCtx.state === 'suspended') audioCtx.resume();
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(850 + Math.random()*260, now);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(volume, now + 0.006);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.055);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.06);
+    }catch(e){
+      // Sound is optional; if a browser blocks audio, the draw still works.
+    }
+  }
+
+  function startRouletteSound(duration=5200){
+    clearRouletteSoundTimers();
+    let elapsed = 0;
+    function scheduleNext(){
+      const progress = Math.min(1, elapsed / duration);
+      playRouletteClick(0.16 - progress*0.06);
+      const delay = 45 + progress*190 + Math.random()*18;
+      elapsed += delay;
+      if(elapsed < duration - 120){
+        rouletteSoundTimers.push(setTimeout(scheduleNext, delay));
+      }
+    }
+    scheduleNext();
+  }
 
   function finalRotationForTeam(chosenName){
     const teams=lastAvailableBeforeSpin; const idx=Math.max(0,teams.findIndex(t=>t.name===chosenName)); const slice=TWO/teams.length; const pointer=-Math.PI/2; const targetAngle=idx*slice+slice/2; let base=pointer-targetAngle; const min=rotation+TWO*7; while(base<min)base+=TWO; return base;
   }
 
   async function spin(){
-    const player=validatePlayer(); if(!player||!paid||spinning)return; const teams=availableTeams(); if(!teams.length){alert('All teams have been drawn.');return}
-    spinning=true;$('spinBtn').disabled=true;clearError();lastAvailableBeforeSpin=teams.slice();
+    const player=activePlayer || validatePlayer(); if(!player||!paid||spinning||entriesRemaining<=0)return; const teams=availableTeams(); if(!teams.length){alert('All teams have been drawn.');return}
+    const confirmMsg='You are about to use 1 paid entry. '+(entriesRemaining-1)+' spin'+((entriesRemaining-1)===1?'':'s')+' will remain after this draw. Press OK to spin.';
+    if(!confirm(confirmMsg))return;
+    spinning=true;$('spinBtn').disabled=true;clearError();lastAvailableBeforeSpin=teams.slice();startRouletteSound(5200);
     let data;
     try{data=await api('draw-team',{method:'POST',body:JSON.stringify({playerName:player.name,playerEmail:player.email,paymentRef:currentPaymentRef})})}
-    catch(err){spinning=false;refresh();showError(err.message);return}
+    catch(err){clearRouletteSoundTimers();spinning=false;refresh();showError(err.message);return}
     const start=rotation; const end=finalRotationForTeam(data.draw.team); const duration=5200; const started=performance.now();
     function easeOutCubic(t){return 1-Math.pow(1-t,3)}
     function frame(now){const p=Math.min(1,(now-started)/duration);rotation=start+(end-start)*easeOutCubic(p);drawWheelUsingList(lastAvailableBeforeSpin);if(p<1)requestAnimationFrame(frame);else finishSpin(data)}
@@ -200,9 +260,14 @@
   }
 
   function finishSpin(data){
-    state=data.state; paid=false; currentPaymentRef=''; spinning=false;
-    $('resultBanner').innerHTML=`<div><h2>${escapeHtml(data.draw.playerName)} drew ${escapeHtml(data.draw.team)}!</h2><p>Group ${escapeHtml(data.draw.group)}. This team has now been removed from future draws.</p></div>`;
-    $('playerName').value='';$('playerEmail').value='';refresh();
+    clearRouletteSoundTimers();
+    state=data.state; spinning=false; entriesRemaining=Math.max(0,entriesRemaining-1);
+    const more=entriesRemaining>0;
+    $('resultBanner').innerHTML=more
+      ? `<div><h2>${escapeHtml(data.draw.playerName)} drew ${escapeHtml(data.draw.team)}!</h2><p>Group ${escapeHtml(data.draw.group)}. You have ${entriesRemaining} paid spin${entriesRemaining===1?'':'s'} remaining.</p></div>`
+      : `<div><h2>${escapeHtml(data.draw.playerName)} drew ${escapeHtml(data.draw.team)}!</h2><p>Group ${escapeHtml(data.draw.group)}. You have used all paid entries. Please pay again if you want another team.</p></div>`;
+    if(!more){paid=false; currentPaymentRef=''; paidEntries=0; entriesRemaining=0; activePlayer=null; $('playerName').value='';$('playerEmail').value='';$('entriesPaid').value='1'}
+    refresh();
   }
 
   $('spinBtn').addEventListener('click',spin);
@@ -220,7 +285,7 @@
   }
   $('revealBtn').addEventListener('click',()=>setDrawRecordReveal(true));
   $('hideTeamsBtn').addEventListener('click',()=>setDrawRecordReveal(false));
-  $('resetBtn').addEventListener('click',async()=>{const pin=$('adminPin').value.trim(); if(!pin){alert('Enter the admin PIN.');return} if(!confirm('Reset the sweepstake and make all teams available again?'))return; try{const data=await api('reset-sweepstake',{method:'POST',body:JSON.stringify({pin})});state=data.state;paid=false;rotation=0;$('resultBanner').innerHTML='<div><h2>Sweepstake reset</h2><p>All teams are available again.</p></div>';refresh();}catch(err){showError(err.message)}});
+  $('resetBtn').addEventListener('click',async()=>{const pin=$('adminPin').value.trim(); if(!pin){alert('Enter the admin PIN.');return} if(!confirm('Reset the sweepstake and make all teams available again?'))return; try{const data=await api('reset-sweepstake',{method:'POST',body:JSON.stringify({pin})});state=data.state;paid=false;paidEntries=0;entriesRemaining=0;activePlayer=null;rotation=0;$('resultBanner').innerHTML='<div><h2>Sweepstake reset</h2><p>All teams are available again.</p></div>';refresh();}catch(err){showError(err.message)}});
 
   loadSharedState();
 })();
