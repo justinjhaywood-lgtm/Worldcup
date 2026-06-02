@@ -109,13 +109,37 @@
   100%{transform:translateY(calc(100vh + 260px)) rotate(20deg);opacity:0}
 }
 
+
+.welcomeLine{
+  display:inline-flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:center;
+  padding:10px 14px;
+  border-radius:999px;
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.22);
+  font-size:clamp(14px,2.2vw,22px);
+  font-weight:1000;
+  letter-spacing:.2px;
+  line-height:1.15;
+}
+.welcomeRed{color:#ff4d5e;text-shadow:0 2px 4px rgba(0,0,0,.35)}
+.welcomeWhite{color:#ffffff;text-shadow:0 2px 4px rgba(0,0,0,.5)}
+.welcomeBlue{color:#6db7ff;text-shadow:0 2px 4px rgba(0,0,0,.35)}
+
 </style>
 </head>
 <body>
   <div class="wrap">
     <section class="hero">
       <div class="card intro">
-        <div class="badge">⚽ World Cup 2026 Sweepstake</div>
+
+        <div class="welcomeLine" aria-label="Welcome to Commissioning's World Cup 2026 Sweepstake">
+          <span class="welcomeRed">Welcome to</span>
+          <span class="welcomeWhite">Commissioning's</span>
+          <span class="welcomeBlue">World Cup 2026 Sweepstake</span>
+        </div>
         <h1>Pay. Spin. Reveal your team.</h1>
         <p class="subtitle">A simple sweepstake generator for the 48-team World Cup. Players enter their details, pay by PayPal Pool, then spin the roulette wheel to draw one remaining team.</p>
         <div class="stats">
