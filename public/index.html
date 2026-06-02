@@ -147,7 +147,7 @@
   const canvas=$('wheel'); const ctx=canvas.getContext('2d');
   const PAYPAL_POOL_URL='https://www.paypal.com/pool/9pFSWweTFK?sr=accr';
   const ENTRY_FEE=5; const CURRENCY='GBP';
-  let state={teams:[],draws:[]}; let rotation=0; let spinning=false; let paid=false; let currentPaymentRef='PAYPAL-POOL'; let lastAvailableBeforeSpin=[]; let paidEntries=0; let entriesRemaining=0; let activePlayer=null;
+  let state={teams:[],draws:[]}; let rotation=0; let spinning=false; let paid=false; let currentPaymentRef='PAYPAL-POOL'; let lastAvailableBeforeSpin=[]; let paidEntries=0; let entriesRemaining=0; let activePlayer=null; let audioCtx=null; let rouletteSoundTimers=[];
   const TWO=Math.PI*2;
 
   function moneySymbol(){return CURRENCY==='GBP'?'£':CURRENCY==='EUR'?'€':'$'}
@@ -293,6 +293,9 @@
       .then(result=>{data=result})
       .catch(err=>{apiError=err});
 
+    const spinStartedAt=performance.now();
+    const maxWaitMs=15000;
+
     function waitingFrame(){
       if(apiError){
         clearRouletteSoundTimers();
@@ -303,6 +306,13 @@
       }
       if(data){
         settleSpin(data);
+        return;
+      }
+      if(performance.now()-spinStartedAt>maxWaitMs){
+        clearRouletteSoundTimers();
+        spinning=false;
+        refresh();
+        showError('The draw server did not respond in time. No team has been allocated. Please try again, or ask Justin to use Admin allocate one team.');
         return;
       }
       rotation += 0.16;
