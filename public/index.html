@@ -15,58 +15,99 @@
 }
 
 
-.celebrationOverlay{
+
+#celebrationOverlay{
   position:fixed;
   inset:0;
-  pointer-events:none;
+  display:none;
+  align-items:flex-start;
+  justify-content:center;
   overflow:hidden;
+  pointer-events:none;
   z-index:2147483647;
 }
-.teamRevealBanner{
-  position:fixed;
+#celebrationOverlay.show{
+  display:flex;
+}
+.celebrationBackdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.18);
+}
+.bigTeamDrop{
+  position:absolute;
   left:50%;
-  top:-220px;
+  top:-260px;
   transform:translateX(-50%);
-  min-width:min(92vw,780px);
-  padding:20px 28px;
-  border-radius:26px;
+  width:min(92vw,820px);
+  padding:20px 26px;
+  border-radius:28px;
   background:#fff;
-  color:#c8102e;
-  border:7px solid #00247d;
-  box-shadow:0 22px 60px rgba(0,0,0,.55);
+  border:8px solid #00247d;
+  box-shadow:0 28px 75px rgba(0,0,0,.6);
   text-align:center;
+  animation:bigTeamDrop 6.5s ease-in-out forwards;
+}
+.bigTeamDrop small{
+  display:block;
+  color:#c8102e;
+  font-size:clamp(17px,3vw,30px);
+  font-weight:1000;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+.bigTeamDrop strong{
+  display:block;
+  margin-top:8px;
+  color:#00247d;
+  font-size:clamp(42px,10vw,96px);
+  line-height:.95;
   font-weight:1000;
   text-transform:uppercase;
-  letter-spacing:1px;
-  z-index:2147483647;
 }
-.teamRevealBanner span{
-  display:block;
-  color:#00247d;
-  font-size:clamp(36px,9vw,88px);
-  line-height:1;
-  margin-top:8px;
+.fallingTape{
+  position:absolute;
+  top:-160px;
+  width:22px;
+  height:110px;
+  border-radius:8px;
+  box-shadow:0 8px 16px rgba(0,0,0,.2);
+  animation:fallingTape 5.8s linear forwards;
 }
-.teamRevealBanner small{
-  color:#c8102e;
-  font-size:clamp(16px,3vw,28px);
-}
-.tickerPiece{
-  position:fixed;
-  top:-120px;
-  left:0;
-  padding:10px 18px;
+.tapeRed{background:#c8102e}
+.tapeWhite{background:#fff;border:2px solid #ddd}
+.tapeBlue{background:#00247d}
+.fallingName{
+  position:absolute;
+  top:-140px;
+  padding:8px 16px;
   border-radius:999px;
+  background:#fff;
+  border:3px solid #c8102e;
+  color:#00247d;
+  font-size:clamp(15px,3vw,28px);
   font-weight:1000;
-  font-size:clamp(16px,3vw,30px);
-  letter-spacing:.8px;
   white-space:nowrap;
-  box-shadow:0 10px 24px rgba(0,0,0,.25);
-  z-index:2147483646;
+  box-shadow:0 10px 24px rgba(0,0,0,.24);
+  animation:fallingName 6.2s linear forwards;
 }
-.tickerRed{background:#c8102e;color:#fff}
-.tickerWhite{background:#fff;color:#0c2c6c;border:3px solid #d8d8d8}
-.tickerBlue{background:#00247d;color:#fff}
+@keyframes bigTeamDrop{
+  0%{top:-260px;opacity:0;transform:translateX(-50%) scale(.85) rotate(-3deg)}
+  12%{opacity:1}
+  26%{top:16vh;transform:translateX(-50%) scale(1.05) rotate(1deg)}
+  70%{top:16vh;opacity:1;transform:translateX(-50%) scale(1) rotate(0)}
+  100%{top:115vh;opacity:0;transform:translateX(-50%) scale(.85) rotate(4deg)}
+}
+@keyframes fallingTape{
+  0%{transform:translateY(-180px) rotate(0deg);opacity:0}
+  8%{opacity:1}
+  100%{transform:translateY(calc(100vh + 260px)) rotate(720deg);opacity:0}
+}
+@keyframes fallingName{
+  0%{transform:translateY(-160px) rotate(-8deg);opacity:0}
+  8%{opacity:1}
+  100%{transform:translateY(calc(100vh + 260px)) rotate(20deg);opacity:0}
+}
 
 </style>
 </head>
@@ -201,9 +242,7 @@
       </details>
     </section>
   </div>
-
-  <div id="celebrationOverlay" class="celebrationOverlay" aria-hidden="true"></div>
-
+  <div id="celebrationOverlay" aria-hidden="true"></div>
 <script>
 (function(){
   const $=id=>document.getElementById(id);
@@ -221,71 +260,48 @@
 
 
 
-  function launchTeamTicker(teamName){
-    const overlay=$('celebrationOverlay');
-    if(!overlay || !teamName) return;
-    overlay.innerHTML='';
-    const cleanName=String(teamName).toUpperCase();
-    const colours=['tickerRed','tickerWhite','tickerBlue'];
 
-    const banner=document.createElement('div');
-    banner.className='teamRevealBanner';
-    banner.innerHTML='<small>Your team is</small><span>'+escapeHtml(cleanName)+'</span>';
+  function launchTeamTicker(teamName){
+    const overlay = document.getElementById('celebrationOverlay');
+    if(!overlay || !teamName) return;
+
+    const cleanName = String(teamName).toUpperCase();
+    overlay.innerHTML = '<div class="celebrationBackdrop"></div>';
+    overlay.classList.add('show');
+
+    const banner = document.createElement('div');
+    banner.className = 'bigTeamDrop';
+    banner.innerHTML = '<small>Your team is</small><strong>' + escapeHtml(cleanName) + '</strong>';
     overlay.appendChild(banner);
 
-    const pieces=[];
-    for(let i=0;i<54;i++){
-      const piece=document.createElement('div');
-      piece.className='tickerPiece '+colours[i%colours.length];
-      piece.textContent=(i%3===0?'★ ':'')+cleanName+(i%4===0?' ★':'');
-      const left=Math.random()*86;
-      const drift=-200+Math.random()*400;
-      const duration=4800+Math.random()*2600;
-      const delay=Math.random()*900;
-      const startRot=-35+Math.random()*70;
-      const endRot=-130+Math.random()*260;
-      piece.style.left=left+'vw';
-      piece.style.opacity='0';
-      piece.style.transform='translate3d(0,-140px,0) rotate('+startRot+'deg)';
-      piece.dataset.drift=drift;
-      piece.dataset.duration=duration;
-      piece.dataset.delay=delay;
-      piece.dataset.endRot=endRot;
-      overlay.appendChild(piece);
-      pieces.push(piece);
+    const colours = ['tapeRed','tapeWhite','tapeBlue'];
+    for(let i=0;i<70;i++){
+      const tape = document.createElement('div');
+      tape.className = 'fallingTape ' + colours[i % colours.length];
+      tape.style.left = (Math.random()*100) + 'vw';
+      tape.style.animationDelay = (Math.random()*1.2) + 's';
+      tape.style.animationDuration = (4.2 + Math.random()*2.6) + 's';
+      tape.style.transform = 'rotate(' + (Math.random()*180) + 'deg)';
+      overlay.appendChild(tape);
     }
 
-    // Force the browser to paint the starting positions before the fall begins.
-    requestAnimationFrame(()=>{
-      requestAnimationFrame(()=>{
-        banner.style.transition='top 900ms ease-out, transform 900ms ease-out, opacity 500ms ease-out';
-        banner.style.top='14vh';
-        banner.style.opacity='1';
-        banner.style.transform='translateX(-50%) scale(1.02)';
+    for(let i=0;i<18;i++){
+      const name = document.createElement('div');
+      name.className = 'fallingName';
+      name.textContent = cleanName;
+      name.style.left = (Math.random()*82) + 'vw';
+      name.style.animationDelay = (Math.random()*1.5) + 's';
+      name.style.animationDuration = (4.8 + Math.random()*2.4) + 's';
+      overlay.appendChild(name);
+    }
 
-        pieces.forEach(piece=>{
-          const duration=Number(piece.dataset.duration);
-          const delay=Number(piece.dataset.delay);
-          const drift=Number(piece.dataset.drift);
-          const endRot=Number(piece.dataset.endRot);
-          piece.style.transition='transform '+duration+'ms linear '+delay+'ms, opacity 500ms linear '+delay+'ms';
-          piece.style.opacity='1';
-          piece.style.transform='translate3d('+drift+'px, calc(100vh + 230px), 0) rotate('+endRot+'deg)';
-        });
-      });
-    });
-
-    window.clearTimeout(window.__teamBannerDrop);
-    window.__teamBannerDrop=window.setTimeout(()=>{
-      banner.style.transition='top 1300ms ease-in, transform 1300ms ease-in, opacity 800ms ease-in';
-      banner.style.top='110vh';
-      banner.style.opacity='0';
-      banner.style.transform='translateX(-50%) scale(.85) rotate(5deg)';
-    },3600);
-
-    window.clearTimeout(window.__teamTickerCleanup);
-    window.__teamTickerCleanup=window.setTimeout(()=>{overlay.innerHTML='';},8200);
+    clearTimeout(window.__celebrationTimer);
+    window.__celebrationTimer = setTimeout(function(){
+      overlay.classList.remove('show');
+      overlay.innerHTML = '';
+    }, 8200);
   }
+
 
 
 
