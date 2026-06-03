@@ -413,7 +413,16 @@
     box.innerHTML='<strong>Paid entries unlocked:</strong> '+entriesRemaining+' of '+paidEntries+' spin'+(entriesRemaining===1?'':'s')+' remaining for '+escapeHtml(activePlayer.name)+'.';
   }
 
-  function refresh(){updateStats();drawWheel();renderDraws();updateEntryStatus();$('spinBtn').disabled=!paid||spinning||entriesRemaining<=0||!availableTeams().length}
+
+  function renderAdminTeamOptions(){
+    const select=$('adminAllocTeam');
+    if(!select) return;
+    const current=select.value;
+    const teams=availableTeams().slice().sort((a,b)=>String(a.name).localeCompare(String(b.name)));
+    select.innerHTML='<option value="">Random remaining team</option>'+teams.map(t=>`<option value="${escapeHtml(t.name)}">${escapeHtml(t.name)} ${t.group ? '(Group '+escapeHtml(t.group)+')' : ''}</option>`).join('');
+    if(current && teams.some(t=>t.name===current)) select.value=current;
+  }
+  function refresh(){updateStats();drawWheel();renderDraws();renderAdminTeamOptions();updateEntryStatus();$('spinBtn').disabled=!paid||spinning||entriesRemaining<=0||!availableTeams().length}
   function validatePlayer(){const name=$('playerName').value.trim();const email=$('playerEmail').value.trim();if(!name){alert('Please enter the player name.');return null}if(!email||!email.includes('@')){alert('Please enter a valid email address.');return null}return{name,email}}
   function getEntriesPaid(){const n=Math.floor(Number($('entriesPaid').value||1)); if(!Number.isFinite(n)||n<1){alert('Please enter how many entries you have paid for.');return 0} const available=availableTeams().length||48; if(n>available){alert('There are only '+available+' teams remaining. Please reduce the number of entries.');return 0} return n}
 
@@ -581,15 +590,18 @@
     if(!pin){alert('Enter the admin PIN.');return}
     if(!playerName){alert('Enter the player name.');return}
     if(!playerEmail || !playerEmail.includes('@')){alert('Enter a valid email address.');return}
-    if(!confirm('Allocate one random remaining team to '+playerName+'? This cannot be undone unless the sweepstake is reset.'))return;
+    const teamName=$('adminAllocTeam') ? $('adminAllocTeam').value.trim() : '';
+    const allocText=teamName ? teamName : 'one random remaining team';
+    if(!confirm('Allocate '+allocText+' to '+playerName+'? This cannot be undone unless the entry is cancelled and returned.'))return;
     clearError();
     try{
-      const data=await api('allocate-team',{method:'POST',body:JSON.stringify({pin,playerName,playerEmail,paymentRef:'ADMIN-ALLOCATED'})});
+      const data=await api('allocate-team',{method:'POST',body:JSON.stringify({pin,playerName,playerEmail,teamName,paymentRef:teamName?'ADMIN-SPECIFIC-ALLOCATED':'ADMIN-ALLOCATED'})});
       state=data.state;
       $('resultBanner').innerHTML=`<div><h2>Admin allocated ${escapeHtml(data.draw.team)}</h2><p>${escapeHtml(data.draw.playerName)} has been allocated Group ${escapeHtml(data.draw.group)}. This team has now been removed from future draws.</p></div>`;
       showTeamCelebration(data.draw.team);
       $('adminAllocName').value='';
       $('adminAllocEmail').value='';
+      if($('adminAllocTeam')) $('adminAllocTeam').value='';
       refresh();
     }catch(err){showError(err.message)}
   }

@@ -1,54 +1,83 @@
-const { getState, saveState, response } = require('./shared-state');
-
-function clean(value) {
-  return String(value || '').trim().slice(0, 120);
-}
+const { getState, saveState, requireAdminPin } = require('./shared-state');
 
 exports.handler = async (event) => {
-  if (event.httpMethod !== 'POST') return response(405, { ok:false, error:'POST only.' });
   try {
-    const payload = JSON.parse(event.body || '{}');
-    const pin = clean(payload.pin);
-    const adminPin = String(process.env.ADMIN_PIN || '2620').trim();
-    if (pin !== adminPin) return response(403, { ok:false, error:'Wrong admin PIN.' });
+    if (event.httpMethod !== 'POST') {
+      return { statusCode: 405, body: JSON.stringify({ ok: false, error: 'Method not allowed.' }) };
+    }
 
-    const playerName = clean(payload.playerName);
-    const playerEmail = clean(payload.playerEmail);
-    const paymentRef = clean(payload.paymentRef || 'ADMIN-ALLOCATED');
+    const body = JSON.parse(event.body || '{}');
+    requireAdminPin(body.pin);
 
-    if (!playerName) return response(400, { ok:false, error:'Player name is required.' });
-    if (!playerEmail || !playerEmail.includes('@')) return response(400, { ok:false, error:'A valid email address is required.' });
+    const playerName = String(body.playerName || '').trim();
+    const playerEmail = String(body.playerEmail || '').trim();
+    const requestedTeamName = String(body.teamName || '').trim();
+
+    if (!playerName) {
+      return { statusCode: 400, body: JSON.stringify({ ok: false, error: 'Player name is required.' }) };
+    }
+
+    if (!playerEmail || !playerEmail.includes('@')) {
+      return { statusCode: 400, body: JSON.stringify({ ok: false, error: 'A valid player email is required.' }) };
+    }
 
     const state = await getState();
-    const available = state.teams.filter(t => !t.taken);
-    if (!available.length) return response(409, { ok:false, error:'All teams have already been drawn.', state });
+    const available = (state.teams || []).filter(t => !t.taken);
 
-    const chosen = available[Math.floor(Math.random() * available.length)];
-    const original = state.teams.find(t => t.name === chosen.name);
-    const drawnAt = new Date().toISOString();
+    if (!available.length) {
+      return { statusCode: 409, body: JSON.stringify({ ok: false, error: 'All teams have already been allocated.' }) };
+    }
+
+    let chosen;
+    if (requestedTeamName) {
+      chosen = available.find(t => String(t.name).toLowerCase() === requestedTeamName.toLowerCase());
+      if (!chosen) {
+        const existsButTaken = (state.teams || []).find(t => String(t.name).toLowerCase() === requestedTeamName.toLowerCase());
+        return {
+          statusCode: 409,
+          body: JSON.stringify({
+            ok: false,
+            error: existsButTaken ? `${requestedTeamName} is not currently available.` : `${requestedTeamName} was not found in the team list.`
+          })
+        };
+      }
+    } else {
+      chosen = available[Math.floor(Math.random() * available.length)];
+    }
+
+    const original = (state.teams || []).find(t => t.name === chosen.name);
+    const now = new Date().toISOString();
+    const paymentRef = body.paymentRef || (requestedTeamName ? 'ADMIN-SPECIFIC-ALLOCATED' : 'ADMIN-ALLOCATED');
 
     original.taken = true;
-    original.playerName = playerName;
-    original.playerEmail = playerEmail;
+    original.player = { name: playerName, email: playerEmail };
     original.paymentRef = paymentRef;
-    original.drawnAt = drawnAt;
-    original.adminAllocated = true;
+    original.drawnAt = now;
 
     const draw = {
-      drawnAt,
+      drawnAt: now,
       playerName,
       playerEmail,
       team: original.name,
       group: original.group,
       paymentRef,
-      adminAllocated: true
+      adminAllocated: true,
+      specificTeamAllocated: !!requestedTeamName
     };
 
+    state.draws = state.draws || [];
     state.draws.push(draw);
+
     await saveState(state);
 
-    return response(200, { ok:true, draw, state });
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ ok: true, draw, state })
+    };
   } catch (err) {
-    return response(500, { ok:false, error:'Could not allocate a team.', detail: err.message });
+    return {
+      statusCode: err.statusCode || 500,
+      body: JSON.stringify({ ok: false, error: err.message || 'Could not allocate team.' })
+    };
   }
 };
