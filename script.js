@@ -2,7 +2,7 @@
 (function(){
   const $=id=>document.getElementById(id);
   const canvas=$('wheel'); const ctx=canvas.getContext('2d');
-  const PAYPAL_POOL_URL='https://www.paypal.com/pool/9pFSWweTFK?sr=accr';
+  const PAYPAL_POOL_URL='https://www.paypal.com/pool/9pYiOg51Iv?sr=accr';
   const ENTRY_FEE=5; const CURRENCY='GBP';
   let state={teams:[],draws:[]}; let rotation=0; let spinning=false; let paid=false; let currentPaymentRef='PAYPAL-POOL'; let lastAvailableBeforeSpin=[];
   const TWO=Math.PI*2;

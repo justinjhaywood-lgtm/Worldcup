@@ -38,7 +38,7 @@ ADMIN_PIN=your-admin-pin
 You can change this in Netlify under Site configuration -> Environment variables.
 
 PayPal Pool URL currently used:
-https://www.paypal.com/pool/9pFSWweTFK?sr=accr
+https://www.paypal.com/pool/9pYiOg51Iv?sr=accr
 
 
 Version 14 update:
