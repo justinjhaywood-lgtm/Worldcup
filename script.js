@@ -102,6 +102,43 @@
   }
   $('revealBtn').addEventListener('click',()=>setDrawRecordReveal(true));
   $('hideTeamsBtn').addEventListener('click',()=>setDrawRecordReveal(false));
+
+  function csvEscape(value){
+    const str=String(value ?? '');
+    return /[",\n\r]/.test(str) ? '"' + str.replace(/"/g,'""') + '"' : str;
+  }
+
+  function downloadEntrantsList(){
+    const pin=$('adminPin').value.trim();
+    if(!pin){alert('Enter the admin PIN before downloading the entrants list.');return}
+    const draws=(state.draws||[]).slice();
+    if(!draws.length){alert('No entrants have been drawn yet.');return}
+    const rows=[['Date/time','Player name','Email address','Drawn team','Group','Payment ref','Admin allocated']];
+    draws.forEach(d=>{
+      rows.push([
+        d.drawnAt ? new Date(d.drawnAt).toLocaleString() : '',
+        d.playerName || '',
+        d.playerEmail || '',
+        d.team || '',
+        d.group || '',
+        d.paymentRef || '',
+        d.adminAllocated ? 'Yes' : 'No'
+      ]);
+    });
+    const csv=rows.map(row=>row.map(csvEscape).join(',')).join('\r\n');
+    const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    const stamp=new Date().toISOString().slice(0,10);
+    a.href=url;
+    a.download='world-cup-2026-sweepstake-entrants-'+stamp+'.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  $('downloadEntrantsBtn').addEventListener('click',downloadEntrantsList);
   $('resetBtn').addEventListener('click',async()=>{const pin=$('adminPin').value.trim(); if(!pin){alert('Enter the admin PIN.');return} if(!confirm('Reset the sweepstake and make all teams available again?'))return; try{const data=await api('reset-sweepstake',{method:'POST',body:JSON.stringify({pin})});state=data.state;paid=false;rotation=0;$('resultBanner').innerHTML='<div><h2>Sweepstake reset</h2><p>All teams are available again.</p></div>';refresh();}catch(err){showError(err.message)}});
 
   loadSharedState();

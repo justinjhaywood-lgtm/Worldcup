@@ -146,6 +146,68 @@
   100%{transform:translateY(calc(100vh + 300px)) rotate(24deg);opacity:0}
 }
 
+
+/* Gold / sold-out ticker-tape celebration */
+#drawCelebration{
+  position:fixed;
+  inset:0;
+  display:none;
+  pointer-events:none;
+  overflow:hidden;
+  z-index:2147483647;
+}
+#drawCelebration.active{
+  display:block;
+}
+.goldTape{
+  position:absolute;
+  top:-130px;
+  width:18px;
+  height:100px;
+  border-radius:8px;
+  background:linear-gradient(180deg,#fff4b8,#ffcf5a,#d99a00);
+  box-shadow:0 8px 20px rgba(0,0,0,.25);
+  animation-name:goldTapeFall;
+  animation-timing-function:linear;
+  animation-fill-mode:forwards;
+}
+.soldOutTape{
+  position:absolute;
+  top:-170px;
+  padding:14px 22px;
+  border-radius:20px;
+  font-size:clamp(20px,4vw,42px);
+  font-weight:1000;
+  letter-spacing:.7px;
+  white-space:nowrap;
+  box-shadow:0 16px 38px rgba(0,0,0,.38);
+  animation-name:soldOutTapeFall;
+  animation-timing-function:linear;
+  animation-fill-mode:forwards;
+}
+.soldOutTape.red{
+  background:#c8102e;
+  color:#fff;
+  border:4px solid #fff;
+}
+.soldOutTape.blue{
+  background:#00247d;
+  color:#fff;
+  border:4px solid #fff;
+}
+@keyframes goldTapeFall{
+  0%{transform:translateY(-160px) rotate(0deg);opacity:0}
+  8%{opacity:1}
+  92%{opacity:1}
+  100%{transform:translateY(calc(100vh + 260px)) rotate(780deg);opacity:0}
+}
+@keyframes soldOutTapeFall{
+  0%{transform:translateY(-190px) rotate(-5deg);opacity:0}
+  8%{opacity:1}
+  92%{opacity:1}
+  100%{transform:translateY(calc(100vh + 300px)) rotate(12deg);opacity:0}
+}
+
 </style>
 </head>
 <body>
@@ -261,6 +323,7 @@
           <div class="actions">
             <button id="revealBtn" class="secondary">Reveal teams in draw record</button>
             <button id="hideTeamsBtn" class="secondary">Hide teams in draw record</button>
+            <button id="downloadEntrantsBtn" class="secondary">Download entrants list</button>
           </div>
           <div class="notice warn" style="margin-top:16px">
             <strong>Admin allocate team</strong><br>
@@ -286,6 +349,8 @@
   </div>
   <div id="teamCelebration" aria-hidden="true"></div>
 
+  <div id="drawCelebration" aria-hidden="true"></div>
+
 <script>
 (function(){
   const $=id=>document.getElementById(id);
@@ -300,6 +365,43 @@
   function showError(msg){$('errorBox').textContent=msg;$('errorBox').classList.remove('hidden')}
   function clearError(){$('errorBox').classList.add('hidden');$('errorBox').textContent=''}
   function availableTeams(){return (state.teams||[]).filter(t=>!t.taken)}
+
+  function showDrawCelebration(isSoldOut){
+    const overlay=document.getElementById('drawCelebration');
+    if(!overlay) return;
+    overlay.innerHTML='';
+    overlay.classList.add('active');
+
+    for(let i=0;i<95;i++){
+      const tape=document.createElement('div');
+      tape.className='goldTape';
+      tape.style.left=(Math.random()*100)+'vw';
+      tape.style.animationDelay=(Math.random()*1.5)+'s';
+      tape.style.animationDuration=(4.2+Math.random()*3.2)+'s';
+      tape.style.transform='rotate('+(Math.random()*180)+'deg)';
+      overlay.appendChild(tape);
+    }
+
+    if(isSoldOut){
+      const message='All teams now sold - Thanks for playing';
+      for(let i=0;i<10;i++){
+        const tape=document.createElement('div');
+        tape.className='soldOutTape '+(i%2===0?'red':'blue');
+        tape.textContent=message;
+        tape.style.left=(Math.random()*50)+'vw';
+        tape.style.animationDelay=(Math.random()*1.3)+'s';
+        tape.style.animationDuration=(5.2+Math.random()*2.2)+'s';
+        overlay.appendChild(tape);
+      }
+    }
+
+    clearTimeout(window.__drawCelebrationTimer);
+    window.__drawCelebrationTimer=setTimeout(function(){
+      overlay.classList.remove('active');
+      overlay.innerHTML='';
+    },8500);
+  }
+
 
   function showTeamCelebration(teamName){
     const overlay=document.getElementById('teamCelebration');
@@ -563,6 +665,7 @@
       : `<div><h2>${escapeHtml(data.draw.playerName)} drew ${escapeHtml(data.draw.team)}!</h2><p>Group ${escapeHtml(data.draw.group)}. You have used all paid entries. Please pay again if you want another team.</p></div>`;
     showTeamCelebration(data.draw.team);
     if(!more){paid=false; currentPaymentRef=''; paidEntries=0; entriesRemaining=0; activePlayer=null; $('playerName').value='';$('playerEmail').value='';$('entriesPaid').value='1'}
+    showDrawCelebration(!availableTeams().length);
     scrollWheelIntoView('result');
     refresh();
   }
@@ -602,6 +705,7 @@
       $('adminAllocName').value='';
       $('adminAllocEmail').value='';
       if($('adminAllocTeam')) $('adminAllocTeam').value='';
+      showDrawCelebration(!availableTeams().length);
       refresh();
     }catch(err){showError(err.message)}
   }
@@ -627,6 +731,43 @@
   }
 
   $('cancelEntryBtn').addEventListener('click',adminCancelEntry);
+
+  function csvEscape(value){
+    const str=String(value ?? '');
+    return /[",\n\r]/.test(str) ? '"' + str.replace(/"/g,'""') + '"' : str;
+  }
+
+  function downloadEntrantsList(){
+    const pin=$('adminPin').value.trim();
+    if(!pin){alert('Enter the admin PIN before downloading the entrants list.');return}
+    const draws=(state.draws||[]).slice();
+    if(!draws.length){alert('No entrants have been drawn yet.');return}
+    const rows=[['Date/time','Player name','Email address','Drawn team','Group','Payment ref','Admin allocated']];
+    draws.forEach(d=>{
+      rows.push([
+        d.drawnAt ? new Date(d.drawnAt).toLocaleString() : '',
+        d.playerName || '',
+        d.playerEmail || '',
+        d.team || '',
+        d.group || '',
+        d.paymentRef || '',
+        d.adminAllocated ? 'Yes' : 'No'
+      ]);
+    });
+    const csv=rows.map(row=>row.map(csvEscape).join(',')).join('\r\n');
+    const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    const stamp=new Date().toISOString().slice(0,10);
+    a.href=url;
+    a.download='world-cup-2026-sweepstake-entrants-'+stamp+'.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  $('downloadEntrantsBtn').addEventListener('click',downloadEntrantsList);
   $('resetBtn').addEventListener('click',async()=>{const pin=$('adminPin').value.trim(); if(!pin){alert('Enter the admin PIN.');return} if(!confirm('Reset the sweepstake and make all teams available again?'))return; try{const data=await api('reset-sweepstake',{method:'POST',body:JSON.stringify({pin})});state=data.state;paid=false;paidEntries=0;entriesRemaining=0;activePlayer=null;rotation=0;$('resultBanner').innerHTML='<div><h2>Sweepstake reset</h2><p>All teams are available again.</p></div>';refresh();}catch(err){showError(err.message)}});
 
   loadSharedState();
