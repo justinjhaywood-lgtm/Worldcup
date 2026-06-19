@@ -467,6 +467,7 @@
       state=data.state;
       $('resultBanner').innerHTML='<div><h2>Team Names Have Been Removed From The Wheel To Hide Remaining Teams</h2><p>The Team You Draw Will Appear</p><h2 style="margin-top:12px">Ready to spin</h2><p>Complete the player and payment step first.</p></div>';
       refresh();
+      setTimeout(()=>showDrawCelebration(!availableTeams().length), 650);
     }catch(err){
       state={teams:[],draws:[]};
       drawWheel(); renderDraws(); updateStats();
