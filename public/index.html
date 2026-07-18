@@ -147,65 +147,66 @@
 }
 
 
-/* Gold / sold-out ticker-tape celebration */
-#drawCelebration{
-  position:fixed;
-  inset:0;
-  display:none;
-  pointer-events:none;
-  overflow:hidden;
-  z-index:2147483647;
-}
-#drawCelebration.active{
-  display:block;
-}
-.goldTape{
-  position:absolute;
-  top:-130px;
-  width:18px;
-  height:100px;
-  border-radius:8px;
-  background:linear-gradient(180deg,#fff4b8,#ffcf5a,#d99a00);
-  box-shadow:0 8px 20px rgba(0,0,0,.25);
-  animation-name:goldTapeFall;
-  animation-timing-function:linear;
-  animation-fill-mode:forwards;
-}
-.soldOutTape{
-  position:absolute;
-  top:-170px;
-  padding:14px 22px;
-  border-radius:20px;
-  font-size:clamp(20px,4vw,42px);
-  font-weight:1000;
-  letter-spacing:.7px;
-  white-space:nowrap;
-  box-shadow:0 16px 38px rgba(0,0,0,.38);
-  animation-name:soldOutTapeFall;
-  animation-timing-function:linear;
-  animation-fill-mode:forwards;
-}
-.soldOutTape.red{
-  background:#c8102e;
-  color:#fff;
-  border:4px solid #fff;
-}
-.soldOutTape.blue{
-  background:#00247d;
-  color:#fff;
-  border:4px solid #fff;
-}
-@keyframes goldTapeFall{
-  0%{transform:translateY(-160px) rotate(0deg);opacity:0}
-  8%{opacity:1}
-  92%{opacity:1}
-  100%{transform:translateY(calc(100vh + 260px)) rotate(780deg);opacity:0}
-}
-@keyframes soldOutTapeFall{
-  0%{transform:translateY(-190px) rotate(-5deg);opacity:0}
-  8%{opacity:1}
+8%{opacity:1}
   92%{opacity:1}
   100%{transform:translateY(calc(100vh + 300px)) rotate(12deg);opacity:0}
+}
+
+
+/* Rolling winners titles */
+.rollingTitlesCard{
+  margin:0 0 22px;
+  padding:0;
+  overflow:hidden;
+  border-radius:24px;
+  background:linear-gradient(180deg,rgba(18,61,52,.96),rgba(9,34,29,.96));
+  border:1px solid rgba(255,207,90,.28);
+  box-shadow:0 18px 42px rgba(0,0,0,.28);
+}
+.rollingTitlesViewport{
+  position:relative;
+  height:250px;
+  overflow:hidden;
+  padding:18px 24px;
+}
+.rollingTitlesTrack{
+  position:absolute;
+  left:0;
+  right:0;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  animation:rollingTitlesLoop 26s linear infinite;
+}
+.rollingTitleSlide{
+  min-height:250px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:18px 10px;
+}
+.rollingTitleSlide h2,
+.rollingTitleSlide h3,
+.rollingTitleSlide p{
+  margin:6px 0;
+  color:#ffcf5a;
+  font-weight:1000;
+  text-shadow:0 2px 8px rgba(0,0,0,.45);
+}
+.rollingTitleSlide h2{font-size:clamp(28px,5vw,46px);line-height:1.05}
+.rollingTitleSlide h3{font-size:clamp(24px,4vw,38px);line-height:1.05}
+.rollingTitleSlide p{font-size:clamp(18px,2.8vw,28px);line-height:1.22}
+.rollingTitleAccent{color:#fff3bf}
+.rollingTitleSmall{font-size:clamp(16px,2.2vw,24px)!important}
+@keyframes rollingTitlesLoop{
+  0%{transform:translateY(0)}
+  100%{transform:translateY(-50%)}
+}
+@media(max-width:720px){
+  .rollingTitlesViewport{height:290px;padding:14px 16px}
+  .rollingTitleSlide{min-height:290px}
 }
 
 </style>
@@ -348,9 +349,6 @@
     </section>
   </div>
   <div id="teamCelebration" aria-hidden="true"></div>
-
-  <div id="drawCelebration" aria-hidden="true"></div>
-
 <script>
 (function(){
   const $=id=>document.getElementById(id);
@@ -366,41 +364,6 @@
   function clearError(){$('errorBox').classList.add('hidden');$('errorBox').textContent=''}
   function availableTeams(){return (state.teams||[]).filter(t=>!t.taken)}
 
-  function showDrawCelebration(isSoldOut){
-    const overlay=document.getElementById('drawCelebration');
-    if(!overlay) return;
-    overlay.innerHTML='';
-    overlay.classList.add('active');
-
-    for(let i=0;i<95;i++){
-      const tape=document.createElement('div');
-      tape.className='goldTape';
-      tape.style.left=(Math.random()*100)+'vw';
-      tape.style.animationDelay=(Math.random()*1.5)+'s';
-      tape.style.animationDuration=(4.2+Math.random()*3.2)+'s';
-      tape.style.transform='rotate('+(Math.random()*180)+'deg)';
-      overlay.appendChild(tape);
-    }
-
-    if(isSoldOut){
-      const message='All teams now sold - Thanks for playing';
-      for(let i=0;i<10;i++){
-        const tape=document.createElement('div');
-        tape.className='soldOutTape '+(i%2===0?'red':'blue');
-        tape.textContent=message;
-        tape.style.left=(Math.random()*50)+'vw';
-        tape.style.animationDelay=(Math.random()*1.3)+'s';
-        tape.style.animationDuration=(5.2+Math.random()*2.2)+'s';
-        overlay.appendChild(tape);
-      }
-    }
-
-    clearTimeout(window.__drawCelebrationTimer);
-    window.__drawCelebrationTimer=setTimeout(function(){
-      overlay.classList.remove('active');
-      overlay.innerHTML='';
-    },8500);
-  }
 
 
   function showTeamCelebration(teamName){
@@ -467,7 +430,6 @@
       state=data.state;
       $('resultBanner').innerHTML='<div><h2>Team Names Have Been Removed From The Wheel To Hide Remaining Teams</h2><p>The Team You Draw Will Appear</p><h2 style="margin-top:12px">Ready to spin</h2><p>Complete the player and payment step first.</p></div>';
       refresh();
-      setTimeout(()=>showDrawCelebration(!availableTeams().length), 650);
     }catch(err){
       state={teams:[],draws:[]};
       drawWheel(); renderDraws(); updateStats();
@@ -666,7 +628,6 @@
       : `<div><h2>${escapeHtml(data.draw.playerName)} drew ${escapeHtml(data.draw.team)}!</h2><p>Group ${escapeHtml(data.draw.group)}. You have used all paid entries. Please pay again if you want another team.</p></div>`;
     showTeamCelebration(data.draw.team);
     if(!more){paid=false; currentPaymentRef=''; paidEntries=0; entriesRemaining=0; activePlayer=null; $('playerName').value='';$('playerEmail').value='';$('entriesPaid').value='1'}
-    showDrawCelebration(!availableTeams().length);
     scrollWheelIntoView('result');
     refresh();
   }
@@ -706,8 +667,7 @@
       $('adminAllocName').value='';
       $('adminAllocEmail').value='';
       if($('adminAllocTeam')) $('adminAllocTeam').value='';
-      showDrawCelebration(!availableTeams().length);
-      refresh();
+        refresh();
     }catch(err){showError(err.message)}
   }
 
