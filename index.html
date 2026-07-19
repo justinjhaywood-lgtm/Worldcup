@@ -596,6 +596,12 @@ details.adminBox.adminOpen #adminUnlockOnly{
   text-shadow:0 4px 0 rgba(0,0,0,.55),0 12px 28px rgba(0,0,0,.7);
 }
 
+
+/* V71 unlock force */
+#adminContentLocked{display:none!important}
+#adminBox.adminOpen #adminContentLocked{display:block!important}
+#adminBox.adminOpen #adminUnlockOnly{display:none!important}
+
 </style>
 </head>
 <body>
@@ -1388,6 +1394,48 @@ loadSharedState();
     setTimeout(fireTickerOnLoad, 900);
     setTimeout(fireTickerOnLoad, 11000);
   });
+})();
+</script>
+
+
+<script>
+(function(){
+  function unlockAdminNow(){
+    var pinInput = document.getElementById('adminPin');
+    var adminBox = document.getElementById('adminBox');
+    var pin = pinInput ? pinInput.value.trim() : '';
+    if(pin === '2620'){
+      if(adminBox) adminBox.classList.add('adminOpen');
+      return;
+    }
+    if(adminBox) adminBox.classList.remove('adminOpen');
+    alert('Incorrect admin PIN.');
+  }
+
+  function wireAdminUnlock(){
+    var btn = document.getElementById('unlockAdminBtn');
+    var pin = document.getElementById('adminPin');
+    if(btn){
+      btn.onclick = function(e){
+        e.preventDefault();
+        unlockAdminNow();
+      };
+    }
+    if(pin){
+      pin.addEventListener('keydown', function(e){
+        if(e.key === 'Enter'){
+          e.preventDefault();
+          unlockAdminNow();
+        }
+      });
+    }
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', wireAdminUnlock);
+  }else{
+    wireAdminUnlock();
+  }
 })();
 </script>
 
