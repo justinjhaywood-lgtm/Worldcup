@@ -163,6 +163,7 @@ input,select{width:100%;padding:13px 14px;border-radius:14px;border:1px solid rg
 }
 
 
+
 /* Opening results/ticker celebration overlay */
 #openingCelebration{
   position:fixed; inset:0; z-index:2147483600; display:none; pointer-events:none; overflow:hidden;
@@ -170,29 +171,40 @@ input,select{width:100%;padding:13px 14px;border-radius:14px;border:1px solid rg
 }
 #openingCelebration.active{display:block}
 #openingCelebration .shade{position:absolute; inset:0; backdrop-filter: blur(1px);}
-#openingCelebration .goldConfetti{
+#openingCelebration .confettiLayer,
+#openingCelebration .ballsLayer,
+#openingCelebration .content{position:absolute; inset:0;}
+#openingCelebration .confettiLayer{z-index:1}
+#openingCelebration .ballsLayer{z-index:2}
+#openingCelebration .content{
+  z-index:3; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:16px; padding:20px; text-align:center;
+}
+#openingCelebration .goldConfetti,
+#openingCelebration .silverConfetti{
   position:absolute; top:-140px; width:18px; height:110px; border-radius:10px;
-  background:linear-gradient(180deg,#fff9ce,#ffd25d,#d89800);
   box-shadow:0 10px 22px rgba(0,0,0,.22);
-  animation:goldConfettiFall linear forwards;
+  animation:metalConfettiFall linear forwards;
+}
+#openingCelebration .goldConfetti{
+  background:linear-gradient(180deg,#fff9ce,#ffd25d,#d89800);
+}
+#openingCelebration .silverConfetti{
+  background:linear-gradient(180deg,#ffffff,#d9dde4,#9ea7b3);
 }
 #openingCelebration .bigTape{
   position:absolute; top:-180px; padding:14px 22px; border-radius:18px; font-weight:1000;
   font-size:clamp(18px,3vw,34px); letter-spacing:.4px; white-space:nowrap; text-align:center;
-  box-shadow:0 12px 30px rgba(0,0,0,.35); animation:bigTapeFall linear forwards;
+  box-shadow:0 12px 30px rgba(0,0,0,.35); animation:bigTapeFall linear forwards; z-index:1;
 }
 #openingCelebration .bigTape.red{background:#c8102e;color:#fff;border:4px solid #fff;}
 #openingCelebration .bigTape.blue{background:#00247d;color:#fff;border:4px solid #fff;}
-#openingCelebration .content{
-  position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
-  gap:16px; padding:20px; text-align:center;
+#openingCelebration .fallingBall{
+  position:absolute; top:-260px; left:0; width:120px; height:120px; object-fit:contain;
+  filter: drop-shadow(0 14px 26px rgba(0,0,0,.26)); opacity:0;
+  animation:fallingBallDrop linear forwards;
+  transform:translateY(-220px) rotate(0deg) scale(1);
 }
-#openingCelebration .ballWrap{
-  width:min(42vw,320px); max-width:320px; min-width:160px; aspect-ratio:1/1; margin:0 auto 6px; 
-  filter: drop-shadow(0 20px 34px rgba(0,0,0,.35));
-  animation:ballFloat 4.5s ease-in-out infinite;
-}
-#openingCelebration .ballWrap img{width:100%; height:100%; object-fit:contain; display:block;}
 #openingCelebration .titles{
   max-width:min(92vw,980px); background:rgba(6,22,19,.54); border:1px solid rgba(255,207,90,.28);
   border-radius:24px; padding:18px 18px 22px; box-shadow:0 24px 46px rgba(0,0,0,.24);
@@ -203,10 +215,9 @@ input,select{width:100%;padding:13px 14px;border-radius:14px;border:1px solid rg
 #openingCelebration .titles .l3{font-size:clamp(20px,3.4vw,36px);}
 #openingCelebration .titles .soft{color:#fff4bf;}
 #openingCelebration .titles .small{font-size:clamp(18px,2.8vw,28px);}
-#openingCelebration .closeHint{color:#fff; opacity:.9; font-size:12px; margin-top:2px;}
-@keyframes goldConfettiFall{0%{transform:translateY(-180px) rotate(0deg);opacity:0}8%{opacity:1}92%{opacity:1}100%{transform:translateY(calc(100vh + 240px)) rotate(820deg);opacity:0}}
+@keyframes metalConfettiFall{0%{transform:translateY(-180px) rotate(0deg);opacity:0}8%{opacity:1}92%{opacity:1}100%{transform:translateY(calc(100vh + 240px)) rotate(820deg);opacity:0}}
 @keyframes bigTapeFall{0%{transform:translateY(-220px) rotate(-5deg);opacity:0}8%{opacity:1}92%{opacity:1}100%{transform:translateY(calc(100vh + 280px)) rotate(12deg);opacity:0}}
-@keyframes ballFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes fallingBallDrop{0%{transform:translate3d(0,-240px,0) rotate(var(--rotStart,0deg)) scale(var(--scale,1)); opacity:0}8%{opacity:.98}92%{opacity:.98}100%{transform:translate3d(var(--drift,0px),calc(100vh + 280px),0) rotate(var(--rotEnd,360deg)) scale(var(--scale,1)); opacity:0}}
 
 </style>
 </head>
@@ -214,7 +225,27 @@ input,select{width:100%;padding:13px 14px;border-radius:14px;border:1px solid rg
 
   <div id="openingCelebration" aria-hidden="true">
     <div class="shade"></div>
+    <div class="confettiLayer"></div>
+    <div class="ballsLayer"></div>
     <div class="content">
+      <div class="titles">
+        <div class="line l1">World Cup 2026 Winners</div>
+        <div class="line l2">?</div>
+        <div class="line l1" style="margin-top:14px;">Runner Up</div>
+        <div class="line l2">?</div>
+        <div class="line l1" style="margin-top:14px;">Third Place</div>
+        <div class="line l2">England - Bal Dalved</div>
+        <div class="line l3 soft">Winning £30</div>
+        <div class="line l1" style="margin-top:14px;">Fourth Place</div>
+        <div class="line l2">France - Leanne Knowles</div>
+        <div class="line l3 soft">Winning £10</div>
+        <div class="line l3" style="margin-top:18px;">All Winnings Will Be Paid By PayPal After The World Cup Final</div>
+        <div class="line l3 small soft">Thanks To Everyone That Took Part</div>
+      </div>
+    </div>
+  </div>
+
+<div class="content">
       <div class="ballWrap"><img src="assets/world-cup-ball.png" alt="World Cup ball"></div>
       <div class="titles">
         <div class="line l1">World Cup 2026 Winners</div>
@@ -387,20 +418,24 @@ input,select{width:100%;padding:13px 14px;border-radius:14px;border:1px solid rg
   function clearError(){$('errorBox').classList.add('hidden');$('errorBox').textContent=''}
   function availableTeams(){return (state.teams||[]).filter(t=>!t.taken)}
 
+
   function showOpeningCelebration(){
     const overlay=document.getElementById('openingCelebration');
     if(!overlay) return;
+    const confettiLayer=overlay.querySelector('.confettiLayer');
+    const ballsLayer=overlay.querySelector('.ballsLayer');
+    if(!confettiLayer || !ballsLayer) return;
     overlay.classList.add('active');
-    // clear existing tapes if any
-    overlay.querySelectorAll('.goldConfetti,.bigTape').forEach(n=>n.remove());
-    for(let i=0;i<95;i++){
+    confettiLayer.innerHTML='';
+    ballsLayer.innerHTML='';
+    for(let i=0;i<60;i++){
       const tape=document.createElement('div');
-      tape.className='goldConfetti';
+      tape.className=(i%2===0)?'goldConfetti':'silverConfetti';
       tape.style.left=(Math.random()*100)+'vw';
       tape.style.animationDelay=(Math.random()*1.4)+'s';
       tape.style.animationDuration=(4.2+Math.random()*3.0)+'s';
       tape.style.transform='rotate('+(Math.random()*180)+'deg)';
-      overlay.appendChild(tape);
+      confettiLayer.appendChild(tape);
     }
     const message='All teams now sold - Thanks for playing';
     for(let i=0;i<10;i++){
@@ -410,11 +445,29 @@ input,select{width:100%;padding:13px 14px;border-radius:14px;border:1px solid rg
       tape.style.left=(Math.random()*52)+'vw';
       tape.style.animationDelay=(Math.random()*1.2)+'s';
       tape.style.animationDuration=(5.0+Math.random()*2.2)+'s';
-      overlay.appendChild(tape);
+      confettiLayer.appendChild(tape);
+    }
+    for(let i=0;i<16;i++){
+      const ball=document.createElement('img');
+      ball.className='fallingBall';
+      ball.src='assets/world-cup-ball.png';
+      ball.alt='';
+      const size=70+Math.random()*150;
+      ball.style.left=(Math.random()*88)+'vw';
+      ball.style.width=size+'px';
+      ball.style.height=size+'px';
+      ball.style.animationDelay=(Math.random()*1.5)+'s';
+      ball.style.animationDuration=(5.6+Math.random()*3.0)+'s';
+      ball.style.setProperty('--scale',(0.85+Math.random()*0.75).toFixed(2));
+      ball.style.setProperty('--drift',((-120)+Math.random()*240).toFixed(0)+'px');
+      ball.style.setProperty('--rotStart',Math.round(Math.random()*360)+'deg');
+      ball.style.setProperty('--rotEnd',Math.round(540+Math.random()*900)+'deg');
+      ballsLayer.appendChild(ball);
     }
     clearTimeout(window.__openingCelebrationTimer);
-    window.__openingCelebrationTimer=setTimeout(()=>{overlay.classList.remove('active'); overlay.querySelectorAll('.goldConfetti,.bigTape').forEach(n=>n.remove());},9000);
+    window.__openingCelebrationTimer=setTimeout(()=>{overlay.classList.remove('active'); confettiLayer.innerHTML=''; ballsLayer.innerHTML='';},9000);
   }
+
 
 
 
