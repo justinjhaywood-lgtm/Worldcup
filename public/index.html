@@ -597,15 +597,37 @@ details.adminBox.adminOpen #adminUnlockOnly{
 }
 
 
-/* Safe v72 admin unlock */
-#adminContentLocked{
-  display:none !important;
+/* v73 simple reliable admin lock */
+#adminContentLocked{display:none!important}
+#adminBox.adminOpen #adminContentLocked{display:block!important}
+#adminBox.adminOpen #adminUnlockOnly{display:none!important}
+.finalResultBox{
+  margin:14px 0;
+  padding:14px;
+  border-radius:16px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.18);
 }
-#adminBox.adminOpen #adminContentLocked{
-  display:block !important;
+.finalResultBox select{width:100%;margin-top:6px}
+#winnersHtmlRoll .championsWord{
+  font-size:clamp(38px,8vw,104px);
+  color:#ffcf5a;
+  font-weight:1000;
+  text-transform:uppercase;
+  text-shadow:0 3px 0 #7c4800,0 6px 0 #3b2100,0 12px 28px rgba(0,0,0,.7),0 0 18px rgba(255,218,90,.48);
+  margin-bottom:18px;
 }
-#adminBox.adminOpen #adminUnlockOnly{
-  display:none !important;
+#winnersHtmlRoll .singleWinnerShirt{
+  width:clamp(150px,34vw,360px);
+  height:clamp(185px,40vw,430px);
+  margin:0 auto 20px;
+}
+#winnersHtmlRoll .finalResultLine{
+  font-size:clamp(24px,4.8vw,60px);
+  color:#fff0b3;
+  font-weight:1000;
+  text-transform:uppercase;
+  text-shadow:0 4px 0 rgba(0,0,0,.55),0 12px 28px rgba(0,0,0,.7);
 }
 
 </style>
@@ -759,6 +781,7 @@ details.adminBox.adminOpen #adminUnlockOnly{
 
     <section class="card admin">
       
+
 <details class="adminBox" id="adminBox">
   <summary>Admin settings</summary>
 
@@ -826,6 +849,7 @@ details.adminBox.adminOpen #adminUnlockOnly{
     <button id="resetBtn" class="danger" type="button">Reset sweepstake</button>
   </div>
 </details>
+
 
     </section>
   </div>
@@ -983,108 +1007,6 @@ details.adminBox.adminOpen #adminUnlockOnly{
   window.showDrawCelebration=showDrawCelebration;
 
 
-
-
-  function buildFinalResult(winner){
-    winner=String(winner||'').toLowerCase();
-    const spain={team:'Spain',player:'Richard Bradley',shirt:'spain'};
-    const argentina={team:'Argentina',player:'Mollie Jennings-Parkes',shirt:'argentina'};
-    if(winner!=='spain' && winner!=='argentina') return {known:false};
-    const champion=winner==='spain'?spain:argentina;
-    const runnerUpEntry=winner==='spain'?argentina:spain;
-    return {
-      known:true,
-      winner:champion.team,
-      runnerUp:runnerUpEntry.team,
-      champion,
-      runnerUpEntry,
-      championText:champion.player+' wins £150',
-      runnerUpText:runnerUpEntry.player+' wins £50',
-      message:'Congratulations'
-    };
-  }
-
-  function finalShirtHtml(kind){
-    const isSpain=kind==='spain';
-    const name=isSpain?'Richard<br>Bradley':'Mollie<br>Jennings-Parkes';
-    const cls=isSpain?'spain':'argentina';
-    return `<div class="shirtCard ${cls} singleWinnerShirt">
-      <div class="shirtName">${name}</div>
-      <div class="shirtNo">26</div>
-    </div>`;
-  }
-
-  function applyFinalResult(result){
-    if(!result || !result.known) return;
-    const roll=document.getElementById('winnersHtmlRoll');
-    if(!roll) return;
-    const blocks=roll.querySelectorAll('.rollBlock');
-    const winnerBlock=roll.querySelector('.rollBlock.withShirts') || blocks[0];
-    const runnerBlock=blocks[1];
-
-    if(winnerBlock){
-      winnerBlock.classList.add('withShirts');
-      winnerBlock.innerHTML=`
-        <div class="championsWord">Champions</div>
-        ${finalShirtHtml(result.champion.shirt)}
-        <h2>World Cup 2026 Winners</h2>
-        <p>${escapeHtml(result.winner)}</p>
-        <p class="finalResultLine">Congratulations</p>
-        <p class="finalResultLine">${escapeHtml(result.championText)}</p>
-      `;
-    }
-
-    if(runnerBlock){
-      runnerBlock.innerHTML=`
-        <h2>Runner Up</h2>
-        ${finalShirtHtml(result.runnerUpEntry.shirt)}
-        <p>${escapeHtml(result.runnerUp)}</p>
-        <p class="finalResultLine">${escapeHtml(result.runnerUpText)}</p>
-      `;
-    }
-  }
-
-  function unlockAdminPanel(){
-    const pin=$('adminPin') ? $('adminPin').value.trim() : '';
-    const box=document.getElementById('adminBox');
-    if(pin !== '2620'){
-      if(box) box.classList.remove('adminOpen');
-      alert('Incorrect admin PIN.');
-      return;
-    }
-    if(box) box.classList.add('adminOpen');
-  }
-
-  async function checkFinalResult(){
-    try{
-      const data=await api('final-result',{method:'GET'});
-      if(data && data.result && data.result.known) applyFinalResult(data.result);
-    }catch(err){
-      console.warn('Final result check failed',err);
-    }
-  }
-
-  async function adminSetFinalResult(){
-    const pin=$('adminPin') ? $('adminPin').value.trim() : '';
-    const winner=$('finalWinnerSelect') ? $('finalWinnerSelect').value : '';
-    if(pin !== '2620'){ alert('Enter PIN 2620 and unlock admin first.'); return; }
-    if(!winner){ alert('Choose Spain or Argentina.'); return; }
-
-    const result=buildFinalResult(winner);
-    applyFinalResult(result);
-
-    if(typeof showDrawCelebration==='function'){
-      showDrawCelebration(false);
-    }
-
-    try{
-      const saved=await api('final-result',{method:'POST',body:JSON.stringify({pin,winner})});
-      if(saved && saved.result && saved.result.known) applyFinalResult(saved.result);
-      alert('Final result updated.');
-    }catch(err){
-      showError(err.message || 'Could not save final result.');
-    }
-  }
 
 
   function drawWheel(){
@@ -1405,37 +1327,134 @@ loadSharedState();
 
 
 <script>
-window.addEventListener('DOMContentLoaded', function(){
-  var unlockBtn = document.getElementById('unlockAdminBtn');
-  var pinInput = document.getElementById('adminPin');
-  var adminBox = document.getElementById('adminBox');
+(function(){
+  function byId(id){ return document.getElementById(id); }
 
-  function unlockAdmin(){
-    var pin = pinInput ? pinInput.value.trim() : '';
-    if(pin === '2620'){
-      if(adminBox) adminBox.classList.add('adminOpen');
+  function buildFinalResult(winner){
+    winner=String(winner||'').toLowerCase();
+    var spain={team:'Spain',player:'Richard Bradley',shirt:'spain'};
+    var argentina={team:'Argentina',player:'Mollie Jennings-Parkes',shirt:'argentina'};
+    if(winner!=='spain' && winner!=='argentina') return {known:false};
+    var champion=winner==='spain'?spain:argentina;
+    var runnerUpEntry=winner==='spain'?argentina:spain;
+    return {
+      known:true,
+      winner:champion.team,
+      runnerUp:runnerUpEntry.team,
+      champion:champion,
+      runnerUpEntry:runnerUpEntry,
+      championText:champion.player+' wins £150',
+      runnerUpText:runnerUpEntry.player+' wins £50',
+      message:'Congratulations'
+    };
+  }
+
+  function escapeText(str){
+    return String(str || '').replace(/[&<>'"]/g,function(m){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m];
+    });
+  }
+
+  function finalShirtHtml(kind){
+    var isSpain=kind==='spain';
+    var name=isSpain?'Richard<br>Bradley':'Mollie<br>Jennings-Parkes';
+    var cls=isSpain?'spain':'argentina';
+    return '<div class="shirtCard '+cls+' singleWinnerShirt"><div class="shirtName">'+name+'</div><div class="shirtNo">26</div></div>';
+  }
+
+  function applyFinalResult(result){
+    if(!result || !result.known) return;
+    var roll=byId('winnersHtmlRoll');
+    if(!roll) return;
+    var blocks=roll.querySelectorAll('.rollBlock');
+    var winnerBlock=roll.querySelector('.rollBlock.withShirts') || blocks[0];
+    var runnerBlock=blocks[1];
+
+    if(winnerBlock){
+      winnerBlock.classList.add('withShirts');
+      winnerBlock.innerHTML =
+        '<div class="championsWord">Champions</div>' +
+        finalShirtHtml(result.champion.shirt) +
+        '<h2>World Cup 2026 Winners</h2>' +
+        '<p>'+escapeText(result.winner)+'</p>' +
+        '<p class="finalResultLine">Congratulations</p>' +
+        '<p class="finalResultLine">'+escapeText(result.championText)+'</p>';
+    }
+
+    if(runnerBlock){
+      runnerBlock.innerHTML =
+        '<h2>Runner Up</h2>' +
+        finalShirtHtml(result.runnerUpEntry.shirt) +
+        '<p>'+escapeText(result.runnerUp)+'</p>' +
+        '<p class="finalResultLine">'+escapeText(result.runnerUpText)+'</p>';
+    }
+  }
+
+  function unlockAdminPanel(){
+    var pin=byId('adminPin') ? byId('adminPin').value.trim() : '';
+    var box=byId('adminBox');
+    if(pin==='2620'){
+      if(box) box.classList.add('adminOpen');
     }else{
-      if(adminBox) adminBox.classList.remove('adminOpen');
+      if(box) box.classList.remove('adminOpen');
       alert('Incorrect admin PIN.');
     }
   }
 
-  if(unlockBtn){
-    unlockBtn.addEventListener('click', function(e){
-      e.preventDefault();
-      unlockAdmin();
-    });
+  async function saveFinalResult(pin,winner,result){
+    try{
+      var res=await fetch('/.netlify/functions/final-result',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({pin:pin,winner:winner})
+      });
+      var data=await res.json().catch(function(){return null});
+      if(res.ok && data && data.result && data.result.known) applyFinalResult(data.result);
+    }catch(e){
+      console.warn('Could not save final result', e);
+    }
   }
 
-  if(pinInput){
-    pinInput.addEventListener('keydown', function(e){
-      if(e.key === 'Enter'){
-        e.preventDefault();
-        unlockAdmin();
-      }
-    });
+  function setFinalResult(){
+    var pin=byId('adminPin') ? byId('adminPin').value.trim() : '';
+    var winner=byId('finalWinnerSelect') ? byId('finalWinnerSelect').value : '';
+    if(pin!=='2620'){ alert('Enter PIN 2620 and unlock admin first.'); return; }
+    if(!winner){ alert('Choose Spain or Argentina.'); return; }
+    var result=buildFinalResult(winner);
+    applyFinalResult(result);
+    if(typeof window.showDrawCelebration==='function') window.showDrawCelebration(false);
+    saveFinalResult(pin,winner,result);
+    alert('Final result updated.');
   }
-});
+
+  async function checkSavedFinalResult(){
+    try{
+      var res=await fetch('/.netlify/functions/final-result',{cache:'no-store'});
+      if(!res.ok) return;
+      var data=await res.json();
+      if(data && data.result && data.result.known) applyFinalResult(data.result);
+    }catch(e){}
+  }
+
+  function wire(){
+    var unlock=byId('unlockAdminBtn');
+    var pin=byId('adminPin');
+    var finalBtn=byId('setFinalResultBtn');
+
+    if(unlock) unlock.onclick=function(e){e.preventDefault(); unlockAdminPanel();};
+    if(pin) pin.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault(); unlockAdminPanel();}};
+    if(finalBtn) finalBtn.onclick=function(e){e.preventDefault(); setFinalResult();};
+
+    checkSavedFinalResult();
+    setInterval(checkSavedFinalResult,10*60*1000);
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', wire);
+  }else{
+    wire();
+  }
+})();
 </script>
 
 </body>
