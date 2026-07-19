@@ -1,8 +1,18 @@
 const { getStore } = require('@netlify/blobs');
-const { requireAdminPin } = require('./shared-state');
 
 const STORE_NAME = 'wc2026_sweepstake_shared_v7';
 const RESULT_KEY = 'final-result';
+
+function response(statusCode, body) {
+  return {
+    statusCode,
+    headers: {
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-store'
+    },
+    body: JSON.stringify(body)
+  };
+}
 
 function getBlobStore() {
   const siteID = process.env.NETLIFY_SITE_ID || process.env.SITE_ID || process.env.BLOBS_SITE_ID;
@@ -12,12 +22,16 @@ function getBlobStore() {
 }
 
 function buildResult(winner) {
-  winner = String(winner || '').toLowerCase();
+  winner = String(winner || '').trim().toLowerCase();
+
   const spain = { team: 'Spain', player: 'Richard Bradley', shirt: 'spain' };
   const argentina = { team: 'Argentina', player: 'Mollie Jennings-Parkes', shirt: 'argentina' };
+
   if (winner !== 'spain' && winner !== 'argentina') return { known: false };
+
   const champion = winner === 'spain' ? spain : argentina;
   const runnerUpEntry = winner === 'spain' ? argentina : spain;
+
   return {
     known: true,
     winner: champion.team,
@@ -38,38 +52,25 @@ exports.handler = async (event) => {
 
     if (event.httpMethod === 'GET') {
       const result = await store.get(RESULT_KEY, { type: 'json' }).catch(() => null);
-      return {
-        statusCode: 200,
-        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
-        body: JSON.stringify({ ok: true, result: result || { known: false } })
-      };
+      return response(200, { ok: true, result: result || { known: false } });
     }
 
     if (event.httpMethod === 'POST') {
-      const body = JSON.parse(event.body || '{}');
-      requireAdminPin(body.pin);
-      const result = buildResult(body.winner);
-      if (!result.known) {
-        return {
-          statusCode: 400,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ok: false, error: 'Choose Spain or Argentina.' })
-        };
-      }
+      const payload = JSON.parse(event.body || '{}');
+      const pin = String(payload.pin || '').trim();
+      const adminPin = String(process.env.ADMIN_PIN || '2620').trim();
+
+      if (pin !== adminPin) return response(403, { ok: false, error: 'Wrong admin PIN.' });
+
+      const result = buildResult(payload.winner);
+      if (!result.known) return response(400, { ok: false, error: 'Choose Spain or Argentina.' });
+
       await store.setJSON(RESULT_KEY, result);
-      return {
-        statusCode: 200,
-        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
-        body: JSON.stringify({ ok: true, result })
-      };
+      return response(200, { ok: true, result });
     }
 
-    return { statusCode: 405, body: JSON.stringify({ ok: false, error: 'Method not allowed' }) };
+    return response(405, { ok: false, error: 'Method not allowed.' });
   } catch (err) {
-    return {
-      statusCode: err.statusCode || 500,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ok: false, error: err.message || 'Final result error' })
-    };
+    return response(500, { ok: false, error: 'Could not update final result.', detail: err.message });
   }
 };
