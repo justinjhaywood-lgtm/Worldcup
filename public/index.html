@@ -147,107 +147,158 @@
 }
 
 
-/* Gold / sold-out ticker-tape celebration */
+
+/* Gold / silver ticker tape with falling World Cup balls */
 #drawCelebration{
   position:fixed;
   inset:0;
   display:none;
   pointer-events:none;
   overflow:hidden;
-  z-index:2147483647;
+  z-index:2147483200;
 }
-#drawCelebration.active{
-  display:block;
-}
-.goldTape{
+#drawCelebration.active{display:block}
+.drawCelebrationShade{
   position:absolute;
-  top:-130px;
+  inset:0;
+  background:rgba(0,0,0,.04);
+}
+.goldTape,
+.silverTape{
+  position:absolute;
+  top:-150px;
   width:18px;
-  height:100px;
-  border-radius:8px;
-  background:linear-gradient(180deg,#fff4b8,#ffcf5a,#d99a00);
-  box-shadow:0 8px 20px rgba(0,0,0,.25);
-  animation-name:goldTapeFall;
+  height:112px;
+  border-radius:9px;
+  box-shadow:0 10px 22px rgba(0,0,0,.24);
+  animation-name:tickerTapeFall;
   animation-timing-function:linear;
   animation-fill-mode:forwards;
 }
-.soldOutTape{
+.goldTape{background:linear-gradient(180deg,#fff8c8 0%,#ffd45c 45%,#c89000 100%)}
+.silverTape{background:linear-gradient(180deg,#ffffff 0%,#dfe4ea 48%,#9ba4af 100%)}
+.fallingTickerBall{
   position:absolute;
-  top:-170px;
-  padding:14px 22px;
-  border-radius:20px;
-  font-size:clamp(20px,4vw,42px);
-  font-weight:1000;
-  letter-spacing:.7px;
-  white-space:nowrap;
-  box-shadow:0 16px 38px rgba(0,0,0,.38);
-  animation-name:soldOutTapeFall;
+  top:-240px;
+  left:0;
+  width:90px;
+  height:90px;
+  object-fit:cover;
+  border-radius:50%;
+  clip-path:circle(49% at 50% 50%);
+  opacity:0;
+  filter:drop-shadow(0 14px 26px rgba(0,0,0,.28));
+  animation-name:fallingTickerBall;
   animation-timing-function:linear;
   animation-fill-mode:forwards;
 }
-.soldOutTape.red{
-  background:#c8102e;
-  color:#fff;
-  border:4px solid #fff;
-}
-.soldOutTape.blue{
-  background:#00247d;
-  color:#fff;
-  border:4px solid #fff;
-}
-@keyframes goldTapeFall{
-  0%{transform:translateY(-160px) rotate(0deg);opacity:0}
+@keyframes tickerTapeFall{
+  0%{transform:translateY(-180px) rotate(0deg);opacity:0}
   8%{opacity:1}
   92%{opacity:1}
-  100%{transform:translateY(calc(100vh + 260px)) rotate(780deg);opacity:0}
+  100%{transform:translateY(calc(100vh + 270px)) rotate(840deg);opacity:0}
 }
-@keyframes soldOutTapeFall{
-  0%{transform:translateY(-190px) rotate(-5deg);opacity:0}
-  8%{opacity:1}
-  92%{opacity:1}
-  100%{transform:translateY(calc(100vh + 300px)) rotate(12deg);opacity:0}
+@keyframes fallingTickerBall{
+  0%{transform:translate3d(0,-230px,0) rotate(var(--rotStart,0deg)) scale(var(--scale,1));opacity:0}
+  8%{opacity:.98}
+  92%{opacity:.98}
+  100%{transform:translate3d(var(--drift,0px),calc(100vh + 320px),0) rotate(var(--rotEnd,900deg)) scale(var(--scale,1));opacity:0}
 }
 
-
-/* Winners titles scroll overlay on page load */
-#winnersRollOverlay{
+/* Real HTML rolling gold titles. No PNG background, no checkerboard image. */
+#winnersHtmlRoll{
   position:fixed;
   inset:0;
   pointer-events:none;
   overflow:hidden;
   z-index:2147483000;
 }
-#winnersRollOverlay .winnersRollTrack{
+#winnersHtmlRoll .rollTrack{
   position:absolute;
-  left:50%;
+  left:0;
+  right:0;
   top:100vh;
-  width:min(92vw, 980px);
-  transform:translateX(-50%);
-  animation:winnersRollUp 30s linear infinite;
-  animation-delay:1s;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:28vh;
+  animation:winnersHtmlRise 38s linear infinite;
 }
-#winnersRollOverlay .winnersRollTrack img{
-  display:block;
-  width:100%;
-  height:auto;
-  filter:drop-shadow(0 12px 30px rgba(0,0,0,.28));
+#winnersHtmlRoll .rollBlock{
+  width:min(94vw,1120px);
+  min-height:58vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:24px;
 }
-@keyframes winnersRollUp{
-  0%{transform:translate(-50%, 0); opacity:1}
-  85%{opacity:1}
-  100%{transform:translate(-50%, -230vh); opacity:1}
+#winnersHtmlRoll h2,
+#winnersHtmlRoll h3,
+#winnersHtmlRoll p{
+  margin:8px 0;
+  color:#ffcf5a;
+  font-weight:1000;
+  text-transform:uppercase;
+  letter-spacing:.03em;
+  text-shadow:
+    0 3px 0 #7c4800,
+    0 6px 0 #3b2100,
+    0 12px 28px rgba(0,0,0,.7),
+    0 0 18px rgba(255,218,90,.48);
 }
-@media (max-width: 700px){
-  #winnersRollOverlay .winnersRollTrack{width:min(96vw, 760px); animation-duration:34s;}
+#winnersHtmlRoll h2{font-size:clamp(42px,8vw,110px);line-height:.95}
+#winnersHtmlRoll h3{font-size:clamp(28px,5.6vw,74px);line-height:1}
+#winnersHtmlRoll p{font-size:clamp(24px,4.5vw,60px);line-height:1.05}
+#winnersHtmlRoll .small{font-size:clamp(20px,3.5vw,44px)}
+#winnersHtmlRoll .accent{color:#fff0b3}
+@keyframes winnersHtmlRise{
+  0%{transform:translateY(0)}
+  100%{transform:translateY(-650vh)}
+}
+@media(max-width:720px){
+  #winnersHtmlRoll .rollTrack{gap:22vh;animation-duration:44s}
+  #winnersHtmlRoll .rollBlock{min-height:64vh;padding:16px}
+}
+
+8%{opacity:1}
+  92%{opacity:1}
+  100%{transform:translateY(calc(100vh + 300px)) rotate(12deg);opacity:0}
 }
 
 </style>
 </head>
 <body>
 
-  <div id="winnersRollOverlay" aria-hidden="true">
-    <div class="winnersRollTrack">
-      <img src="assets/winners-roll.png" alt="World Cup winners rolling titles">
+  <div id="winnersHtmlRoll" aria-hidden="true">
+    <div class="rollTrack">
+      <section class="rollBlock">
+        <h2>World Cup 2026 Winners</h2>
+        <p>?</p>
+      </section>
+      <section class="rollBlock">
+        <h2>Runner Up</h2>
+        <p>?</p>
+      </section>
+      <section class="rollBlock">
+        <h2>Third Place</h2>
+        <p>England - Bal Dalved</p>
+        <p class="accent">Winning £30</p>
+      </section>
+      <section class="rollBlock">
+        <h2>Fourth Place</h2>
+        <p>France - Leanne Knowles</p>
+        <p class="accent">Winning £10</p>
+      </section>
+      <section class="rollBlock">
+        <h3>All Winnings Will Be Paid By PayPal After The World Cup Final</h3>
+        <p class="small accent">Thanks To Everyone That Took Part</p>
+      </section>
+      <section class="rollBlock" aria-hidden="true">
+        <h2>World Cup 2026 Winners</h2>
+        <p>?</p>
+      </section>
     </div>
   </div>
 
@@ -406,20 +457,39 @@
   function clearError(){$('errorBox').classList.add('hidden');$('errorBox').textContent=''}
   function availableTeams(){return (state.teams||[]).filter(t=>!t.taken)}
 
+
   function showDrawCelebration(isSoldOut){
     const overlay=document.getElementById('drawCelebration');
     if(!overlay) return;
-    overlay.innerHTML='';
+    overlay.innerHTML='<div class="drawCelebrationShade"></div>';
     overlay.classList.add('active');
 
-    for(let i=0;i<95;i++){
+    for(let i=0;i<70;i++){
       const tape=document.createElement('div');
-      tape.className='goldTape';
+      tape.className=(i%2===0?'goldTape':'silverTape');
       tape.style.left=(Math.random()*100)+'vw';
-      tape.style.animationDelay=(Math.random()*1.5)+'s';
-      tape.style.animationDuration=(4.2+Math.random()*3.2)+'s';
+      tape.style.animationDelay=(Math.random()*1.7)+'s';
+      tape.style.animationDuration=(4.4+Math.random()*3.3)+'s';
       tape.style.transform='rotate('+(Math.random()*180)+'deg)';
       overlay.appendChild(tape);
+    }
+
+    for(let i=0;i<22;i++){
+      const ball=document.createElement('img');
+      ball.className='fallingTickerBall';
+      ball.src='assets/falling-ball.png';
+      ball.alt='';
+      const size=58+Math.random()*150;
+      ball.style.width=size+'px';
+      ball.style.height=size+'px';
+      ball.style.left=(Math.random()*92)+'vw';
+      ball.style.animationDelay=(Math.random()*1.9)+'s';
+      ball.style.animationDuration=(5.2+Math.random()*3.5)+'s';
+      ball.style.setProperty('--scale',(0.68+Math.random()*0.9).toFixed(2));
+      ball.style.setProperty('--drift',((-150)+Math.random()*300).toFixed(0)+'px');
+      ball.style.setProperty('--rotStart',Math.round(Math.random()*360)+'deg');
+      ball.style.setProperty('--rotEnd',Math.round(720+Math.random()*1080)+'deg');
+      overlay.appendChild(ball);
     }
 
     if(isSoldOut){
@@ -439,8 +509,9 @@
     window.__drawCelebrationTimer=setTimeout(function(){
       overlay.classList.remove('active');
       overlay.innerHTML='';
-    },8500);
+    },10000);
   }
+
 
 
   function showTeamCelebration(teamName){
@@ -507,6 +578,7 @@
       state=data.state;
       $('resultBanner').innerHTML='<div><h2>Team Names Have Been Removed From The Wheel To Hide Remaining Teams</h2><p>The Team You Draw Will Appear</p><h2 style="margin-top:12px">Ready to spin</h2><p>Complete the player and payment step first.</p></div>';
       refresh();
+      setTimeout(()=>showDrawCelebration(!availableTeams().length), 650);
     }catch(err){
       state={teams:[],draws:[]};
       drawWheel(); renderDraws(); updateStats();
