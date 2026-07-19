@@ -267,13 +267,29 @@
   100%{transform:translateY(calc(100vh + 300px)) rotate(12deg);opacity:0}
 }
 
+
+#winnersHtmlRoll .shirtsHeader{
+  width:min(86vw,860px);
+  height:auto;
+  display:block;
+  margin:0 auto 26px;
+  filter:drop-shadow(0 14px 30px rgba(0,0,0,.35));
+}
+#winnersHtmlRoll .rollBlock.withShirts{
+  min-height:78vh;
+}
+@media(max-width:720px){
+  #winnersHtmlRoll .shirtsHeader{width:min(94vw,720px);margin-bottom:18px}
+}
+
 </style>
 </head>
 <body>
 
   <div id="winnersHtmlRoll" aria-hidden="true">
     <div class="rollTrack">
-      <section class="rollBlock">
+      <section class="rollBlock withShirts">
+        <img class="shirtsHeader" src="assets/shirts-question.png" alt="Argentina and Spain shirts with question mark">
         <h2>World Cup 2026 Winners</h2>
         <p>?</p>
       </section>
