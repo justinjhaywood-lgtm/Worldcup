@@ -542,6 +542,60 @@ details.adminBox.adminOpen #adminUnlockPanel{
   text-shadow:0 4px 0 rgba(0,0,0,.55),0 12px 28px rgba(0,0,0,.7);
 }
 
+
+/* Definitive admin lock v70 */
+details.adminBox #adminContentLocked{
+  display:none !important;
+}
+details.adminBox.adminOpen #adminContentLocked{
+  display:block !important;
+}
+details.adminBox.adminOpen #adminUnlockOnly{
+  display:none !important;
+}
+.adminUnlockPanel{
+  margin:14px 0;
+  padding:14px;
+  border-radius:18px;
+  background:rgba(255,207,90,.10);
+  border:1px solid rgba(255,207,90,.38);
+}
+.adminUnlockPanel p{
+  margin:0 0 10px;
+  color:#ffe7a6;
+}
+.finalResultBox{
+  margin:14px 0;
+  padding:14px;
+  border-radius:16px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.18);
+}
+.finalResultBox select{
+  width:100%;
+  margin-top:6px;
+}
+#winnersHtmlRoll .championsWord{
+  font-size:clamp(38px,8vw,104px);
+  color:#ffcf5a;
+  font-weight:1000;
+  text-transform:uppercase;
+  text-shadow:0 3px 0 #7c4800,0 6px 0 #3b2100,0 12px 28px rgba(0,0,0,.7),0 0 18px rgba(255,218,90,.48);
+  margin-bottom:18px;
+}
+#winnersHtmlRoll .singleWinnerShirt{
+  width:clamp(150px,34vw,360px);
+  height:clamp(185px,40vw,430px);
+  margin:0 auto 20px;
+}
+#winnersHtmlRoll .finalResultLine{
+  font-size:clamp(24px,4.8vw,60px);
+  color:#fff0b3;
+  font-weight:1000;
+  text-transform:uppercase;
+  text-shadow:0 4px 0 rgba(0,0,0,.55),0 12px 28px rgba(0,0,0,.7);
+}
+
 </style>
 </head>
 <body>
@@ -692,80 +746,75 @@ details.adminBox.adminOpen #adminUnlockPanel{
     </section>
 
     <section class="card admin">
-      <details class="adminBox">
-<summary>Admin settings</summary>
-        <div id="adminLogin">
-          <label for="adminPin">Admin PIN</label>
-          <input id="adminPin" type="password" placeholder="Enter admin PIN" />
-          <div id="adminUnlockPanel" class="adminUnlockPanel">
-            <p>Admin tools are locked. Enter PIN 2620 and press Unlock admin.</p>
-            <div class="actions">
-              <button id="unlockAdminBtn" class="secondary" type="button">Unlock admin</button>
-            </div>
-          </div>
-          <div id="adminContentLocked">
-</div>
-          
-
-</div>
-<h3 style="margin:0 0 8px">World Cup Final Result</h3>
-            <p class="small">Choose the winning team. This updates the rolling titles immediately.</p>
-            <label for="finalWinnerSelect">Winner</label>
-            <select id="finalWinnerSelect">
-              <option value="">Choose winner...</option>
-              <option value="spain">Spain - Richard Bradley wins £150</option>
-              <option value="argentina">Argentina - Mollie Jennings-Parkes wins £150</option>
-            </select>
-            <div class="actions">
-              <button id="setFinalResultBtn" class="secondary" type="button">Set final result</button>
-            </div>
-          </div>
-
-          <div class="actions">
-            <button id="revealBtn" class="secondary">Reveal teams in draw record</button>
-            <button id="hideTeamsBtn" class="secondary">Hide teams in draw record</button>
-            <button id="downloadEntrantsBtn" class="secondary">Download entrants list</button>
-          </div>
-          <div class="notice warn" style="margin-top:16px">
-            <strong>Admin allocate team</strong><br>
-            Use this if someone has paid but their spin failed before a team was allocated. This will randomly allocate one remaining team and add it to the draw record.
-          </div>
-          <label for="adminAllocName">Player name</label>
-          <input id="adminAllocName" placeholder="e.g. Donald Duck" autocomplete="off" />
-          <label for="adminAllocEmail">Email address</label>
-          <input id="adminAllocEmail" type="email" placeholder="name@example.com" autocomplete="off" />
-          <button id="allocateBtn" class="goldPay" style="margin-top:10px">Admin allocate one team</button>
-          <div class="notice warn" style="margin-top:16px">
-            <strong>Cancel entry and return team</strong><br>
-            Use this only if someone has been allocated a team in error. The entry will be removed from the draw record and the team will go back into the draw.
-          </div>
-          <label for="cancelEntrySelect">Entry to cancel</label>
-          <select id="cancelEntrySelect"><option value="">No entries available</option></select>
-          <button id="cancelEntryBtn" class="danger" style="margin-top:10px">Cancel selected entry and return team</button>
-          
-          <div id="finalResultBox" class="finalResultBox">
-            <h3 style="margin:0 0 8px">World Cup Final Result</h3>
-            <p class="small">Choose the winning team. This updates the rolling titles immediately.</p>
-            <label for="finalWinnerSelect">Winner</label>
-            <select id="finalWinnerSelect">
-              <option value="">Choose winner...</option>
-              <option value="spain">Spain - Richard Bradley wins £150</option>
-              <option value="argentina">Argentina - Mollie Jennings-Parkes wins £150</option>
-            </select>
-            <div class="actions">
-              <button id="setFinalResultBtn" class="secondary" type="button">Set final result</button>
-            </div>
-          </div>
-
-          <button id="resetBtn" class="danger" style="margin-top:10px">Reset sweepstake</button>
-          </div>
-        </div>
-        <p class="foot">Admin actions are protected by the Netlify environment variable <strong>ADMIN_PIN</strong>.</p>
       
-          </div>
+<details class="adminBox" id="adminBox">
+  <summary>Admin settings</summary>
 
-          </div>
+  <label for="adminPin">Admin PIN</label>
+  <input id="adminPin" type="password" placeholder="Enter admin PIN">
+
+  <div id="adminUnlockOnly" class="adminUnlockPanel">
+    <p>Admin tools are locked. Enter PIN 2620 and press Unlock admin.</p>
+    <div class="actions">
+      <button id="unlockAdminBtn" class="secondary" type="button">Unlock admin</button>
+    </div>
+  </div>
+
+  <div id="adminContentLocked">
+    <div id="finalResultBox" class="finalResultBox">
+      <h3 style="margin:0 0 8px">World Cup Final Result</h3>
+      <p class="small">Choose the winning team. This updates the rolling titles immediately.</p>
+      <label for="finalWinnerSelect">Winner</label>
+      <select id="finalWinnerSelect">
+        <option value="">Choose winner...</option>
+        <option value="spain">Spain - Richard Bradley wins £150</option>
+        <option value="argentina">Argentina - Mollie Jennings-Parkes wins £150</option>
+      </select>
+      <div class="actions">
+        <button id="setFinalResultBtn" class="secondary" type="button">Set final result</button>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="revealTeamsBtn" class="secondary" type="button">Reveal teams in draw record</button>
+      <button id="hideTeamsBtn" class="secondary" type="button">Hide teams in draw record</button>
+      <button id="downloadEntrantsBtn" class="secondary" type="button">Download entrants list</button>
+    </div>
+
+    <div class="notice" style="margin-top:14px">
+      <strong>Admin allocate team</strong><br>
+      Use this if someone has paid but their spin failed before a team was allocated. This will randomly allocate one remaining team and add it to the draw record.
+    </div>
+    <label for="adminPlayerName">Player name</label>
+    <input id="adminPlayerName" placeholder="e.g. Donald Duck">
+    <label for="adminEmail">Email address</label>
+    <input id="adminEmail" placeholder="e.g. donald@example.com">
+    <div class="actions">
+      <button id="adminAllocateBtn" class="secondary" type="button">Allocate random remaining team</button>
+    </div>
+
+    <div class="notice" style="margin-top:14px">
+      <strong>Admin allocate specific team</strong><br>
+      Use this only if you need to manually correct the draw record.
+    </div>
+    <label for="adminSpecificPlayerName">Player name</label>
+    <input id="adminSpecificPlayerName" placeholder="e.g. Jane Bloggs">
+    <label for="adminSpecificEmail">Email address</label>
+    <input id="adminSpecificEmail" placeholder="e.g. jane@example.com">
+    <label for="adminSpecificTeam">Team</label>
+    <select id="adminSpecificTeam"></select>
+    <div class="actions">
+      <button id="adminSpecificAllocateBtn" class="secondary" type="button">Allocate selected team</button>
+    </div>
+
+    <div class="notice" style="margin-top:14px">
+      <strong>Reset sweepstake</strong><br>
+      This clears the shared draw record and team allocations.
+    </div>
+    <button id="resetBtn" class="danger" type="button">Reset sweepstake</button>
+  </div>
 </details>
+
     </section>
   </div>
   <div id="teamCelebration" aria-hidden="true"></div>
@@ -923,6 +972,7 @@ details.adminBox.adminOpen #adminUnlockPanel{
 
 
 
+
   function buildFinalResult(winner){
     winner=String(winner||'').toLowerCase();
     const spain={team:'Spain',player:'Richard Bradley',shirt:'spain'};
@@ -984,7 +1034,7 @@ details.adminBox.adminOpen #adminUnlockPanel{
 
   function unlockAdminPanel(){
     const pin=$('adminPin') ? $('adminPin').value.trim() : '';
-    const box=document.querySelector('details.adminBox');
+    const box=document.getElementById('adminBox');
     if(pin !== '2620'){
       if(box) box.classList.remove('adminOpen');
       alert('Incorrect admin PIN.');
@@ -1318,8 +1368,6 @@ details.adminBox.adminOpen #adminUnlockPanel{
   $('downloadEntrantsBtn').addEventListener('click',downloadEntrantsList);
   $('resetBtn').addEventListener('click',async()=>{const pin=$('adminPin').value.trim(); if(!pin){alert('Enter the admin PIN.');return} if(!confirm('Reset the sweepstake and make all teams available again?'))return; try{const data=await api('reset-sweepstake',{method:'POST',body:JSON.stringify({pin})});state=data.state;paid=false;paidEntries=0;entriesRemaining=0;activePlayer=null;rotation=0;$('resultBanner').innerHTML='<div><h2>Sweepstake reset</h2><p>All teams are available again.</p></div>';refresh();}catch(err){showError(err.message)}});
 loadSharedState();
-  checkFinalResult();
-  setInterval(checkFinalResult,10*60*1000);
 })();
 </script>
 
