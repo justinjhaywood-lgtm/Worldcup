@@ -782,6 +782,28 @@
   window.showDrawCelebration=showDrawCelebration;
 
 
+
+  function buildFinalResult(winner){
+    winner=String(winner||'').toLowerCase();
+    const spain={team:'Spain',player:'Richard Bradley',shirt:'spain'};
+    const argentina={team:'Argentina',player:'Mollie Jennings-Parkes',shirt:'argentina'};
+    if(winner!=='spain' && winner!=='argentina') return {known:false};
+    const champion=winner==='spain'?spain:argentina;
+    const runnerUp=winner==='spain'?argentina:spain;
+    return {
+      known:true,
+      winner:champion.team,
+      runnerUp:runnerUp.team,
+      champion,
+      runnerUpEntry:runnerUp,
+      championText:champion.player+' wins £150',
+      runnerUpText:runnerUp.player+' wins £50',
+      message:'Congratulations',
+      source:'browser',
+      updatedAt:new Date().toISOString()
+    };
+  }
+
   function shirtHtml(kind, single=false){
     const isSpain = kind === 'spain';
     const name = isSpain ? 'Richard<br>Bradley' : 'Mollie<br>Jennings-Parkes';
@@ -796,17 +818,19 @@
     const roll=document.getElementById('winnersHtmlRoll');
     if(!roll) return;
 
-    const firstBlock=roll.querySelector('.rollBlock.withShirts');
-    const runnerBlock=roll.querySelectorAll('.rollBlock')[1];
-
     if(!result || !result.known){
       roll.classList.remove('resultKnown');
       return;
     }
 
+    const blocks=roll.querySelectorAll('.rollBlock');
+    let firstBlock=roll.querySelector('.rollBlock.withShirts') || blocks[0];
+    let runnerBlock=blocks[1];
+
     roll.classList.add('resultKnown');
 
     if(firstBlock){
+      firstBlock.classList.add('withShirts');
       firstBlock.innerHTML = `
         <div class="championsWord">Champions</div>
         ${shirtHtml(result.champion.shirt, true)}
@@ -825,28 +849,49 @@
         <p class="finalResultLine">${escapeHtml(result.runnerUpText)}</p>
       `;
     }
+
+    try{
+      localStorage.setItem('wc2026FinalResult', JSON.stringify(result));
+    }catch(e){}
+  }
+
+  function applyLocalFinalResult(){
+    try{
+      const saved=localStorage.getItem('wc2026FinalResult');
+      if(saved){
+        const result=JSON.parse(saved);
+        if(result && result.known) applyFinalResult(result);
+      }
+    }catch(e){}
   }
 
   async function checkFinalResult(){
+    applyLocalFinalResult();
     try{
       const data=await api('final-result',{method:'GET'});
-      if(data && data.result) applyFinalResult(data.result);
+      if(data && data.result && data.result.known) applyFinalResult(data.result);
     }catch(err){
       console.warn('Final result check failed', err);
     }
   }
 
   async function adminSetFinalResult(){
-    const pin=$('adminPin').value.trim();
-    const winner=$('finalWinnerSelect').value;
+    const pin=$('adminPin') ? $('adminPin').value.trim() : '';
+    const winner=$('finalWinnerSelect') ? $('finalWinnerSelect').value : '';
     if(!pin){alert('Enter the admin PIN first.');return}
     if(!winner){alert('Choose Spain or Argentina.');return}
-    if(!confirm('Set '+winner+' as World Cup winner in the rolling titles?')) return;
+
+    const immediateResult=buildFinalResult(winner);
+    applyFinalResult(immediateResult);
+    if(typeof showDrawCelebration === 'function') showDrawCelebration(false);
+
     try{
       const data=await api('final-result',{method:'POST',body:JSON.stringify({pin,winner})});
-      applyFinalResult(data.result);
+      if(data && data.result) applyFinalResult(data.result);
       alert('Final result updated.');
-    }catch(err){showError(err.message)}
+    }catch(err){
+      alert('Titles updated on this browser. Netlify save failed: '+err.message);
+    }
   }
 
 
