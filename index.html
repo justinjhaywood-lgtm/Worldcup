@@ -117,7 +117,8 @@
     .warn { background: rgba(255,207,90,.10); border-color: rgba(255,207,90,.32); color:#ffe8a6; }
     .foot { margin-top: 18px; color: rgba(255,255,255,.52); font-size: 12px; line-height:1.45; }
     .celebration-layer { position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:9999; }
-    .credits-track { position:absolute; inset:0; overflow:hidden; }
+    .credits-track { position:absolute; inset:0; overflow:hidden; z-index:2; }
+    #tickerTape { position:absolute; inset:0; z-index:1; }
     .credits-roll {
       position:absolute; left:50%; width:min(92vw,860px); text-align:center;
       color:#ffd65c; font-weight:950; text-transform:uppercase;
@@ -444,7 +445,7 @@
     el.className = `ticker-piece ${kind}`;
     if(kind === 'ball') {
       el.src = 'assets/world-cup-ball.png'; el.alt = '';
-      el.style.setProperty('--size', `${90 + Math.random()*110}px`);
+      el.style.setProperty('--size', `${45 + Math.random()*55}px`);
     } else {
       el.style.setProperty('--w', `${12 + Math.random()*18}px`);
       el.style.setProperty('--h', `${40 + Math.random()*65}px`);
