@@ -597,10 +597,16 @@ details.adminBox.adminOpen #adminUnlockOnly{
 }
 
 
-/* V71 unlock force */
-#adminContentLocked{display:none!important}
-#adminBox.adminOpen #adminContentLocked{display:block!important}
-#adminBox.adminOpen #adminUnlockOnly{display:none!important}
+/* Safe v72 admin unlock */
+#adminContentLocked{
+  display:none !important;
+}
+#adminBox.adminOpen #adminContentLocked{
+  display:block !important;
+}
+#adminBox.adminOpen #adminUnlockOnly{
+  display:none !important;
+}
 
 </style>
 </head>
@@ -1399,44 +1405,37 @@ loadSharedState();
 
 
 <script>
-(function(){
-  function unlockAdminNow(){
-    var pinInput = document.getElementById('adminPin');
-    var adminBox = document.getElementById('adminBox');
+window.addEventListener('DOMContentLoaded', function(){
+  var unlockBtn = document.getElementById('unlockAdminBtn');
+  var pinInput = document.getElementById('adminPin');
+  var adminBox = document.getElementById('adminBox');
+
+  function unlockAdmin(){
     var pin = pinInput ? pinInput.value.trim() : '';
     if(pin === '2620'){
       if(adminBox) adminBox.classList.add('adminOpen');
-      return;
+    }else{
+      if(adminBox) adminBox.classList.remove('adminOpen');
+      alert('Incorrect admin PIN.');
     }
-    if(adminBox) adminBox.classList.remove('adminOpen');
-    alert('Incorrect admin PIN.');
   }
 
-  function wireAdminUnlock(){
-    var btn = document.getElementById('unlockAdminBtn');
-    var pin = document.getElementById('adminPin');
-    if(btn){
-      btn.onclick = function(e){
+  if(unlockBtn){
+    unlockBtn.addEventListener('click', function(e){
+      e.preventDefault();
+      unlockAdmin();
+    });
+  }
+
+  if(pinInput){
+    pinInput.addEventListener('keydown', function(e){
+      if(e.key === 'Enter'){
         e.preventDefault();
-        unlockAdminNow();
-      };
-    }
-    if(pin){
-      pin.addEventListener('keydown', function(e){
-        if(e.key === 'Enter'){
-          e.preventDefault();
-          unlockAdminNow();
-        }
-      });
-    }
+        unlockAdmin();
+      }
+    });
   }
-
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', wireAdminUnlock);
-  }else{
-    wireAdminUnlock();
-  }
-})();
+});
 </script>
 
 </body>
