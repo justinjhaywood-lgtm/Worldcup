@@ -12,7 +12,7 @@ function getBlobStore() {
 }
 
 function buildResult(winner) {
-  winner = String(winner || '').trim().toLowerCase();
+  winner = String(winner || '').toLowerCase();
   const spain = { team: 'Spain', player: 'Richard Bradley', shirt: 'spain' };
   const argentina = { team: 'Argentina', player: 'Mollie Jennings-Parkes', shirt: 'argentina' };
   if (winner !== 'spain' && winner !== 'argentina') return { known: false };
@@ -27,6 +27,7 @@ function buildResult(winner) {
     championText: champion.player + ' wins £150',
     runnerUpText: runnerUpEntry.player + ' wins £50',
     message: 'Congratulations',
+    source: 'admin',
     updatedAt: new Date().toISOString()
   };
 }
@@ -55,7 +56,6 @@ exports.handler = async (event) => {
           body: JSON.stringify({ ok: false, error: 'Choose Spain or Argentina.' })
         };
       }
-      result.source = 'admin';
       await store.setJSON(RESULT_KEY, result);
       return {
         statusCode: 200,

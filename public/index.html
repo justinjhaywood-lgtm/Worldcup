@@ -360,18 +360,155 @@
 }
 
 
-/* Proper admin lock */
-.adminLocked .adminOnly{display:none!important}
-.adminUnlocked .adminOnly{display:block!important}
-.adminLockStatus{
-  margin:10px 0 14px;
-  padding:10px 12px;
-  border-radius:12px;
-  background:rgba(255,207,90,.12);
-  border:1px solid rgba(255,207,90,.34);
+/* Simple admin lock and final result panel */
+#simpleAdminGate{
+  margin-top:14px;
+  padding:14px;
+  border-radius:16px;
+  background:rgba(255,207,90,.10);
+  border:1px solid rgba(255,207,90,.35);
+}
+#simpleAdminTools{
+  display:none;
+  margin-top:14px;
+  padding:14px;
+  border-radius:16px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.18);
+}
+#simpleAdminTools.unlocked{display:block}
+#simpleAdminTools select{width:100%;margin-top:6px}
+#winnersHtmlRoll .championsWord{
+  font-size:clamp(38px,8vw,104px);
+  color:#ffcf5a;
+  font-weight:1000;
+  text-transform:uppercase;
+  text-shadow:0 3px 0 #7c4800,0 6px 0 #3b2100,0 12px 28px rgba(0,0,0,.7),0 0 18px rgba(255,218,90,.48);
+  margin-bottom:18px;
+}
+#winnersHtmlRoll .singleWinnerShirt{
+  width:clamp(150px,34vw,360px);
+  height:clamp(185px,40vw,430px);
+  margin:0 auto 20px;
+}
+#winnersHtmlRoll .finalResultLine{
+  font-size:clamp(24px,4.8vw,60px);
+  color:#fff0b3;
+  font-weight:1000;
+  text-transform:uppercase;
+  text-shadow:0 4px 0 rgba(0,0,0,.55),0 12px 28px rgba(0,0,0,.7);
+}
+
+
+/* Full admin section PIN lock */
+.adminLockShell{
+  margin-top:14px;
+  padding:14px;
+  border-radius:18px;
+  background:rgba(255,207,90,.10);
+  border:1px solid rgba(255,207,90,.38);
+}
+.adminLockedContent{
+  display:none;
+}
+.adminLockShell.unlocked + .adminLockedContent{
+  display:block;
+}
+.adminLockShell.unlocked{
+  background:rgba(46,204,113,.10);
+  border-color:rgba(46,204,113,.45);
+}
+.adminLockMessage{
+  margin:0 0 10px;
   color:#ffe7a6;
-  font-size:13px;
-  line-height:1.35;
+  font-size:14px;
+}
+.adminLockShell.unlocked .adminLockMessage{
+  color:#b9f6ca;
+}
+
+
+/* Hard hide all admin controls until unlocked */
+body:not(.admin-is-unlocked) #adminTools,
+body:not(.admin-is-unlocked) .adminTools,
+body:not(.admin-is-unlocked) .adminLockedContent,
+body:not(.admin-is-unlocked) #simpleAdminTools,
+body:not(.admin-is-unlocked) #finalResultBox,
+body:not(.admin-is-unlocked) #finalResultPanel,
+body:not(.admin-is-unlocked) .finalResultBox,
+body:not(.admin-is-unlocked) .adminOnly,
+body:not(.admin-is-unlocked) #resetBtn,
+body:not(.admin-is-unlocked) #adminAssignBtn,
+body:not(.admin-is-unlocked) #adminDrawBtn,
+body:not(.admin-is-unlocked) #downloadEntrantsBtn,
+body:not(.admin-is-unlocked) #importEntrantsBtn,
+body:not(.admin-is-unlocked) #saveSettingsBtn,
+body:not(.admin-is-unlocked) #setFinalResultBtn,
+body:not(.admin-is-unlocked) #finalWinnerSelect,
+body:not(.admin-is-unlocked) label[for="finalWinnerSelect"]{
+  display:none!important;
+}
+
+body.admin-is-unlocked .adminLockedContent,
+body.admin-is-unlocked #simpleAdminTools,
+body.admin-is-unlocked #finalResultBox,
+body.admin-is-unlocked #finalResultPanel,
+body.admin-is-unlocked .finalResultBox,
+body.admin-is-unlocked .adminOnly{
+  display:block!important;
+}
+
+body.admin-is-unlocked #finalWinnerSelect{
+  display:block!important;
+}
+
+body.admin-is-unlocked #adminLockShell{
+  background:rgba(46,204,113,.10);
+  border-color:rgba(46,204,113,.45);
+}
+
+
+/* Absolute admin body lock */
+#adminBodyLocked{
+  display:none!important;
+}
+body.admin-is-unlocked #adminBodyLocked{
+  display:block!important;
+}
+body:not(.admin-is-unlocked) #adminBodyLocked *{
+  display:none!important;
+}
+body.admin-is-unlocked #adminBodyLocked *{
+  display:revert;
+}
+body.admin-is-unlocked #adminBodyLocked .actions{
+  display:flex!important;
+}
+
+
+/* Rebuilt single admin lock */
+details.adminBox #adminContentLocked{
+  display:none !important;
+}
+details.adminBox.adminOpen #adminContentLocked{
+  display:block !important;
+}
+details.adminBox #adminUnlockPanel{
+  display:block !important;
+}
+details.adminBox.adminOpen #adminUnlockPanel{
+  display:none !important;
+}
+.adminUnlockPanel{
+  margin:14px 0;
+  padding:14px;
+  border-radius:18px;
+  background:rgba(255,207,90,.10);
+  border:1px solid rgba(255,207,90,.38);
+}
+.adminUnlockPanel p{
+  margin:0 0 10px;
+  color:#ffe7a6;
 }
 .finalResultBox{
   margin:14px 0;
@@ -380,7 +517,10 @@
   background:rgba(255,255,255,.07);
   border:1px solid rgba(255,255,255,.18);
 }
-.finalResultBox select{width:100%;margin-top:6px}
+.finalResultBox select{
+  width:100%;
+  margin-top:6px;
+}
 #winnersHtmlRoll .championsWord{
   font-size:clamp(38px,8vw,104px);
   color:#ffcf5a;
@@ -404,7 +544,7 @@
 
 </style>
 </head>
-<body class="adminLocked">
+<body>
 
   <div id="winnersHtmlRoll" aria-hidden="true">
     <div class="rollTrack">
@@ -552,17 +692,24 @@
     </section>
 
     <section class="card admin">
-      <details>
-        <summary>Admin settings</summary>
+      <details class="adminBox">
+<summary>Admin settings</summary>
         <div id="adminLogin">
           <label for="adminPin">Admin PIN</label>
           <input id="adminPin" type="password" placeholder="Enter admin PIN" />
-          <div id="adminLockStatus" class="adminLockStatus">Admin locked. Enter PIN 2620 then press Unlock admin.</div>
-          <div class="actions"><button id="unlockAdminBtn" class="secondary" type="button">Unlock admin</button></div>
+          <div id="adminUnlockPanel" class="adminUnlockPanel">
+            <p>Admin tools are locked. Enter PIN 2620 and press Unlock admin.</p>
+            <div class="actions">
+              <button id="unlockAdminBtn" class="secondary" type="button">Unlock admin</button>
+            </div>
+          </div>
+          <div id="adminContentLocked">
+</div>
+          
 
-          <div id="finalResultBox" class="adminOnly finalResultBox">
-            <h3 style="margin:0 0 8px">World Cup Final Result</h3>
-            <p class="small">Set after the final. This immediately updates the rolling winner and runner-up titles.</p>
+</div>
+<h3 style="margin:0 0 8px">World Cup Final Result</h3>
+            <p class="small">Choose the winning team. This updates the rolling titles immediately.</p>
             <label for="finalWinnerSelect">Winner</label>
             <select id="finalWinnerSelect">
               <option value="">Choose winner...</option>
@@ -577,7 +724,7 @@
           <div class="actions">
             <button id="revealBtn" class="secondary">Reveal teams in draw record</button>
             <button id="hideTeamsBtn" class="secondary">Hide teams in draw record</button>
-            <button id="downloadEntrantsBtn" class="adminOnly" class="secondary">Download entrants list</button>
+            <button id="downloadEntrantsBtn" class="secondary">Download entrants list</button>
           </div>
           <div class="notice warn" style="margin-top:16px">
             <strong>Admin allocate team</strong><br>
@@ -595,10 +742,30 @@
           <label for="cancelEntrySelect">Entry to cancel</label>
           <select id="cancelEntrySelect"><option value="">No entries available</option></select>
           <button id="cancelEntryBtn" class="danger" style="margin-top:10px">Cancel selected entry and return team</button>
-          <button id="resetBtn" class="adminOnly" class="danger" style="margin-top:10px">Reset sweepstake</button>
+          
+          <div id="finalResultBox" class="finalResultBox">
+            <h3 style="margin:0 0 8px">World Cup Final Result</h3>
+            <p class="small">Choose the winning team. This updates the rolling titles immediately.</p>
+            <label for="finalWinnerSelect">Winner</label>
+            <select id="finalWinnerSelect">
+              <option value="">Choose winner...</option>
+              <option value="spain">Spain - Richard Bradley wins £150</option>
+              <option value="argentina">Argentina - Mollie Jennings-Parkes wins £150</option>
+            </select>
+            <div class="actions">
+              <button id="setFinalResultBtn" class="secondary" type="button">Set final result</button>
+            </div>
+          </div>
+
+          <button id="resetBtn" class="danger" style="margin-top:10px">Reset sweepstake</button>
+          </div>
         </div>
         <p class="foot">Admin actions are protected by the Netlify environment variable <strong>ADMIN_PIN</strong>.</p>
-      </details>
+      
+          </div>
+
+          </div>
+</details>
     </section>
   </div>
   <div id="teamCelebration" aria-hidden="true"></div>
@@ -755,6 +922,7 @@
   window.showDrawCelebration=showDrawCelebration;
 
 
+
   function buildFinalResult(winner){
     winner=String(winner||'').toLowerCase();
     const spain={team:'Spain',player:'Richard Bradley',shirt:'spain'};
@@ -770,8 +938,7 @@
       runnerUpEntry,
       championText:champion.player+' wins £150',
       runnerUpText:runnerUpEntry.player+' wins £50',
-      message:'Congratulations',
-      updatedAt:new Date().toISOString()
+      message:'Congratulations'
     };
   }
 
@@ -789,7 +956,6 @@
     if(!result || !result.known) return;
     const roll=document.getElementById('winnersHtmlRoll');
     if(!roll) return;
-
     const blocks=roll.querySelectorAll('.rollBlock');
     const winnerBlock=roll.querySelector('.rollBlock.withShirts') || blocks[0];
     const runnerBlock=blocks[1];
@@ -816,6 +982,17 @@
     }
   }
 
+  function unlockAdminPanel(){
+    const pin=$('adminPin') ? $('adminPin').value.trim() : '';
+    const box=document.querySelector('details.adminBox');
+    if(pin !== '2620'){
+      if(box) box.classList.remove('adminOpen');
+      alert('Incorrect admin PIN.');
+      return;
+    }
+    if(box) box.classList.add('adminOpen');
+  }
+
   async function checkFinalResult(){
     try{
       const data=await api('final-result',{method:'GET'});
@@ -826,40 +1003,24 @@
   }
 
   async function adminSetFinalResult(){
-    const winner=$('finalWinnerSelect') ? $('finalWinnerSelect').value : '';
     const pin=$('adminPin') ? $('adminPin').value.trim() : '';
-    if(!pin){ alert('Enter the admin PIN first.'); return; }
+    const winner=$('finalWinnerSelect') ? $('finalWinnerSelect').value : '';
+    if(pin !== '2620'){ alert('Enter PIN 2620 and unlock admin first.'); return; }
     if(!winner){ alert('Choose Spain or Argentina.'); return; }
 
     const result=buildFinalResult(winner);
     applyFinalResult(result);
-    if(typeof showDrawCelebration==='function') showDrawCelebration(false);
+
+    if(typeof showDrawCelebration==='function'){
+      showDrawCelebration(false);
+    }
 
     try{
       const saved=await api('final-result',{method:'POST',body:JSON.stringify({pin,winner})});
-      if(saved && saved.result) applyFinalResult(saved.result);
+      if(saved && saved.result && saved.result.known) applyFinalResult(saved.result);
       alert('Final result updated.');
     }catch(err){
       showError(err.message || 'Could not save final result.');
-    }
-  }
-
-  function setAdminUnlocked(unlocked){
-    const body=document.body;
-    if(!body) return;
-    body.classList.toggle('adminUnlocked',!!unlocked);
-    body.classList.toggle('adminLocked',!unlocked);
-    const status=document.getElementById('adminLockStatus');
-    if(status) status.textContent=unlocked?'Admin unlocked. Protected controls are now available.':'Admin locked. Enter PIN 2620 then press Unlock admin.';
-  }
-
-  function unlockAdmin(){
-    const pin=$('adminPin') ? $('adminPin').value.trim() : '';
-    if(pin==='2620'){
-      setAdminUnlocked(true);
-    }else{
-      setAdminUnlocked(false);
-      alert('Incorrect admin PIN.');
     }
   }
 
@@ -1156,16 +1317,9 @@
 
   $('downloadEntrantsBtn').addEventListener('click',downloadEntrantsList);
   $('resetBtn').addEventListener('click',async()=>{const pin=$('adminPin').value.trim(); if(!pin){alert('Enter the admin PIN.');return} if(!confirm('Reset the sweepstake and make all teams available again?'))return; try{const data=await api('reset-sweepstake',{method:'POST',body:JSON.stringify({pin})});state=data.state;paid=false;paidEntries=0;entriesRemaining=0;activePlayer=null;rotation=0;$('resultBanner').innerHTML='<div><h2>Sweepstake reset</h2><p>All teams are available again.</p></div>';refresh();}catch(err){showError(err.message)}});
-
-
-  if($('unlockAdminBtn')) $('unlockAdminBtn').addEventListener('click',unlockAdmin);
-  if($('adminPin')) $('adminPin').addEventListener('keydown',function(e){if(e.key==='Enter') unlockAdmin();});
-  if($('setFinalResultBtn')) $('setFinalResultBtn').addEventListener('click',adminSetFinalResult);
-  setAdminUnlocked(false);
-
-  loadSharedState();
-  setInterval(checkFinalResult,10*60*1000);
+loadSharedState();
   checkFinalResult();
+  setInterval(checkFinalResult,10*60*1000);
 })();
 </script>
 
