@@ -268,18 +268,95 @@
 }
 
 
-#winnersHtmlRoll .shirtsHeader{
-  width:min(86vw,860px);
-  height:auto;
-  display:block;
-  margin:0 auto 26px;
-  filter:drop-shadow(0 14px 30px rgba(0,0,0,.35));
+/* HTML shirt header for rolling titles */
+#winnersHtmlRoll .shirtHeader{
+  width:min(94vw,980px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(8px,2vw,24px);
+  margin:0 auto 24px;
+}
+#winnersHtmlRoll .shirtCard{
+  width:clamp(135px,28vw,300px);
+  height:clamp(165px,34vw,360px);
+  border-radius:26px 26px 16px 16px;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  padding-top:24px;
+  box-shadow:0 18px 35px rgba(0,0,0,.35);
+  overflow:hidden;
+}
+#winnersHtmlRoll .shirtCard::before{
+  content:"";
+  position:absolute;
+  left:18%;
+  right:18%;
+  top:-14px;
+  height:34px;
+  border-radius:0 0 50% 50%;
+  background:#101010;
+  z-index:2;
+}
+#winnersHtmlRoll .shirtCard.argentina{
+  background:repeating-linear-gradient(90deg,#ffffff 0 22%,#87cdf2 22% 44%);
+  color:#111;
+}
+#winnersHtmlRoll .shirtCard.spain{
+  background:linear-gradient(145deg,#b90000,#ed1c1c 55%,#8f0000);
+  color:#ffd24d;
+}
+#winnersHtmlRoll .shirtName{
+  position:relative;
+  z-index:3;
+  margin-top:18px;
+  font-size:clamp(15px,3.2vw,34px);
+  line-height:1.08;
+  font-weight:1000;
+  text-align:center;
+  text-transform:uppercase;
+  text-shadow:0 2px 3px rgba(255,255,255,.25);
+}
+#winnersHtmlRoll .spain .shirtName{
+  color:#ffd24d;
+  text-shadow:0 2px 2px rgba(0,0,0,.45);
+}
+#winnersHtmlRoll .shirtNo{
+  position:relative;
+  z-index:3;
+  margin-top:8px;
+  font-size:clamp(80px,17vw,190px);
+  line-height:.85;
+  font-weight:1000;
+  color:#111;
+  -webkit-text-stroke:3px #fff;
+  text-shadow:0 6px 8px rgba(0,0,0,.35);
+}
+#winnersHtmlRoll .spain .shirtNo{
+  color:#ffd24d;
+  -webkit-text-stroke:2px #9b0000;
+}
+#winnersHtmlRoll .shirtQuestion{
+  font-size:clamp(92px,18vw,220px);
+  line-height:.8;
+  color:#111;
+  font-weight:1000;
+  -webkit-text-stroke:clamp(3px,.8vw,8px) #ffcf5a;
+  text-shadow:0 10px 18px rgba(0,0,0,.42);
 }
 #winnersHtmlRoll .rollBlock.withShirts{
-  min-height:78vh;
+  min-height:86vh;
 }
-@media(max-width:720px){
-  #winnersHtmlRoll .shirtsHeader{width:min(94vw,720px);margin-bottom:18px}
+
+/* Force ticker to be visible on page load and during draw celebration */
+#drawCelebration{
+  z-index:2147483600 !important;
+}
+#drawCelebration.active{
+  display:block !important;
 }
 
 </style>
@@ -289,7 +366,17 @@
   <div id="winnersHtmlRoll" aria-hidden="true">
     <div class="rollTrack">
       <section class="rollBlock withShirts">
-        <img class="shirtsHeader" src="assets/shirts-question.png" alt="Argentina and Spain shirts with question mark">
+        <div class="shirtHeader" aria-label="Argentina and Spain shirts">
+          <div class="shirtCard argentina">
+            <div class="shirtName">Mollie<br>Jennings-Parkes</div>
+            <div class="shirtNo">26</div>
+          </div>
+          <div class="shirtQuestion">?</div>
+          <div class="shirtCard spain">
+            <div class="shirtName">Richard<br>Bradley</div>
+            <div class="shirtNo">26</div>
+          </div>
+        </div>
         <h2>World Cup 2026 Winners</h2>
         <p>?</p>
       </section>
@@ -605,6 +692,8 @@
 
   function updateStats(){const total=(state.teams||[]).length||48;const remaining=availableTeams().length;const taken=Math.max(0,total-remaining);const pct=total?Math.round((taken/total)*100):0;$('statRemaining').textContent=remaining;$('statTaken').textContent=taken;$('statPot').textContent=moneySymbol()+(taken*ENTRY_FEE).toFixed(0);$('feeLabel').textContent=moneySymbol()+ENTRY_FEE.toFixed(2);$('progressSold').textContent=taken;$('progressTotal').textContent=total;$('progressFill').style.width=Math.min(100,pct)+'%';$('progressText').textContent=pct+'% sold so far.'}
 
+  window.showDrawCelebration=showDrawCelebration;
+
   function drawWheel(){
     const teams=availableTeams(); const w=canvas.width,h=canvas.height,cx=w/2,cy=h/2,r=Math.min(w,h)/2-18;
     ctx.clearRect(0,0,w,h);
@@ -901,5 +990,26 @@
   loadSharedState();
 })();
 </script>
+
+<script>
+(function(){
+  function fireTickerOnLoad(){
+    try{
+      if(typeof window.showDrawCelebration === 'function'){
+        window.showDrawCelebration(false);
+      }else if(typeof showDrawCelebration === 'function'){
+        showDrawCelebration(false);
+      }
+    }catch(e){
+      console.warn('Ticker trigger failed', e);
+    }
+  }
+  window.addEventListener('load', function(){
+    setTimeout(fireTickerOnLoad, 900);
+    setTimeout(fireTickerOnLoad, 11000);
+  });
+})();
+</script>
+
 </body>
 </html>
