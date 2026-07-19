@@ -415,6 +415,22 @@
   line-height:1.4;
 }
 
+
+.adminPanelBlock{
+  margin-top:14px;
+  padding:14px;
+  border-radius:16px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.16);
+}
+.adminPanelBlock h3{
+  margin:0 0 8px;
+}
+.adminPanelBlock select{
+  width:100%;
+  margin-top:6px;
+}
+
 </style>
 </head>
 <body>
@@ -591,6 +607,21 @@
           <label for="cancelEntrySelect">Entry to cancel</label>
           <select id="cancelEntrySelect"><option value="">No entries available</option></select>
           <button id="cancelEntryBtn" class="danger" style="margin-top:10px">Cancel selected entry and return team</button>
+          
+        <div id="finalResultPanel" class="adminPanelBlock">
+          <h3>World Cup Final Result</h3>
+          <p class="small">Set this after the final. It updates the rolling winners titles across the site.</p>
+          <label for="finalWinnerSelect">Winner</label>
+          <select id="finalWinnerSelect">
+            <option value="">Choose winner...</option>
+            <option value="spain">Spain - Richard Bradley wins £150</option>
+            <option value="argentina">Argentina - Mollie Jennings-Parkes wins £150</option>
+          </select>
+          <div class="actions">
+            <button id="setFinalResultBtn" class="secondary" type="button">Set final result</button>
+          </div>
+        </div>
+
           <button id="resetBtn" class="danger" style="margin-top:10px">Reset sweepstake</button>
         </div>
         <p class="foot">Admin actions are protected by the Netlify environment variable <strong>ADMIN_PIN</strong>.</p>
@@ -1121,8 +1152,7 @@
   }
 
   $('downloadEntrantsBtn').addEventListener('click',downloadEntrantsList);
-  if($('setFinalResultBtn')) $('setFinalResultBtn').addEventListener('click',adminSetFinalResult);
-  $('resetBtn').addEventListener('click',async()=>{const pin=$('adminPin').value.trim(); if(!pin){alert('Enter the admin PIN.');return} if(!confirm('Reset the sweepstake and make all teams available again?'))return; try{const data=await api('reset-sweepstake',{method:'POST',body:JSON.stringify({pin})});state=data.state;paid=false;paidEntries=0;entriesRemaining=0;activePlayer=null;rotation=0;$('resultBanner').innerHTML='<div><h2>Sweepstake reset</h2><p>All teams are available again.</p></div>';refresh();}catch(err){showError(err.message)}});
+$('resetBtn').addEventListener('click',async()=>{const pin=$('adminPin').value.trim(); if(!pin){alert('Enter the admin PIN.');return} if(!confirm('Reset the sweepstake and make all teams available again?'))return; try{const data=await api('reset-sweepstake',{method:'POST',body:JSON.stringify({pin})});state=data.state;paid=false;paidEntries=0;entriesRemaining=0;activePlayer=null;rotation=0;$('resultBanner').innerHTML='<div><h2>Sweepstake reset</h2><p>All teams are available again.</p></div>';refresh();}catch(err){showError(err.message)}});
 
   if($('adminPin')) $('adminPin').addEventListener('input',updateAdminProtection);
   updateAdminProtection();
