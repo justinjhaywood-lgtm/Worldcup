@@ -5,171 +5,319 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>World Cup 2026 Sweepstake Generator</title>
   <style>
-    :root {
-      --bg: #071c17;
-      --panel: #0d2f28;
-      --panel2: #123d34;
-      --green: #36d399;
-      --green2: #18a76f;
-      --gold: #ffcf5a;
-      --red: #ff6b6b;
-      --text: #f6fff9;
-      --muted: #b8d8cd;
-      --line: rgba(255,255,255,.13);
-      --shadow: 0 24px 70px rgba(0,0,0,.35);
-      --radius: 22px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(54,211,153,.22), transparent 35%),
-        radial-gradient(circle at bottom right, rgba(255,207,90,.18), transparent 30%),
-        linear-gradient(135deg, #04110f, var(--bg));
-      min-height: 100vh;
-    }
-    .wrap { max-width: 1180px; margin: 0 auto; padding: 28px 18px 70px; }
-    .hero {
-      display: grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap: 22px;
-      align-items: stretch;
-    }
-    .card {
-      background: linear-gradient(180deg, rgba(18,61,52,.92), rgba(13,47,40,.92));
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-    .intro { padding: 34px; position: relative; }
-    .badge {
-      display: inline-flex; gap: 8px; align-items: center;
-      border: 1px solid rgba(54,211,153,.35);
-      background: rgba(54,211,153,.12);
-      padding: 8px 12px; border-radius: 999px; color: #cfffea; font-weight: 700; font-size: 13px;
-    }
-    h1 { margin: 18px 0 10px; font-size: clamp(34px, 6vw, 64px); line-height: .94; letter-spacing: -2px; }
-    .subtitle { font-size: 18px; color: var(--muted); max-width: 740px; line-height: 1.55; }
-    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 26px; }
-    .stat { padding: 16px; background: rgba(255,255,255,.06); border: 1px solid var(--line); border-radius: 18px; }
-    .stat strong { display:block; font-size: 28px; color: var(--gold); }
-    .stat span { color: var(--muted); font-size: 13px; }
-    .steps { padding: 26px; display: grid; gap: 14px; }
-    .step { display: grid; grid-template-columns: 42px 1fr; gap: 12px; align-items: start; }
-    .num { width:42px;height:42px;border-radius: 14px;background: var(--green); color: #042017; display:grid;place-items:center;font-weight:900; }
-    .step h3 { margin: 1px 0 5px; font-size: 17px; }
-    .step p { margin:0;color:var(--muted);line-height:1.42;font-size:14px; }
-    .main { display:grid; grid-template-columns: 1fr 390px; gap:22px; margin-top:22px; align-items:start; }
-    .wheelBox { padding: 22px; text-align:center; position:relative; }
-    .wheelHolder { position: relative; max-width: 610px; margin: 0 auto; aspect-ratio: 1/1; }
-    canvas { width:100%; height:100%; display:block; filter: drop-shadow(0 18px 28px rgba(0,0,0,.45)); }
-    .pointer {
-      position:absolute; left:50%; top:-4px; transform:translateX(-50%);
-      width:0;height:0;border-left:22px solid transparent;border-right:22px solid transparent;border-top:44px solid var(--gold); z-index:5;
-      filter: drop-shadow(0 4px 4px rgba(0,0,0,.45));
-    }
-    .centreButton {
-      position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
-      width:126px;height:126px;border-radius:999px;border:8px solid rgba(255,255,255,.14);
-      background: radial-gradient(circle at 30% 20%, #fff6cf, var(--gold) 42%, #d99100);
-      color:#211704; display:grid;place-items:center;text-align:center;font-weight:950;letter-spacing:.4px; box-shadow:0 12px 28px rgba(0,0,0,.4);
-      user-select:none;
-    }
-    .resultBanner { margin-top: 18px; padding: 18px; border-radius: 18px; background: rgba(255,207,90,.12); border:1px solid rgba(255,207,90,.35); min-height: 80px; display:grid; place-items:center; }
-    .resultBanner h2 { margin:0; font-size: 28px; color: var(--gold); }
-    .resultBanner p { margin:4px 0 0; color: var(--muted); }
-    .side { padding: 22px; }
-    label { display:block; font-size: 13px; color: #d8fff0; font-weight: 750; margin: 13px 0 7px; }
-    input, select, textarea {
-      width:100%; padding: 13px 14px; border-radius: 14px; border:1px solid rgba(255,255,255,.18);
-      background: rgba(255,255,255,.08); color: var(--text); outline:none; font-size: 15px;
-    }
-    input::placeholder { color: rgba(255,255,255,.45); }
-    button {
-      border:0; border-radius: 16px; padding: 13px 16px; font-weight: 900; cursor:pointer;
-      background: var(--green); color: #032018; transition: transform .12s ease, opacity .12s ease, background .12s ease;
-    }
-    button:hover { transform: translateY(-1px); }
-    button:disabled { opacity:.45; cursor:not-allowed; transform:none; }
-    .secondary { background: rgba(255,255,255,.1); color:var(--text); border:1px solid var(--line); }
-    .danger { background: rgba(255,107,107,.18); color:#ffd7d7; border:1px solid rgba(255,107,107,.38); }
-    .gold { background: var(--gold); color:#241903; }
-    .payBox { margin-top: 16px; padding: 15px; border-radius: 18px; background: rgba(0,0,0,.17); border: 1px solid var(--line); }
-    .small { color: var(--muted); font-size: 13px; line-height:1.45; }
-    .actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
-    .teams { margin-top:22px; padding:22px; }
-    .teamsHead { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; }
-    .teamsGrid { display:grid; grid-template-columns: repeat(auto-fill, minmax(158px, 1fr)); gap:10px; }
-    .teamPill { border:1px solid var(--line); background: rgba(255,255,255,.06); padding:10px 11px; border-radius: 13px; display:flex; align-items:center; justify-content:space-between; gap:8px; font-size: 13px; }
-    .teamPill.taken { opacity:.45; text-decoration: line-through; }
-    .draws { margin-top:22px; padding:22px; }
-    table { width:100%; border-collapse: collapse; overflow:hidden; border-radius: 14px; }
-    th,td { padding: 11px 10px; border-bottom:1px solid var(--line); text-align:left; font-size: 14px; }
-    th { color:#ddfff2; background: rgba(255,255,255,.07); }
-    td { color: var(--muted); }
-    .admin { margin-top:22px; padding:22px; }
-    details summary { cursor:pointer; font-weight:900; color:#f7fffb; }
-    .hidden { display:none !important; }
-    .notice { padding: 12px 14px; border-radius: 14px; background: rgba(54,211,153,.1); border:1px solid rgba(54,211,153,.28); color:#d4ffef; margin: 13px 0; font-size: 13px; line-height:1.42; }
-    .warn { background: rgba(255,207,90,.10); border-color: rgba(255,207,90,.32); color:#ffe8a6; }
-    .foot { margin-top: 18px; color: rgba(255,255,255,.52); font-size: 12px; line-height:1.45; }
-    .celebration-layer { position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:9999; }
-    .credits-track { position:absolute; inset:0; overflow:hidden; z-index:2; }
-    #tickerTape { position:absolute; inset:0; z-index:1; }
-    .credits-roll {
-      position:absolute; left:50%; width:min(92vw,860px); text-align:center;
-      color:#ffd65c; font-weight:950; text-transform:uppercase;
-      text-shadow:0 3px 0 #8c5600, 0 8px 20px rgba(0,0,0,.9);
-      animation:creditsRise 30s linear infinite;
-    }
-    .credits-roll h2 { margin:0 0 14px; font-size:clamp(34px,7vw,76px); line-height:1; }
-    .credits-roll p { margin:0 0 30px; font-size:clamp(22px,4.3vw,48px); line-height:1.14; }
-    .credits-roll .smaller { font-size:clamp(18px,3vw,34px); line-height:1.25; }
-    @keyframes creditsRise { from{transform:translate(-50%,105vh)} to{transform:translate(-50%,-150%)} }
-    .ticker-piece { position:absolute; top:-18vh; will-change:transform; animation:fall var(--fall) linear var(--delay) infinite; }
-    .ticker-piece.ball { width:var(--size); height:var(--size); object-fit:cover; border-radius:50%; filter:drop-shadow(0 5px 5px rgba(0,0,0,.45)); }
-    .ticker-piece.ribbon { width:var(--w); height:var(--h); border-radius:45% 12% 45% 12%; background:var(--colour); box-shadow:inset 3px 0 4px rgba(255,255,255,.45), 0 3px 4px rgba(0,0,0,.25); }
-    @keyframes fall {
-      from { transform:translate3d(0,-18vh,0) rotate(0deg); }
-      to { transform:translate3d(var(--drift),130vh,0) rotate(var(--spin)); }
-    }
-    @media (prefers-reduced-motion:reduce) { .celebration-layer{display:none} }
-    @media (max-width: 940px) { .hero, .main { grid-template-columns:1fr; } .stats { grid-template-columns:1fr; } }
-  </style>
+    :root{--bg:#071c17;--panel:#0d2f28;--panel2:#123d34;--green:#36d399;--gold:#ffcf5a;--red:#ff6b6b;--text:#f6fff9;--muted:#b8d8cd;--line:rgba(255,255,255,.13);--shadow:0 24px 70px rgba(0,0,0,.35);--radius:22px}
+    *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);background:radial-gradient(circle at top left,rgba(54,211,153,.22),transparent 35%),radial-gradient(circle at bottom right,rgba(255,207,90,.18),transparent 30%),linear-gradient(135deg,#04110f,var(--bg));min-height:100vh}.wrap{max-width:1180px;margin:0 auto;padding:28px 18px 70px}.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:22px;align-items:stretch}.card{background:linear-gradient(180deg,rgba(18,61,52,.92),rgba(13,47,40,.92));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}.intro{padding:34px}.badge{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(54,211,153,.35);background:rgba(54,211,153,.12);padding:8px 12px;border-radius:999px;color:#cfffea;font-weight:700;font-size:13px}h1{margin:18px 0 10px;font-size:clamp(34px,6vw,64px);line-height:.94;letter-spacing:-2px}.subtitle{font-size:18px;color:var(--muted);max-width:740px;line-height:1.55}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:26px}.stat{padding:16px;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:18px}.stat strong{display:block;font-size:28px;color:var(--gold)}.stat span{color:var(--muted);font-size:13px}.payoutTile{margin-top:12px;padding:16px;border-radius:18px;background:rgba(255,207,90,.10);border:1px solid rgba(255,207,90,.34)}.payoutTile h2{margin:0 0 10px;font-size:19px;color:var(--gold)}.payoutGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.payoutItem{padding:12px;border-radius:14px;background:rgba(0,0,0,.18);border:1px solid var(--line)}.payoutItem span{display:block;color:var(--muted);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.3px}.payoutItem strong{display:block;margin-top:3px;font-size:24px;color:var(--text)}.payoutNote{margin:10px 0 0;color:#ffe8a6;font-size:13px;font-weight:800}.progressTile{margin-top:14px;padding:16px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid var(--line)}.progressHead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.progressHead h2{margin:0;font-size:19px;color:var(--gold)}.progressCount{color:#d8fff0;font-weight:900;font-size:14px}.progressBar{width:100%;height:18px;border-radius:999px;background:rgba(0,0,0,.26);border:1px solid rgba(255,255,255,.14);overflow:hidden}.progressFill{height:100%;width:0%;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:999px;transition:width .35s ease}.progressText{margin:9px 0 0;color:var(--muted);font-size:13px}.rulesTile{margin-top:12px;padding:16px;border-radius:18px;background:rgba(54,211,153,.08);border:1px solid rgba(54,211,153,.26)}.rulesTile h2{margin:0 0 10px;font-size:19px;color:#d4ffef}.rulesList{margin:0;padding-left:18px;color:var(--muted);font-size:13px;line-height:1.55}.rulesList li{margin:4px 0}@media(max-width:720px){.payoutGrid{grid-template-columns:repeat(2,1fr)}.progressHead{align-items:flex-start;flex-direction:column;gap:5px}}.steps{padding:20px;display:grid;gap:12px}.cupLogoPanel{background:rgba(255,255,255,.98);border-radius:18px;border:4px solid #064033;padding:6px;display:grid;place-items:center;min-height:210px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}.cupLogoPanel img{width:100%;max-width:340px;max-height:200px;object-fit:contain;display:block}.stepsIntro{text-align:center;margin:0 0 2px;color:#d8fff0;font-size:13px;font-weight:800;line-height:1.35}.step{display:grid;grid-template-columns:42px 1fr;gap:12px;align-items:start}.num{width:42px;height:42px;border-radius:14px;background:var(--green);color:#042017;display:grid;place-items:center;font-weight:900}.step h3{margin:1px 0 5px;font-size:17px}.step p{margin:0;color:var(--muted);line-height:1.42;font-size:14px}.main{display:grid;grid-template-columns:1fr 390px;gap:22px;margin-top:22px;align-items:start}.wheelBox{padding:22px;text-align:center;position:relative}.wheelHolder{position:relative;max-width:610px;margin:0 auto;aspect-ratio:1/1}canvas{width:100%;height:100%;display:block;filter:drop-shadow(0 18px 28px rgba(0,0,0,.45))}.pointer{position:absolute;left:50%;top:-4px;transform:translateX(-50%);width:0;height:0;border-left:22px solid transparent;border-right:22px solid transparent;border-top:44px solid var(--gold);z-index:5;filter:drop-shadow(0 4px 4px rgba(0,0,0,.45))}.centreButton{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:126px;height:126px;border-radius:999px;border:8px solid rgba(255,255,255,.14);background:radial-gradient(circle at 30% 20%,#fff6cf,var(--gold) 42%,#d99100);color:#211704;display:grid;place-items:center;text-align:center;font-weight:950;letter-spacing:.4px;box-shadow:0 12px 28px rgba(0,0,0,.4);user-select:none}.resultBanner{margin-top:18px;padding:18px;border-radius:18px;background:rgba(255,207,90,.12);border:1px solid rgba(255,207,90,.35);min-height:80px;display:grid;place-items:center}.resultBanner h2{margin:0;font-size:28px;color:var(--gold)}.resultBanner p{margin:4px 0 0;color:var(--muted)}.side{padding:22px}label{display:block;font-size:13px;color:#d8fff0;font-weight:750;margin:13px 0 7px}input,select{width:100%;padding:13px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:var(--text);outline:none;font-size:15px}input::placeholder{color:rgba(255,255,255,.45)}button{border:0;border-radius:16px;padding:13px 16px;font-weight:900;cursor:pointer;background:var(--green);color:#032018;transition:transform .12s ease,opacity .12s ease,background .12s ease}button:hover{transform:translateY(-1px)}button:disabled{opacity:.45;cursor:not-allowed;transform:none}.secondary{background:rgba(255,255,255,.1);color:var(--text);border:1px solid var(--line)}.danger{background:rgba(255,107,107,.18);color:#ffd7d7;border:1px solid rgba(255,107,107,.38)}.goldPay{width:100%;margin-top:8px;background:linear-gradient(180deg,#ffd95e,#f2b705);color:#172c66;border:2px solid #ffe586;box-shadow:0 10px 22px rgba(0,0,0,.28);display:flex;align-items:center;justify-content:center;gap:10px;font-size:16px}.paypalLogo{font-weight:1000;letter-spacing:-1px}.paypalLogo .pay{color:#003087}.paypalLogo .pal{color:#009cde}.payBox{margin-top:16px;padding:15px;border-radius:18px;background:rgba(0,0,0,.17);border:1px solid var(--line)}.small{color:var(--muted);font-size:13px;line-height:1.45}.notice{padding:12px 14px;border-radius:14px;background:rgba(54,211,153,.1);border:1px solid rgba(54,211,153,.28);color:#d4ffef;margin:13px 0;font-size:13px;line-height:1.42}.warn{background:rgba(255,207,90,.10);border-color:rgba(255,207,90,.32);color:#ffe8a6}.spinWarning{margin-top:22px;padding:18px 20px;border-radius:18px;background:#fff;color:#b00020;border:4px solid #b00020;box-shadow:0 14px 35px rgba(0,0,0,.22)}.spinWarning h2{margin:0 0 8px;font-size:22px;color:#b00020}.spinWarning p{margin:0;color:#b00020;font-size:15px;font-weight:900;line-height:1.5}.draws{margin-top:22px;padding:22px}table{width:100%;border-collapse:collapse;overflow:hidden;border-radius:14px}th,td{padding:11px 10px;border-bottom:1px solid var(--line);text-align:left;font-size:14px}th{color:#ddfff2;background:rgba(255,255,255,.07)}td{color:var(--muted)}.admin{margin-top:22px;padding:22px}details summary{cursor:pointer;font-weight:900;color:#f7fffb}.hidden{display:none!important}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.foot{margin-top:18px;color:rgba(255,255,255,.52);font-size:12px;line-height:1.45}@media(max-width:940px){.hero,.main{grid-template-columns:1fr}.stats{grid-template-columns:1fr}}
+  
+12%{opacity:1}
+  28%{top:18vh;transform:translateX(-50%) scale(1.03) rotate(1deg)}
+  65%{top:18vh;opacity:1;transform:translateX(-50%) scale(1) rotate(0deg)}
+  100%{top:110vh;opacity:0;transform:translateX(-50%) scale(.9) rotate(4deg)}
+}
+
+
+
+12%{opacity:1}
+  26%{top:16vh;transform:translateX(-50%) scale(1.05) rotate(1deg)}
+  70%{top:16vh;opacity:1;transform:translateX(-50%) scale(1) rotate(0)}
+  100%{top:115vh;opacity:0;transform:translateX(-50%) scale(.85) rotate(4deg)}
+}
+8%{opacity:1}
+  100%{transform:translateY(calc(100vh + 260px)) rotate(720deg);opacity:0}
+}
+8%{opacity:1}
+  100%{transform:translateY(calc(100vh + 260px)) rotate(20deg);opacity:0}
+}
+
+
+.welcomeLine{
+  display:inline-flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:center;
+  padding:10px 14px;
+  border-radius:999px;
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.22);
+  font-size:clamp(14px,2.2vw,22px);
+  font-weight:1000;
+  letter-spacing:.2px;
+  line-height:1.15;
+}
+.welcomeRed{color:#ff4d5e;text-shadow:0 2px 4px rgba(0,0,0,.35)}
+.welcomeWhite{color:#ffffff;text-shadow:0 2px 4px rgba(0,0,0,.5)}
+.welcomeBlue{color:#6db7ff;text-shadow:0 2px 4px rgba(0,0,0,.35)}
+
+
+/* Full-screen team celebration */
+#teamCelebration{
+  position:fixed;
+  inset:0;
+  display:none;
+  pointer-events:none;
+  overflow:hidden;
+  z-index:2147483647;
+}
+#teamCelebration.active{
+  display:block;
+}
+.teamCelebrationShade{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.18);
+}
+.teamCelebrationMain{
+  position:absolute;
+  left:50%;
+  top:-260px;
+  transform:translateX(-50%);
+  width:min(92vw,850px);
+  padding:22px 28px;
+  border-radius:30px;
+  background:#fff;
+  border:8px solid #00247d;
+  box-shadow:0 28px 80px rgba(0,0,0,.6);
+  text-align:center;
+  animation:teamCelebrationDrop 7s ease-in-out forwards;
+}
+.teamCelebrationMain small{
+  display:block;
+  color:#c8102e;
+  font-size:clamp(18px,3vw,32px);
+  font-weight:1000;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+.teamCelebrationMain strong{
+  display:block;
+  margin-top:8px;
+  color:#00247d;
+  font-size:clamp(44px,11vw,104px);
+  line-height:.95;
+  font-weight:1000;
+  text-transform:uppercase;
+}
+.teamTape{
+  position:absolute;
+  top:-180px;
+  width:26px;
+  height:125px;
+  border-radius:9px;
+  box-shadow:0 10px 22px rgba(0,0,0,.25);
+  animation-name:teamTapeFall;
+  animation-timing-function:linear;
+  animation-fill-mode:forwards;
+}
+.teamTape.red{background:#c8102e}
+.teamTape.white{background:#fff;border:2px solid #ddd}
+.teamTape.blue{background:#00247d}
+.teamNameTape{
+  position:absolute;
+  top:-160px;
+  padding:9px 18px;
+  border-radius:999px;
+  background:#fff;
+  border:4px solid #c8102e;
+  color:#00247d;
+  font-size:clamp(16px,3vw,30px);
+  font-weight:1000;
+  white-space:nowrap;
+  box-shadow:0 12px 28px rgba(0,0,0,.28);
+  animation-name:teamNameTapeFall;
+  animation-timing-function:linear;
+  animation-fill-mode:forwards;
+}
+@keyframes teamCelebrationDrop{
+  0%{top:-260px;opacity:0;transform:translateX(-50%) scale(.85) rotate(-3deg)}
+  12%{opacity:1}
+  25%{top:15vh;transform:translateX(-50%) scale(1.05) rotate(1deg)}
+  70%{top:15vh;opacity:1;transform:translateX(-50%) scale(1) rotate(0)}
+  100%{top:115vh;opacity:0;transform:translateX(-50%) scale(.88) rotate(4deg)}
+}
+@keyframes teamTapeFall{
+  0%{transform:translateY(-220px) rotate(0deg);opacity:0}
+  8%{opacity:1}
+  92%{opacity:1}
+  100%{transform:translateY(calc(100vh + 300px)) rotate(860deg);opacity:0}
+}
+@keyframes teamNameTapeFall{
+  0%{transform:translateY(-200px) rotate(-8deg);opacity:0}
+  8%{opacity:1}
+  92%{opacity:1}
+  100%{transform:translateY(calc(100vh + 300px)) rotate(24deg);opacity:0}
+}
+
+
+8%{opacity:1}
+  92%{opacity:1}
+  100%{transform:translateY(calc(100vh + 300px)) rotate(12deg);opacity:0}
+}
+
+
+
+.fullPageRollingSlide{min-height:76vh;padding:18px}
+}
+
+
+/* Full-screen bottom-to-top rolling winners credits */
+#winnersCreditsOverlay{
+  position:fixed;
+  inset:0;
+  z-index:2147483000;
+  pointer-events:none;
+  overflow:hidden;
+  background:transparent;
+}
+.winnersCreditsTrack{
+  position:absolute;
+  left:0;
+  right:0;
+  top:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  gap:34vh;
+  animation:winnersCreditsScroll 42s linear infinite;
+}
+.winnersCreditBlock{
+  width:min(94vw,1200px);
+  min-height:58vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:28px;
+}
+.winnersCreditBlock h2,
+.winnersCreditBlock h3,
+.winnersCreditBlock p{
+  margin:8px 0;
+  color:#ffcf5a;
+  font-weight:1000;
+  text-shadow:
+    0 4px 0 rgba(0,0,0,.55),
+    0 12px 34px rgba(0,0,0,.80),
+    0 0 22px rgba(255,207,90,.35);
+}
+.winnersCreditBlock h2{
+  font-size:clamp(52px,11vw,136px);
+  line-height:.92;
+}
+.winnersCreditBlock h3{
+  font-size:clamp(36px,7vw,92px);
+  line-height:1;
+}
+.winnersCreditBlock p{
+  font-size:clamp(30px,6vw,76px);
+  line-height:1.05;
+}
+.winnersCreditAccent{
+  color:#fff4bf!important;
+}
+.winnersCreditSmall{
+  font-size:clamp(30px,5.5vw,68px)!important;
+}
+@keyframes winnersCreditsScroll{
+  0%{transform:translateY(0)}
+  100%{transform:translateY(-720vh)}
+}
+@media(max-width:720px){
+  .winnersCreditsTrack{gap:26vh;animation-duration:48s}
+  .winnersCreditBlock{min-height:64vh;padding:18px}
+}
+
+</style>
 </head>
 <body>
-  <div class="celebration-layer" aria-hidden="true">
-    <div class="credits-track">
-      <div class="credits-roll">
-        <h2>World Cup 2026 Winners</h2><p>?</p>
-        <h2>Runner Up</h2><p>?</p>
-        <h2>Third Place</h2><p>England – Bal Dalved<br>Winning £30</p>
-        <h2>Fourth Place</h2><p>France – Leanne Knowles<br>Winning £10</p>
-        <p class="smaller">All Winnings Will Be Paid By PayPal After The World Cup Final</p>
-        <p class="smaller">Thanks To Everyone That Took Part</p>
-      </div>
+
+  <div id="winnersCreditsOverlay" aria-label="World Cup 2026 winners rolling titles">
+    <div class="winnersCreditsTrack">
+      <section class="winnersCreditBlock">
+        <h2>World Cup 2026 Winners</h2>
+        <p>?</p>
+      </section>
+
+      <section class="winnersCreditBlock">
+        <h2>Runner Up</h2>
+        <p>?</p>
+      </section>
+
+      <section class="winnersCreditBlock">
+        <h2>Third Place</h2>
+        <p>England - Bal Dalved</p>
+        <p class="winnersCreditAccent">Winning £30</p>
+      </section>
+
+      <section class="winnersCreditBlock">
+        <h2>Fourth Place</h2>
+        <p>France - Leanne Knowles</p>
+        <p class="winnersCreditAccent">Winning £10</p>
+      </section>
+
+      <section class="winnersCreditBlock">
+        <h3>All Winnings Will Be Paid By PayPal After The World Cup Final</h3>
+        <p class="winnersCreditSmall">Thanks To Everyone That Took Part</p>
+      </section>
+
+      <section class="winnersCreditBlock" aria-hidden="true">
+        <h2>World Cup 2026 Winners</h2>
+        <p>?</p>
+      </section>
     </div>
-    <div id="tickerTape"></div>
   </div>
+
   <div class="wrap">
-    <section class="hero">
+<section class="hero">
       <div class="card intro">
-        <div class="badge">⚽ World Cup 2026 Sweepstake</div>
+
+        <div class="welcomeLine" aria-label="Welcome to Commissioning's World Cup 2026 Sweepstake">
+          <span class="welcomeRed">Welcome to</span>
+          <span class="welcomeWhite">Commissioning's</span>
+          <span class="welcomeBlue">World Cup 2026 Sweepstake</span>
+        </div>
         <h1>Pay. Spin. Reveal your team.</h1>
-        <p class="subtitle">A simple sweepstake generator for the 48-team World Cup. Players enter their details, pay by PayPal, then spin the roulette wheel to draw one remaining team. Once a team is drawn, it is removed from the wheel.</p>
+        <p class="subtitle">A simple sweepstake generator for the 48-team World Cup. Players enter their details, pay by PayPal Pool, then spin the roulette wheel to draw one remaining team.</p>
         <div class="stats">
           <div class="stat"><strong id="statRemaining">48</strong><span>teams remaining</span></div>
           <div class="stat"><strong id="statTaken">0</strong><span>teams drawn</span></div>
           <div class="stat"><strong id="statPot">£0</strong><span>estimated pot</span></div>
         </div>
+        <div class="progressTile" aria-label="Sweepstake sales progress">
+          <div class="progressHead">
+            <h2>Teams sold progress</h2>
+            <div class="progressCount"><span id="progressSold">0</span> of <span id="progressTotal">48</span> teams sold</div>
+          </div>
+          <div class="progressBar"><div class="progressFill" id="progressFill"></div></div>
+          <p class="progressText" id="progressText">0% sold so far.</p>
+        </div>
+        <div class="payoutTile" aria-label="Prize payout table">
+          <h2>Prize payout table</h2>
+          <div class="payoutGrid">
+            <div class="payoutItem"><span>Winner</span><strong>£150</strong></div>
+            <div class="payoutItem"><span>Runner up</span><strong>£50</strong></div>
+            <div class="payoutItem"><span>Third</span><strong>£30</strong></div>
+            <div class="payoutItem"><span>Fourth</span><strong>£10</strong></div>
+          </div>
+          <p class="payoutNote">Prizes shown are based on all 48 teams being sold. If all teams are not sold, the prize pot and individual prizes will be reduced accordingly. Payment will be made by PayPal.</p>
+        </div>
+        <div class="rulesTile" aria-label="Sweepstake rules">
+          <h2>Sweepstake rules</h2>
+          <ul class="rulesList">
+            <li>One paid entry gives the player one randomly drawn team.</li>
+            <li>Once a team has been drawn, it cannot be changed or drawn again.</li>
+            <li>Teams are drawn at random using the wheel.</li>
+            <li>Team names are hidden on the wheel and in the public draw record until the organiser reveals them.</li>
+            <li>Prizes are based on the final tournament finishing positions.</li>
+            <li>Prize values may reduce if all 48 teams are not sold.</li>
+          </ul>
+        </div>
       </div>
       <div class="card steps">
+        <div class="cupLogoPanel"><img src="assets/world-cup-2026-logo.png" alt="FIFA World Cup 2026 logo"></div>
+        <p class="stepsIntro">Follow the steps below to enter the sweepstake.</p>
         <div class="step"><div class="num">1</div><div><h3>Enter player details</h3><p>Name and email are recorded with the draw.</p></div></div>
-        <div class="step"><div class="num">2</div><div><h3>Pay entry fee</h3><p>Use PayPal buttons when configured. Demo mode is available for testing locally.</p></div></div>
-        <div class="step"><div class="num">3</div><div><h3>Spin the wheel</h3><p>The selected team is locked and removed from future spins on this saved version.</p></div></div>
+        <div class="step"><div class="num">2</div><div><h3>Pay entry fee</h3><p>Use the gold PayPal Pool button.</p></div></div>
+        <div class="step"><div class="num">3</div><div><h3>Spin the wheel</h3><p>Your team is then removed from the wheel.</p></div></div>
       </div>
     </section>
 
@@ -180,47 +328,44 @@
           <canvas id="wheel" width="900" height="900" aria-label="Sweepstake roulette wheel"></canvas>
           <div class="centreButton">WORLD<br>CUP<br>DRAW</div>
         </div>
-        <div class="resultBanner" id="resultBanner">
-          <div><h2>Ready to spin</h2><p>Complete the player and payment step first.</p></div>
-        </div>
+        <div class="resultBanner" id="resultBanner"><div><h2>Loading teams…</h2><p>Please wait.</p></div></div>
       </div>
 
       <aside class="card side">
         <h2 style="margin:0 0 4px">Player Entry</h2>
-        <p class="small">Entry fee: <strong id="feeLabel">£5.00</strong>. The wheel unlocks after payment is confirmed.</p>
+        <p class="small">Entry fee: <strong id="feeLabel">£5.00</strong>. After paying, return here and unlock your draw.</p>
         <label for="playerName">Player name</label>
-        <input id="playerName" placeholder="e.g. Chris Guest" autocomplete="name" />
+        <input id="playerName" placeholder="e.g. Donald Duck" autocomplete="name" />
         <label for="playerEmail">Email address</label>
         <input id="playerEmail" type="email" placeholder="name@example.com" autocomplete="email" />
+        <label for="entriesPaid">Number of entries paid for</label>
+        <input id="entriesPaid" type="number" min="1" max="48" step="1" value="1" inputmode="numeric" />
+        <p class="small" id="entriesHint">Choose how many teams you have paid for. You will get one spin per paid entry.</p>
         <div class="payBox">
-          <div id="paypal-button-container"></div>
-          <button id="demoPayBtn" class="gold" style="width:100%">Demo/Test: Mark as Paid</button>
-          <p class="small" id="payHint">For live PayPal, add your PayPal Client ID in Admin Settings. Until then, use demo mode to test the flow.</p>
+          <a href="https://www.paypal.com/pool/9pYiOg51Iv?sr=accr" target="_blank" rel="noopener" style="text-decoration:none">
+            <button type="button" class="goldPay"><span class="paypalLogo"><span class="pay">Pay</span><span class="pal">Pal</span></span> Pay entry via PayPal Pool</button>
+          </a>
+          <button id="unlockBtn" class="secondary" style="width:100%;margin-top:10px">I have paid - unlock my draw</button>
+          <p class="small" id="payHint">After paying through PayPal, return here and unlock your draw before spinning the wheel.</p>
         </div>
-        <button id="spinBtn" style="width:100%; margin-top:14px" disabled>Spin the wheel</button>
-        <div class="notice warn"><strong>Static-site note:</strong> local browser storage removes teams on this device. For a public Netlify link used by lots of people at the same time, connect the save/load functions to Firebase, Supabase or Netlify Functions so everyone shares the same team list.</div>
+        <button id="spinBtn" style="width:100%;margin-top:14px" disabled>Spin the wheel</button>
+        <div id="entryStatus" class="notice hidden"></div>
+        <div id="errorBox" class="notice warn hidden"></div>
       </aside>
     </section>
 
-    <section class="card teams">
-      <div class="teamsHead">
-        <div><h2 style="margin:0">Teams on the wheel</h2><p class="small" style="margin:4px 0 0">Taken teams are crossed out and no longer available.</p></div>
-        <button class="secondary" id="toggleTeams">Hide teams</button>
-      </div>
-      <div class="teamsGrid" id="teamsGrid"></div>
+    <section class="spinWarning">
+      <h2>Important: only press Spin The Wheel once</h2>
+      <p>Please press the <strong>Spin The Wheel</strong> button once for each entry you have paid for. If you miss your team, contact <strong>Justin Haywood</strong> and we will let you know your team. The generator now counts your paid entries and only gives one spin per paid entry. We cannot add teams drawn incorrectly back into the draw.</p>
     </section>
 
     <section class="card draws">
       <h2 style="margin:0 0 12px">Draw record</h2>
       <div style="overflow:auto">
         <table>
-          <thead><tr><th>Date/time</th><th>Player</th><th>Email</th><th>Team</th><th>Payment ref</th></tr></thead>
-          <tbody id="drawTable"></tbody>
+          <thead><tr><th>Date/time</th><th>Player</th><th>Team</th></tr></thead>
+          <tbody id="drawTable"><tr><td colspan="3">Loading draw record…</td></tr></tbody>
         </table>
-      </div>
-      <div class="actions">
-        <button class="secondary" id="exportBtn">Export draw data</button>
-        <button class="secondary" id="copyLinkBtn">Copy page link</button>
       </div>
     </section>
 
@@ -229,237 +374,418 @@
         <summary>Admin settings</summary>
         <div id="adminLogin">
           <label for="adminPin">Admin PIN</label>
-          <input id="adminPin" type="password" placeholder="Default: 1234" />
-          <button id="adminUnlock" style="margin-top:10px">Unlock admin</button>
-        </div>
-        <div id="adminPanel" class="hidden">
-          <div class="notice">Use this panel before publishing to set your entry fee and PayPal Client ID. Keep the PIN simple only for testing; a real shared version should protect admin actions on the server.</div>
-          <label for="entryFee">Entry fee</label>
-          <input id="entryFee" type="number" min="0" step="0.01" />
-          <label for="currency">Currency</label>
-          <select id="currency"><option value="GBP">GBP</option><option value="USD">USD</option><option value="EUR">EUR</option></select>
-          <label for="paypalClientId">PayPal Client ID</label>
-          <input id="paypalClientId" placeholder="Paste your live PayPal Client ID here" />
-          <label for="adminPinSet">Change admin PIN</label>
-          <input id="adminPinSet" placeholder="New PIN" />
+          <input id="adminPin" type="password" placeholder="Enter admin PIN" />
           <div class="actions">
-            <button id="saveSettings">Save settings</button>
-            <button id="importBtn" class="secondary">Import draw data</button>
-            <button id="resetBtn" class="danger">Reset sweepstake</button>
+            <button id="revealBtn" class="secondary">Reveal teams in draw record</button>
+            <button id="hideTeamsBtn" class="secondary">Hide teams in draw record</button>
+            <button id="downloadEntrantsBtn" class="secondary">Download entrants list</button>
           </div>
-          <input type="file" id="importFile" class="hidden" accept="application/json" />
+          <div class="notice warn" style="margin-top:16px">
+            <strong>Admin allocate team</strong><br>
+            Use this if someone has paid but their spin failed before a team was allocated. This will randomly allocate one remaining team and add it to the draw record.
+          </div>
+          <label for="adminAllocName">Player name</label>
+          <input id="adminAllocName" placeholder="e.g. Donald Duck" autocomplete="off" />
+          <label for="adminAllocEmail">Email address</label>
+          <input id="adminAllocEmail" type="email" placeholder="name@example.com" autocomplete="off" />
+          <button id="allocateBtn" class="goldPay" style="margin-top:10px">Admin allocate one team</button>
+          <div class="notice warn" style="margin-top:16px">
+            <strong>Cancel entry and return team</strong><br>
+            Use this only if someone has been allocated a team in error. The entry will be removed from the draw record and the team will go back into the draw.
+          </div>
+          <label for="cancelEntrySelect">Entry to cancel</label>
+          <select id="cancelEntrySelect"><option value="">No entries available</option></select>
+          <button id="cancelEntryBtn" class="danger" style="margin-top:10px">Cancel selected entry and return team</button>
+          <button id="resetBtn" class="danger" style="margin-top:10px">Reset sweepstake</button>
         </div>
+        <p class="foot">Admin actions are protected by the Netlify environment variable <strong>ADMIN_PIN</strong>.</p>
       </details>
-      <p class="foot">PayPal integration note: this front-end can show PayPal buttons and record a successful browser capture. For a production sweepstake involving money, use a small server-side verification step so PayPal payments cannot be spoofed.</p>
     </section>
   </div>
-
+  <div id="teamCelebration" aria-hidden="true"></div>
 <script>
 (function(){
-  const DEFAULT_TEAMS = [
-    {group:'A', name:'Mexico'}, {group:'A', name:'South Africa'}, {group:'A', name:'Korea Republic'}, {group:'A', name:'Czechia'},
-    {group:'B', name:'Canada'}, {group:'B', name:'Bosnia and Herzegovina'}, {group:'B', name:'Qatar'}, {group:'B', name:'Switzerland'},
-    {group:'C', name:'Brazil'}, {group:'C', name:'Morocco'}, {group:'C', name:'Haiti'}, {group:'C', name:'Scotland'},
-    {group:'D', name:'USA'}, {group:'D', name:'Paraguay'}, {group:'D', name:'Australia'}, {group:'D', name:'Türkiye'},
-    {group:'E', name:'Côte d’Ivoire'}, {group:'E', name:'Ecuador'}, {group:'E', name:'Germany'}, {group:'E', name:'Curaçao'},
-    {group:'F', name:'Netherlands'}, {group:'F', name:'Japan'}, {group:'F', name:'Tunisia'}, {group:'F', name:'Sweden'},
-    {group:'G', name:'Belgium'}, {group:'G', name:'IR Iran'}, {group:'G', name:'Egypt'}, {group:'G', name:'New Zealand'},
-    {group:'H', name:'Saudi Arabia'}, {group:'H', name:'Uruguay'}, {group:'H', name:'Spain'}, {group:'H', name:'Cabo Verde'},
-    {group:'I', name:'France'}, {group:'I', name:'Senegal'}, {group:'I', name:'Norway'}, {group:'I', name:'Iraq'},
-    {group:'J', name:'Argentina'}, {group:'J', name:'Algeria'}, {group:'J', name:'Austria'}, {group:'J', name:'Jordan'},
-    {group:'K', name:'Portugal'}, {group:'K', name:'Congo DR'}, {group:'K', name:'Uzbekistan'}, {group:'K', name:'Colombia'},
-    {group:'L', name:'England'}, {group:'L', name:'Ghana'}, {group:'L', name:'Panama'}, {group:'L', name:'Croatia'}
-  ];
-  const STORE_KEY = 'wc2026_sweepstake_v1';
-  const SETTINGS_KEY = 'wc2026_sweepstake_settings_v1';
-  const $ = id => document.getElementById(id);
-  const canvas = $('wheel');
-  const ctx = canvas.getContext('2d');
-  let rotation = 0;
-  let spinning = false;
-  let paid = false;
-  let currentPaymentRef = '';
-  let settings = loadSettings();
-  let state = loadState();
+  const $=id=>document.getElementById(id);
+  const canvas=$('wheel'); const ctx=canvas.getContext('2d');
+  const PAYPAL_POOL_URL='https://www.paypal.com/pool/9pYiOg51Iv?sr=accr';
+  const ENTRY_FEE=5; const CURRENCY='GBP';
+  let state={teams:[],draws:[]}; let rotation=0; let spinning=false; let paid=false; let currentPaymentRef='PAYPAL-POOL'; let lastAvailableBeforeSpin=[]; let paidEntries=0; let entriesRemaining=0; let activePlayer=null; let audioCtx=null; let rouletteSoundTimers=[];
+  const TWO=Math.PI*2;
 
-  function loadSettings(){
-    try { return {...{entryFee:5, currency:'GBP', paypalClientId:'', adminPin:'1234'}, ...JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}')}; }
-    catch(e){ return {entryFee:5, currency:'GBP', paypalClientId:'', adminPin:'1234'}; }
-  }
-  function saveSettingsObj(){ localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }
-  function loadState(){
-    try {
-      const saved = JSON.parse(localStorage.getItem(STORE_KEY)||'null');
-      if(saved && Array.isArray(saved.teams) && Array.isArray(saved.draws)) return saved;
-    } catch(e) {}
-    return { teams: DEFAULT_TEAMS.map(t => ({...t, taken:false, player:null, paymentRef:null, drawnAt:null})), draws: [] };
-  }
-  function saveState(){ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }
-  function moneySymbol(){ return settings.currency === 'GBP' ? '£' : settings.currency === 'EUR' ? '€' : '$'; }
-  function availableTeams(){ return state.teams.filter(t=>!t.taken); }
-  function updateStats(){
-    const remaining = availableTeams().length;
-    const taken = state.teams.length - remaining;
-    $('statRemaining').textContent = remaining;
-    $('statTaken').textContent = taken;
-    $('statPot').textContent = moneySymbol() + (taken * Number(settings.entryFee || 0)).toFixed(0);
-    $('feeLabel').textContent = moneySymbol() + Number(settings.entryFee || 0).toFixed(2);
-  }
-  function drawWheel(){
-    const teams = availableTeams();
-    const w = canvas.width, h = canvas.height, cx = w/2, cy = h/2, r = Math.min(w,h)/2 - 18;
-    ctx.clearRect(0,0,w,h);
-    if(!teams.length){
-      ctx.fillStyle = '#123d34'; ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#ffcf5a'; ctx.font = 'bold 54px system-ui'; ctx.textAlign='center'; ctx.fillText('SOLD OUT', cx, cy);
-      return;
+  function moneySymbol(){return CURRENCY==='GBP'?'£':CURRENCY==='EUR'?'€':'$'}
+  function escapeHtml(str){return String(str||'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));}
+  function showError(msg){$('errorBox').textContent=msg;$('errorBox').classList.remove('hidden')}
+  function clearError(){$('errorBox').classList.add('hidden');$('errorBox').textContent=''}
+  function availableTeams(){return (state.teams||[]).filter(t=>!t.taken)}
+
+
+
+  function showTeamCelebration(teamName){
+    const overlay=document.getElementById('teamCelebration');
+    if(!overlay || !teamName) return;
+
+    const cleanName=String(teamName).toUpperCase();
+    overlay.innerHTML='<div class="teamCelebrationShade"></div>';
+    overlay.classList.add('active');
+
+    const main=document.createElement('div');
+    main.className='teamCelebrationMain';
+    main.innerHTML='<small>Your team is</small><strong>'+escapeHtml(cleanName)+'</strong>';
+    overlay.appendChild(main);
+
+    const colours=['red','white','blue'];
+
+    for(let i=0;i<90;i++){
+      const tape=document.createElement('div');
+      tape.className='teamTape '+colours[i%3];
+      tape.style.left=(Math.random()*100)+'vw';
+      tape.style.animationDelay=(Math.random()*1.4)+'s';
+      tape.style.animationDuration=(4.4+Math.random()*3.2)+'s';
+      tape.style.transform='rotate('+(Math.random()*180)+'deg)';
+      overlay.appendChild(tape);
     }
-    const slice = (Math.PI*2)/teams.length;
-    const palette = ['#36d399','#ffcf5a','#70d6ff','#ff8fab','#b8f7d4','#ffd166','#9bf6ff','#cdb4db','#80ed99','#fca311'];
-    ctx.save(); ctx.translate(cx,cy); ctx.rotate(rotation); ctx.translate(-cx,-cy);
-    teams.forEach((team,i)=>{
-      const start = i*slice; const end = start+slice;
-      ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,start,end); ctx.closePath();
-      ctx.fillStyle = palette[i % palette.length]; ctx.fill();
-      ctx.strokeStyle = 'rgba(3,32,24,.35)'; ctx.lineWidth = 2; ctx.stroke();
-      ctx.save(); ctx.translate(cx,cy); ctx.rotate(start + slice/2); ctx.textAlign = 'right'; ctx.fillStyle = '#05231a';
-      const fontSize = teams.length > 36 ? 17 : teams.length > 24 ? 21 : 26;
-      ctx.font = `900 ${fontSize}px system-ui`;
-      ctx.fillText(team.name, r-18, 7);
-      ctx.restore();
-    });
-    ctx.restore();
-    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.strokeStyle = 'rgba(255,255,255,.33)'; ctx.lineWidth = 12; ctx.stroke();
+
+    for(let i=0;i<24;i++){
+      const nameTape=document.createElement('div');
+      nameTape.className='teamNameTape';
+      nameTape.textContent=cleanName;
+      nameTape.style.left=(Math.random()*78)+'vw';
+      nameTape.style.animationDelay=(Math.random()*1.8)+'s';
+      nameTape.style.animationDuration=(5+Math.random()*3)+'s';
+      overlay.appendChild(nameTape);
+    }
+
+    clearTimeout(window.__teamCelebrationTimer);
+    window.__teamCelebrationTimer=setTimeout(function(){
+      overlay.classList.remove('active');
+      overlay.innerHTML='';
+    },9000);
   }
-  function renderTeams(){
-    $('teamsGrid').innerHTML = state.teams.map(t => `<div class="teamPill ${t.taken?'taken':''}"><span>${t.name}</span><small>G${t.group}</small></div>`).join('');
+
+
+
+
+
+
+
+
+
+  async function api(path, options={}){
+    const res=await fetch('/.netlify/functions/'+path,{headers:{'Content-Type':'application/json'},cache:'no-store',...options});
+    let data={}; try{data=await res.json()}catch(e){}
+    if(!res.ok || data.ok===false) throw new Error(data.error || ('Request failed: '+res.status));
+    return data;
   }
+
+  async function loadSharedState(){
+    clearError();
+    try{
+      const data=await api('get-state');
+      state=data.state;
+      $('resultBanner').innerHTML='<div><h2>Team Names Have Been Removed From The Wheel To Hide Remaining Teams</h2><p>The Team You Draw Will Appear</p><h2 style="margin-top:12px">Ready to spin</h2><p>Complete the player and payment step first.</p></div>';
+      refresh();
+    }catch(err){
+      state={teams:[],draws:[]};
+      drawWheel(); renderDraws(); updateStats();
+      $('resultBanner').innerHTML='<div><h2>Setup needed</h2><p>Netlify Functions are not responding yet.</p></div>';
+      showError('The shared draw record could not be loaded. Check that the Netlify deploy includes the netlify/functions folder. '+err.message);
+    }
+  }
+
+  function updateStats(){const total=(state.teams||[]).length||48;const remaining=availableTeams().length;const taken=Math.max(0,total-remaining);const pct=total?Math.round((taken/total)*100):0;$('statRemaining').textContent=remaining;$('statTaken').textContent=taken;$('statPot').textContent=moneySymbol()+(taken*ENTRY_FEE).toFixed(0);$('feeLabel').textContent=moneySymbol()+ENTRY_FEE.toFixed(2);$('progressSold').textContent=taken;$('progressTotal').textContent=total;$('progressFill').style.width=Math.min(100,pct)+'%';$('progressText').textContent=pct+'% sold so far.'}
+
+  function drawWheel(){
+    const teams=availableTeams(); const w=canvas.width,h=canvas.height,cx=w/2,cy=h/2,r=Math.min(w,h)/2-18;
+    ctx.clearRect(0,0,w,h);
+    if(!teams.length){ctx.fillStyle='#123d34';ctx.beginPath();ctx.arc(cx,cy,r,0,TWO);ctx.fill();ctx.fillStyle='#ffcf5a';ctx.font='bold 48px system-ui';ctx.textAlign='center';ctx.fillText((state.teams||[]).length?'SOLD OUT':'NO TEAMS',cx,cy);return}
+    const slice=TWO/teams.length; const palette=['#36d399','#ffcf5a','#70d6ff','#ff8fab','#b8f7d4','#ffd166','#9bf6ff','#cdb4db','#80ed99','#fca311'];
+    ctx.save();ctx.translate(cx,cy);ctx.rotate(rotation);ctx.translate(-cx,-cy);
+    teams.forEach((team,i)=>{const start=i*slice,end=start+slice;ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,start,end);ctx.closePath();ctx.fillStyle=palette[i%palette.length];ctx.fill();ctx.strokeStyle='rgba(3,32,24,.35)';ctx.lineWidth=2;ctx.stroke();/* Country names intentionally hidden on the wheel so remaining teams are not revealed before the spin. */});
+    ctx.restore();ctx.beginPath();ctx.arc(cx,cy,r,0,TWO);ctx.strokeStyle='rgba(255,255,255,.33)';ctx.lineWidth=12;ctx.stroke();
+  }
+
   function renderDraws(){
-    if(!state.draws.length){ $('drawTable').innerHTML = '<tr><td colspan="5">No teams have been drawn yet.</td></tr>'; return; }
-    $('drawTable').innerHTML = state.draws.slice().reverse().map(d => `<tr><td>${new Date(d.drawnAt).toLocaleString()}</td><td>${escapeHtml(d.playerName)}</td><td>${escapeHtml(d.playerEmail)}</td><td><strong>${escapeHtml(d.team)}</strong></td><td>${escapeHtml(d.paymentRef||'')}</td></tr>`).join('');
+    const revealTeams = !!state.revealTeamsInDrawRecord;
+    if(!state.draws || !state.draws.length){$('drawTable').innerHTML='<tr><td colspan="3">No teams have been drawn yet.</td></tr>'; renderCancelOptions(); return}
+    $('drawTable').innerHTML=state.draws.slice().reverse().map(d=>{
+      const teamCell = revealTeams ? `<strong>${escapeHtml(d.team)}</strong>` : '<em>Hidden until all tickets are sold</em>';
+      return `<tr><td>${new Date(d.drawnAt).toLocaleString()}</td><td>${escapeHtml(d.playerName)}</td><td>${teamCell}</td></tr>`;
+    }).join('');
+    renderCancelOptions();
   }
-  function escapeHtml(str){ return String(str||'').replace(/[&<>'"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m])); }
-  function refresh(){ updateStats(); drawWheel(); renderTeams(); renderDraws(); $('spinBtn').disabled = !paid || spinning || !availableTeams().length; }
-  function validatePlayer(){
-    const name = $('playerName').value.trim(); const email = $('playerEmail').value.trim();
-    if(!name){ alert('Please enter the player name.'); return null; }
-    if(!email || !email.includes('@')){ alert('Please enter a valid email address.'); return null; }
-    return {name,email};
+
+  function renderCancelOptions(){
+    const select=$('cancelEntrySelect');
+    if(!select)return;
+    const draws=state.draws||[];
+    if(!draws.length){select.innerHTML='<option value="">No entries available</option>';return}
+    select.innerHTML='<option value="">Select an entry to cancel</option>'+draws.map((d,i)=>{
+      const label=`${new Date(d.drawnAt).toLocaleString()} - ${d.playerName||'Unknown'} - ${d.team||'Unknown team'}`;
+      return `<option value="${i}">${escapeHtml(label)}</option>`;
+    }).join('');
   }
-  function markPaid(ref){
-    const player = validatePlayer(); if(!player) return;
-    paid = true; currentPaymentRef = ref || ('DEMO-' + Date.now());
-    $('resultBanner').innerHTML = '<div><h2>Payment confirmed</h2><p>Now spin the wheel to draw your team.</p></div>';
-    refresh();
+
+  function updateEntryStatus(){
+    const box=$('entryStatus');
+    if(!paid || !activePlayer){box.classList.add('hidden');box.textContent='';return}
+    box.classList.remove('hidden');
+    box.innerHTML='<strong>Paid entries unlocked:</strong> '+entriesRemaining+' of '+paidEntries+' spin'+(entriesRemaining===1?'':'s')+' remaining for '+escapeHtml(activePlayer.name)+'.';
   }
-  function selectedIndexFromRotation(finalRotation, count){
-    const pointerAngle = -Math.PI/2;
-    const normalized = ((pointerAngle - finalRotation) % (Math.PI*2) + Math.PI*2) % (Math.PI*2);
-    return Math.floor(normalized / ((Math.PI*2)/count));
+
+
+  function renderAdminTeamOptions(){
+    const select=$('adminAllocTeam');
+    if(!select) return;
+    const current=select.value;
+    const teams=availableTeams().slice().sort((a,b)=>String(a.name).localeCompare(String(b.name)));
+    select.innerHTML='<option value="">Random remaining team</option>'+teams.map(t=>`<option value="${escapeHtml(t.name)}">${escapeHtml(t.name)} ${t.group ? '(Group '+escapeHtml(t.group)+')' : ''}</option>`).join('');
+    if(current && teams.some(t=>t.name===current)) select.value=current;
   }
-  function spin(){
-    const player = validatePlayer(); if(!player || !paid || spinning) return;
-    const teams = availableTeams(); if(!teams.length){ alert('All teams have been drawn.'); return; }
-    spinning = true; $('spinBtn').disabled = true;
-    const extraTurns = 7 + Math.random()*4;
-    const target = Math.random() * Math.PI*2;
-    const start = rotation;
-    const end = rotation + extraTurns*Math.PI*2 + target;
-    const duration = 5200; const started = performance.now();
-    function easeOutCubic(t){ return 1 - Math.pow(1-t,3); }
+  function refresh(){updateStats();drawWheel();renderDraws();renderAdminTeamOptions();updateEntryStatus();$('spinBtn').disabled=!paid||spinning||entriesRemaining<=0||!availableTeams().length}
+  function validatePlayer(){const name=$('playerName').value.trim();const email=$('playerEmail').value.trim();if(!name){alert('Please enter the player name.');return null}if(!email||!email.includes('@')){alert('Please enter a valid email address.');return null}return{name,email}}
+  function getEntriesPaid(){const n=Math.floor(Number($('entriesPaid').value||1)); if(!Number.isFinite(n)||n<1){alert('Please enter how many entries you have paid for.');return 0} const available=availableTeams().length||48; if(n>available){alert('There are only '+available+' teams remaining. Please reduce the number of entries.');return 0} return n}
+
+  $('unlockBtn').addEventListener('click',()=>{const player=validatePlayer();if(!player)return;const entries=getEntriesPaid();if(!entries)return;paid=true;paidEntries=entries;entriesRemaining=entries;activePlayer=player;currentPaymentRef='PAYPAL-POOL-'+Date.now();$('resultBanner').innerHTML='<div><h2>Payment marked</h2><p>You have unlocked '+entries+' spin'+(entries===1?'':'s')+'. Press Spin The Wheel once per paid entry.</p></div>';refresh()});
+
+  function clearRouletteSoundTimers(){
+    rouletteSoundTimers.forEach(t=>clearTimeout(t));
+    rouletteSoundTimers=[];
+  }
+
+  function playRouletteClick(volume=0.18){
+    try{
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      if(audioCtx.state === 'suspended') audioCtx.resume();
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(850 + Math.random()*260, now);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(volume, now + 0.006);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.055);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.06);
+    }catch(e){
+      // Sound is optional; if a browser blocks audio, the draw still works.
+    }
+  }
+
+  function startRouletteSound(duration=5200){
+    clearRouletteSoundTimers();
+    let elapsed = 0;
+    function scheduleNext(){
+      const progress = Math.min(1, elapsed / duration);
+      playRouletteClick(0.16 - progress*0.06);
+      const delay = 45 + progress*190 + Math.random()*18;
+      elapsed += delay;
+      if(elapsed < duration - 120){
+        rouletteSoundTimers.push(setTimeout(scheduleNext, delay));
+      }
+    }
+    scheduleNext();
+  }
+
+  function scrollWheelIntoView(target='wheel'){
+    const el = target === 'result' ? $('resultBanner') : canvas.closest('.wheelBox');
+    if(!el) return;
+    try { el.scrollIntoView({behavior:'smooth', block:'start'}); }
+    catch(e) { el.scrollIntoView(true); }
+  }
+
+  function finalRotationForTeam(chosenName){
+    const teams=lastAvailableBeforeSpin; const idx=Math.max(0,teams.findIndex(t=>t.name===chosenName)); const slice=TWO/teams.length; const pointer=-Math.PI/2; const targetAngle=idx*slice+slice/2; let base=pointer-targetAngle; const min=rotation+TWO*7; while(base<min)base+=TWO; return base;
+  }
+
+  async function spin(){
+    const player=activePlayer || validatePlayer();
+    if(!player||!paid||spinning||entriesRemaining<=0)return;
+    const teams=availableTeams();
+    if(!teams.length){alert('All teams have been drawn.');return}
+    const confirmMsg='You are about to use 1 paid entry. '+(entriesRemaining-1)+' spin'+((entriesRemaining-1)===1?'':'s')+' will remain after this draw. Press OK to spin.';
+    if(!confirm(confirmMsg))return;
+
+    scrollWheelIntoView('wheel');
+
+    // Start the visible wheel movement immediately. Earlier versions waited for
+    // the server response before animating, which could look like the button had
+    // done nothing on slower connections.
+    spinning=true;
+    $('spinBtn').disabled=true;
+    clearError();
+    lastAvailableBeforeSpin=teams.slice();
+    $('resultBanner').innerHTML='<div><h2>Spinning...</h2><p>Your team is being drawn. Please do not press back or refresh.</p></div>';
+    startRouletteSound(9000);
+
+    let data=null;
+    let apiError=null;
+    api('draw-team',{method:'POST',body:JSON.stringify({playerName:player.name,playerEmail:player.email,paymentRef:currentPaymentRef})})
+      .then(result=>{data=result})
+      .catch(err=>{apiError=err});
+
+    const spinStartedAt=performance.now();
+    const maxWaitMs=15000;
+
+    function waitingFrame(){
+      if(apiError){
+        clearRouletteSoundTimers();
+        spinning=false;
+        refresh();
+        showError(apiError.message || 'The draw could not be completed.');
+        return;
+      }
+      if(data){
+        settleSpin(data);
+        return;
+      }
+      if(performance.now()-spinStartedAt>maxWaitMs){
+        clearRouletteSoundTimers();
+        spinning=false;
+        refresh();
+        showError('The draw server did not respond in time. No team has been allocated. Please try again, or ask Justin to use Admin allocate one team.');
+        return;
+      }
+      rotation += 0.16;
+      drawWheelUsingList(lastAvailableBeforeSpin);
+      requestAnimationFrame(waitingFrame);
+    }
+    requestAnimationFrame(waitingFrame);
+  }
+
+  function settleSpin(data){
+    const start=rotation;
+    const end=finalRotationForTeam(data.draw.team);
+    const duration=4200;
+    const started=performance.now();
+    function easeOutCubic(t){return 1-Math.pow(1-t,3)}
     function frame(now){
-      const p = Math.min(1,(now-started)/duration);
-      rotation = start + (end-start)*easeOutCubic(p);
-      drawWheel();
-      if(p<1) requestAnimationFrame(frame); else finishSpin(player);
+      const p=Math.min(1,(now-started)/duration);
+      rotation=start+(end-start)*easeOutCubic(p);
+      drawWheelUsingList(lastAvailableBeforeSpin);
+      if(p<1)requestAnimationFrame(frame);else finishSpin(data);
     }
     requestAnimationFrame(frame);
   }
-  function finishSpin(player){
-    const teams = availableTeams();
-    const idx = selectedIndexFromRotation(rotation, teams.length);
-    const chosen = teams[idx] || teams[Math.floor(Math.random()*teams.length)];
-    const original = state.teams.find(t => t.name === chosen.name);
-    original.taken = true; original.player = player; original.paymentRef = currentPaymentRef; original.drawnAt = new Date().toISOString();
-    state.draws.push({drawnAt: original.drawnAt, playerName: player.name, playerEmail: player.email, team: original.name, group: original.group, paymentRef: currentPaymentRef});
-    saveState(); paid = false; currentPaymentRef = ''; spinning = false;
-    $('resultBanner').innerHTML = `<div><h2>${escapeHtml(player.name)} drew ${escapeHtml(original.name)}!</h2><p>Group ${escapeHtml(original.group)}. This team has now been removed from the wheel.</p></div>`;
-    $('playerName').value = ''; $('playerEmail').value = '';
+
+  function drawWheelUsingList(teams){
+    const w=canvas.width,h=canvas.height,cx=w/2,cy=h/2,r=Math.min(w,h)/2-18;ctx.clearRect(0,0,w,h);if(!teams.length)return;const slice=TWO/teams.length;const palette=['#36d399','#ffcf5a','#70d6ff','#ff8fab','#b8f7d4','#ffd166','#9bf6ff','#cdb4db','#80ed99','#fca311'];ctx.save();ctx.translate(cx,cy);ctx.rotate(rotation);ctx.translate(-cx,-cy);teams.forEach((team,i)=>{const start=i*slice,end=start+slice;ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,start,end);ctx.closePath();ctx.fillStyle=palette[i%palette.length];ctx.fill();ctx.strokeStyle='rgba(3,32,24,.35)';ctx.lineWidth=2;ctx.stroke();/* Country names intentionally hidden on the wheel so remaining teams are not revealed before the spin. */});ctx.restore();ctx.beginPath();ctx.arc(cx,cy,r,0,TWO);ctx.strokeStyle='rgba(255,255,255,.33)';ctx.lineWidth=12;ctx.stroke();
+  }
+
+  function finishSpin(data){
+    clearRouletteSoundTimers();
+    state=data.state; spinning=false; entriesRemaining=Math.max(0,entriesRemaining-1);
+    const more=entriesRemaining>0;
+    $('resultBanner').innerHTML=more
+      ? `<div><h2>${escapeHtml(data.draw.playerName)} drew ${escapeHtml(data.draw.team)}!</h2><p>Group ${escapeHtml(data.draw.group)}. You have ${entriesRemaining} paid spin${entriesRemaining===1?'':'s'} remaining.</p></div>`
+      : `<div><h2>${escapeHtml(data.draw.playerName)} drew ${escapeHtml(data.draw.team)}!</h2><p>Group ${escapeHtml(data.draw.group)}. You have used all paid entries. Please pay again if you want another team.</p></div>`;
+    showTeamCelebration(data.draw.team);
+    if(!more){paid=false; currentPaymentRef=''; paidEntries=0; entriesRemaining=0; activePlayer=null; $('playerName').value='';$('playerEmail').value='';$('entriesPaid').value='1'}
+    scrollWheelIntoView('result');
     refresh();
   }
-  function exportData(){
-    const payload = {exportedAt:new Date().toISOString(), settings:{entryFee:settings.entryFee,currency:settings.currency}, state};
-    const blob = new Blob([JSON.stringify(payload,null,2)], {type:'application/json'});
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'world-cup-2026-sweepstake-draw.json'; a.click(); URL.revokeObjectURL(a.href);
+
+  $('spinBtn').addEventListener('click',spin);
+  async function setDrawRecordReveal(reveal){
+    const pin=$('adminPin').value.trim();
+    if(!pin){alert('Enter the admin PIN.');return}
+    try{
+      const data=await api('set-reveal',{method:'POST',body:JSON.stringify({pin,reveal})});
+      state=data.state;
+      $('resultBanner').innerHTML = reveal
+        ? '<div><h2>Teams revealed</h2><p>The draw record now shows selected teams.</p></div>'
+        : '<div><h2>Teams hidden</h2><p>The draw record now hides selected teams.</p></div>';
+      refresh();
+    }catch(err){showError(err.message)}
   }
-  function setupPayPal(){
-    $('entryFee').value = settings.entryFee; $('currency').value = settings.currency; $('paypalClientId').value = settings.paypalClientId; $('adminPinSet').value = '';
-    if(!settings.paypalClientId){ return; }
-    $('payHint').textContent = 'PayPal is configured. Use the PayPal button to unlock the wheel after payment.';
-    $('demoPayBtn').textContent = 'Demo/Test: Mark as Paid';
-    const script = document.createElement('script');
-    script.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(settings.paypalClientId)}&currency=${encodeURIComponent(settings.currency)}`;
-    script.onload = () => {
-      if(!window.paypal) return;
-      $('paypal-button-container').innerHTML = '';
-      window.paypal.Buttons({
-        createOrder: (data, actions) => {
-          const player = validatePlayer(); if(!player) throw new Error('Player details required');
-          return actions.order.create({ purchase_units: [{ amount: { value: Number(settings.entryFee||0).toFixed(2), currency_code: settings.currency }, description: 'World Cup 2026 Sweepstake Entry' }] });
-        },
-        onApprove: (data, actions) => actions.order.capture().then(details => markPaid(data.orderID || (details && details.id) || 'PAYPAL-PAID')),
-        onError: err => alert('PayPal payment could not be completed. Please try again.')
-      }).render('#paypal-button-container');
-    };
-    document.head.appendChild(script);
+  $('revealBtn').addEventListener('click',()=>setDrawRecordReveal(true));
+  $('hideTeamsBtn').addEventListener('click',()=>setDrawRecordReveal(false));
+
+  async function adminAllocateTeam(){
+    const pin=$('adminPin').value.trim();
+    const playerName=$('adminAllocName').value.trim();
+    const playerEmail=$('adminAllocEmail').value.trim();
+    if(!pin){alert('Enter the admin PIN.');return}
+    if(!playerName){alert('Enter the player name.');return}
+    if(!playerEmail || !playerEmail.includes('@')){alert('Enter a valid email address.');return}
+    const teamName=$('adminAllocTeam') ? $('adminAllocTeam').value.trim() : '';
+    const allocText=teamName ? teamName : 'one random remaining team';
+    if(!confirm('Allocate '+allocText+' to '+playerName+'? This cannot be undone unless the entry is cancelled and returned.'))return;
+    clearError();
+    try{
+      const data=await api('allocate-team',{method:'POST',body:JSON.stringify({pin,playerName,playerEmail,teamName,paymentRef:teamName?'ADMIN-SPECIFIC-ALLOCATED':'ADMIN-ALLOCATED'})});
+      state=data.state;
+      $('resultBanner').innerHTML=`<div><h2>Admin allocated ${escapeHtml(data.draw.team)}</h2><p>${escapeHtml(data.draw.playerName)} has been allocated Group ${escapeHtml(data.draw.group)}. This team has now been removed from future draws.</p></div>`;
+      showTeamCelebration(data.draw.team);
+      $('adminAllocName').value='';
+      $('adminAllocEmail').value='';
+      if($('adminAllocTeam')) $('adminAllocTeam').value='';
+        refresh();
+    }catch(err){showError(err.message)}
   }
 
-  $('demoPayBtn').addEventListener('click', () => markPaid('DEMO-' + Date.now()));
-  $('spinBtn').addEventListener('click', spin);
-  $('toggleTeams').addEventListener('click', () => { const grid=$('teamsGrid'); grid.classList.toggle('hidden'); $('toggleTeams').textContent = grid.classList.contains('hidden') ? 'Show teams' : 'Hide teams'; });
-  $('exportBtn').addEventListener('click', exportData);
-  $('copyLinkBtn').addEventListener('click', async () => { try { await navigator.clipboard.writeText(location.href); alert('Link copied.'); } catch(e) { prompt('Copy this link:', location.href); } });
-  $('adminUnlock').addEventListener('click', () => { if($('adminPin').value === settings.adminPin){ $('adminLogin').classList.add('hidden'); $('adminPanel').classList.remove('hidden'); } else alert('Wrong PIN.'); });
-  $('saveSettings').addEventListener('click', () => {
-    settings.entryFee = Number($('entryFee').value || 0); settings.currency = $('currency').value; settings.paypalClientId = $('paypalClientId').value.trim();
-    if($('adminPinSet').value.trim()) settings.adminPin = $('adminPinSet').value.trim();
-    saveSettingsObj(); alert('Settings saved. Refresh the page to reload PayPal with the new settings.'); refresh();
-  });
-  $('resetBtn').addEventListener('click', () => { if(confirm('Reset the sweepstake and make all teams available again?')){ state = { teams: DEFAULT_TEAMS.map(t=>({...t,taken:false,player:null,paymentRef:null,drawnAt:null})), draws: [] }; saveState(); paid=false; refresh(); } });
-  $('importBtn').addEventListener('click', () => $('importFile').click());
-  $('importFile').addEventListener('change', e => {
-    const file = e.target.files[0]; if(!file) return;
-    const reader = new FileReader(); reader.onload = () => { try { const data = JSON.parse(reader.result); if(data.state && Array.isArray(data.state.teams)){ state = data.state; saveState(); refresh(); alert('Draw data imported.'); } else alert('This JSON file does not contain valid sweepstake data.'); } catch(err){ alert('Could not read that JSON file.'); } };
-    reader.readAsText(file);
-  });
+  $('allocateBtn').addEventListener('click',adminAllocateTeam);
 
-  setupPayPal(); refresh();
-})();
-</script>
-<script>
-(() => {
-  const layer = document.getElementById('tickerTape');
-  const colours = ['linear-gradient(90deg,#fff0a8,#d79a00,#fff0a8)','linear-gradient(90deg,#ff7777,#bd0018,#ff7777)','linear-gradient(90deg,#6db7ff,#064fc1,#6db7ff)'];
-  const addPiece = (kind, i) => {
-    const el = kind === 'ball' ? document.createElement('img') : document.createElement('i');
-    el.className = `ticker-piece ${kind}`;
-    if(kind === 'ball') {
-      el.src = 'assets/world-cup-ball.png'; el.alt = '';
-      el.style.setProperty('--size', `${45 + Math.random()*55}px`);
-    } else {
-      el.style.setProperty('--w', `${12 + Math.random()*18}px`);
-      el.style.setProperty('--h', `${40 + Math.random()*65}px`);
-      el.style.setProperty('--colour', colours[i % colours.length]);
-    }
-    el.style.left = `${Math.random()*100}%`;
-    el.style.setProperty('--fall', `${7 + Math.random()*8}s`);
-    el.style.setProperty('--delay', `${-Math.random()*15}s`);
-    el.style.setProperty('--drift', `${-120 + Math.random()*240}px`);
-    el.style.setProperty('--spin', `${360 + Math.random()*1080}deg`);
-    layer.appendChild(el);
-  };
-  for(let i=0;i<15;i++) addPiece('ball',i);
-  for(let i=0;i<42;i++) addPiece('ribbon',i);
+  async function adminCancelEntry(){
+    const pin=$('adminPin').value.trim();
+    const select=$('cancelEntrySelect');
+    const idx=Number(select.value);
+    if(!pin){alert('Enter the admin PIN.');return}
+    if(!Number.isInteger(idx) || idx<0 || !(state.draws||[])[idx]){alert('Select the entry you want to cancel.');return}
+    const draw=state.draws[idx];
+    const msg='Cancel this entry and return '+draw.team+' to the wheel?\n\n'+draw.playerName+' - '+draw.team+'\n\nOnly do this if the team was allocated in error.';
+    if(!confirm(msg))return;
+    clearError();
+    try{
+      const data=await api('cancel-entry',{method:'POST',body:JSON.stringify({pin,drawIndex:idx,drawnAt:draw.drawnAt,playerName:draw.playerName,playerEmail:draw.playerEmail,team:draw.team})});
+      state=data.state;
+      $('resultBanner').innerHTML=`<div><h2>Entry cancelled</h2><p>${escapeHtml(data.cancelled.team)} has been returned to the wheel.</p></div>`;
+      refresh();
+    }catch(err){showError(err.message)}
+  }
+
+  $('cancelEntryBtn').addEventListener('click',adminCancelEntry);
+
+  function csvEscape(value){
+    const str=String(value ?? '');
+    return /[",\n\r]/.test(str) ? '"' + str.replace(/"/g,'""') + '"' : str;
+  }
+
+  function downloadEntrantsList(){
+    const pin=$('adminPin').value.trim();
+    if(!pin){alert('Enter the admin PIN before downloading the entrants list.');return}
+    const draws=(state.draws||[]).slice();
+    if(!draws.length){alert('No entrants have been drawn yet.');return}
+    const rows=[['Date/time','Player name','Email address','Drawn team','Group','Payment ref','Admin allocated']];
+    draws.forEach(d=>{
+      rows.push([
+        d.drawnAt ? new Date(d.drawnAt).toLocaleString() : '',
+        d.playerName || '',
+        d.playerEmail || '',
+        d.team || '',
+        d.group || '',
+        d.paymentRef || '',
+        d.adminAllocated ? 'Yes' : 'No'
+      ]);
+    });
+    const csv=rows.map(row=>row.map(csvEscape).join(',')).join('\r\n');
+    const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    const stamp=new Date().toISOString().slice(0,10);
+    a.href=url;
+    a.download='world-cup-2026-sweepstake-entrants-'+stamp+'.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  $('downloadEntrantsBtn').addEventListener('click',downloadEntrantsList);
+  $('resetBtn').addEventListener('click',async()=>{const pin=$('adminPin').value.trim(); if(!pin){alert('Enter the admin PIN.');return} if(!confirm('Reset the sweepstake and make all teams available again?'))return; try{const data=await api('reset-sweepstake',{method:'POST',body:JSON.stringify({pin})});state=data.state;paid=false;paidEntries=0;entriesRemaining=0;activePlayer=null;rotation=0;$('resultBanner').innerHTML='<div><h2>Sweepstake reset</h2><p>All teams are available again.</p></div>';refresh();}catch(err){showError(err.message)}});
+
+  loadSharedState();
 })();
 </script>
 </body>
