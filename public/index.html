@@ -159,68 +159,98 @@ input,select{width:100%;padding:13px 14px;border-radius:14px;border:1px solid rg
 }
 
 
-.winnersCreditBlock{min-height:64vh;padding:18px}
+/* Full-screen bottom-to-top rolling winners credits */
+#winnersCreditsOverlay{
+  position:fixed;
+  inset:0;
+  z-index:2147483000;
+  pointer-events:none;
+  overflow:hidden;
+  background:transparent;
+}
+.winnersCreditsTrack{
+  position:absolute;
+  left:0;
+  right:0;
+  top:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  gap:34vh;
+  animation:winnersCreditsScroll 42s linear infinite;
+}
+.winnersCreditBlock{
+  width:min(94vw,1200px);
+  min-height:58vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:28px;
+}
+.winnersCreditBlock h2,
+.winnersCreditBlock h3,
+.winnersCreditBlock p{
+  margin:8px 0;
+  color:#ffcf5a;
+  font-weight:1000;
+  text-shadow:
+    0 4px 0 rgba(0,0,0,.55),
+    0 12px 34px rgba(0,0,0,.80),
+    0 0 22px rgba(255,207,90,.35);
+}
+.winnersCreditBlock h2{
+  font-size:clamp(52px,11vw,136px);
+  line-height:.92;
+}
+.winnersCreditBlock h3{
+  font-size:clamp(36px,7vw,92px);
+  line-height:1;
+}
+.winnersCreditBlock p{
+  font-size:clamp(30px,6vw,76px);
+  line-height:1.05;
+}
+.winnersCreditAccent{
+  color:#fff4bf!important;
+}
+.winnersCreditSmall{
+  font-size:clamp(30px,5.5vw,68px)!important;
+}
+@keyframes winnersCreditsScroll{
+  0%{transform:translateY(0)}
+  100%{transform:translateY(-720vh)}
+}
+@media(max-width:720px){
+  .winnersCreditsTrack{gap:26vh;animation-duration:48s}
+  .winnersCreditBlock{min-height:64vh;padding:18px}
 }
 
 
-/* Clean opening overlay: falling balls/ticker behind, gold rolling titles over top */
-#openingCelebration{
+/* Safe independent opening celebration: does not affect draw record loading */
+.safeOpeningTicker{
   position:fixed;
   inset:0;
   display:none;
   pointer-events:none;
   overflow:hidden;
-  z-index:2147483000;
+  z-index:2147482500;
 }
-#openingCelebration.active{display:block}
-#openingCelebration .celebrationShade{
+.safeOpeningTicker.active{display:block}
+.safeOpeningTicker .safeTickerBack{
   position:absolute;
   inset:0;
-  background:rgba(0,0,0,.14);
-}
-#openingCelebration .celebrationBack{
-  position:absolute;
-  inset:0;
-  z-index:1;
+  background:rgba(0,0,0,.10);
   overflow:hidden;
 }
-#openingCelebration .celebrationFront{
+.safeOpeningTicker .safeTickerTitles{
   position:absolute;
   inset:0;
-  z-index:2;
+  z-index:3;
   overflow:hidden;
 }
-#openingCelebration .metalTape{
-  position:absolute;
-  top:-150px;
-  width:18px;
-  height:115px;
-  border-radius:9px;
-  box-shadow:0 10px 22px rgba(0,0,0,.24);
-  animation-name:metalTapeFall;
-  animation-timing-function:linear;
-  animation-fill-mode:forwards;
-}
-#openingCelebration .metalTape.gold{
-  background:linear-gradient(180deg,#fff8c9,#ffd45f,#c98d00);
-}
-#openingCelebration .metalTape.silver{
-  background:linear-gradient(180deg,#ffffff,#d7dce4,#8f98a5);
-}
-#openingCelebration .fallingBall{
-  position:absolute;
-  top:-220px;
-  left:0;
-  width:90px;
-  height:90px;
-  object-fit:contain;
-  opacity:0;
-  filter:drop-shadow(0 14px 24px rgba(0,0,0,.28));
-  animation-name:ballTickerFall;
-  animation-timing-function:linear;
-  animation-fill-mode:forwards;
-}
-#openingCelebration .titlesTrack{
+.safeOpeningTicker .safeTickerTrack{
   position:absolute;
   left:0;
   right:0;
@@ -229,9 +259,9 @@ input,select{width:100%;padding:13px 14px;border-radius:14px;border:1px solid rg
   flex-direction:column;
   align-items:center;
   gap:28vh;
-  animation:winnersTitlesRise 34s linear infinite;
+  animation:safeTitlesRise 34s linear forwards;
 }
-#openingCelebration .titleBlock{
+.safeOpeningTicker .safeTitleBlock{
   width:min(94vw,1120px);
   min-height:58vh;
   display:flex;
@@ -241,96 +271,127 @@ input,select{width:100%;padding:13px 14px;border-radius:14px;border:1px solid rg
   text-align:center;
   padding:24px;
 }
-#openingCelebration .titleBlock h2,
-#openingCelebration .titleBlock h3,
-#openingCelebration .titleBlock p{
+.safeOpeningTicker .safeTitleBlock h2,
+.safeOpeningTicker .safeTitleBlock h3,
+.safeOpeningTicker .safeTitleBlock p{
   margin:8px 0;
   color:#ffcf5a;
   font-weight:1000;
-  text-shadow:
-    0 4px 0 rgba(0,0,0,.58),
-    0 12px 34px rgba(0,0,0,.82),
-    0 0 24px rgba(255,207,90,.35);
+  text-shadow:0 4px 0 rgba(0,0,0,.58),0 12px 34px rgba(0,0,0,.82),0 0 24px rgba(255,207,90,.35);
 }
-#openingCelebration .titleBlock h2{
-  font-size:clamp(44px,9vw,112px);
-  line-height:.95;
+.safeOpeningTicker .safeTitleBlock h2{font-size:clamp(44px,9vw,112px);line-height:.95}
+.safeOpeningTicker .safeTitleBlock h3{font-size:clamp(30px,6vw,78px);line-height:1}
+.safeOpeningTicker .safeTitleBlock p{font-size:clamp(26px,5vw,64px);line-height:1.05}
+.safeOpeningTicker .accent{color:#fff0b3!important}
+.safeOpeningTicker .safeTape{
+  position:absolute;
+  top:-140px;
+  width:18px;
+  height:110px;
+  border-radius:9px;
+  box-shadow:0 10px 22px rgba(0,0,0,.24);
+  animation:safeTapeFall linear forwards;
 }
-#openingCelebration .titleBlock h3{
-  font-size:clamp(30px,6vw,78px);
-  line-height:1;
+.safeOpeningTicker .safeTape.gold{background:linear-gradient(180deg,#fff8c9,#ffd45f,#c98d00)}
+.safeOpeningTicker .safeTape.silver{background:linear-gradient(180deg,#fff,#d7dce4,#8f98a5)}
+.safeOpeningTicker .safeBall{
+  position:absolute;
+  top:-220px;
+  left:0;
+  width:90px;
+  height:90px;
+  object-fit:contain;
+  opacity:0;
+  filter:drop-shadow(0 14px 24px rgba(0,0,0,.28));
+  animation:safeBallFall linear forwards;
 }
-#openingCelebration .titleBlock p{
-  font-size:clamp(26px,5vw,64px);
-  line-height:1.05;
+@keyframes safeTitlesRise{
+  0%{transform:translateY(0)}
+  100%{transform:translateY(-610vh)}
 }
-#openingCelebration .titleBlock .accent{
-  color:#fff0b3;
-}
-#openingCelebration .titleBlock .small{
-  font-size:clamp(24px,4vw,52px);
-}
-@keyframes metalTapeFall{
+@keyframes safeTapeFall{
   0%{transform:translateY(-180px) rotate(0deg);opacity:0}
   8%{opacity:1}
   92%{opacity:1}
   100%{transform:translateY(calc(100vh + 260px)) rotate(840deg);opacity:0}
 }
-@keyframes ballTickerFall{
+@keyframes safeBallFall{
   0%{transform:translate3d(0,-230px,0) rotate(var(--startRot,0deg)) scale(var(--scale,1));opacity:0}
   8%{opacity:.96}
   92%{opacity:.96}
   100%{transform:translate3d(var(--drift,0px),calc(100vh + 300px),0) rotate(var(--endRot,720deg)) scale(var(--scale,1));opacity:0}
-}
-@keyframes winnersTitlesRise{
-  0%{transform:translateY(0)}
-  100%{transform:translateY(-610vh)}
-}
-@media(max-width:720px){
-  #openingCelebration .titlesTrack{gap:22vh;animation-duration:40s}
-  #openingCelebration .titleBlock{min-height:64vh;padding:16px}
 }
 
 </style>
 </head>
 <body>
 
-  <div id="openingCelebration" aria-hidden="true">
-    <div class="celebrationShade"></div>
-    <div class="celebrationBack"></div>
-    <div class="celebrationFront">
-      <div class="titlesTrack">
-        <section class="titleBlock">
+  <div id="safeOpeningTicker" class="safeOpeningTicker" aria-hidden="true">
+    <div class="safeTickerBack"></div>
+    <div class="safeTickerTitles">
+      <div class="safeTickerTrack">
+        <section class="safeTitleBlock">
           <h2>World Cup 2026 Winners</h2>
           <p>?</p>
         </section>
-        <section class="titleBlock">
+        <section class="safeTitleBlock">
           <h2>Runner Up</h2>
           <p>?</p>
         </section>
-        <section class="titleBlock">
+        <section class="safeTitleBlock">
           <h2>Third Place</h2>
           <p>England - Bal Dalved</p>
           <p class="accent">Winning £30</p>
         </section>
-        <section class="titleBlock">
+        <section class="safeTitleBlock">
           <h2>Fourth Place</h2>
           <p>France - Leanne Knowles</p>
           <p class="accent">Winning £10</p>
         </section>
-        <section class="titleBlock">
+        <section class="safeTitleBlock">
           <h3>All Winnings Will Be Paid By PayPal After The World Cup Final</h3>
-          <p class="small accent">Thanks To Everyone That Took Part</p>
-        </section>
-        <section class="titleBlock" aria-hidden="true">
-          <h2>World Cup 2026 Winners</h2>
-          <p>?</p>
+          <p class="accent">Thanks To Everyone That Took Part</p>
         </section>
       </div>
     </div>
   </div>
 
-</div>
+
+  <div id="winnersCreditsOverlay" aria-label="World Cup 2026 winners rolling titles">
+    <div class="winnersCreditsTrack">
+      <section class="winnersCreditBlock">
+        <h2>World Cup 2026 Winners</h2>
+        <p>?</p>
+      </section>
+
+      <section class="winnersCreditBlock">
+        <h2>Runner Up</h2>
+        <p>?</p>
+      </section>
+
+      <section class="winnersCreditBlock">
+        <h2>Third Place</h2>
+        <p>England - Bal Dalved</p>
+        <p class="winnersCreditAccent">Winning £30</p>
+      </section>
+
+      <section class="winnersCreditBlock">
+        <h2>Fourth Place</h2>
+        <p>France - Leanne Knowles</p>
+        <p class="winnersCreditAccent">Winning £10</p>
+      </section>
+
+      <section class="winnersCreditBlock">
+        <h3>All Winnings Will Be Paid By PayPal After The World Cup Final</h3>
+        <p class="winnersCreditSmall">Thanks To Everyone That Took Part</p>
+      </section>
+
+      <section class="winnersCreditBlock" aria-hidden="true">
+        <h2>World Cup 2026 Winners</h2>
+        <p>?</p>
+      </section>
+    </div>
+  </div>
 
   <div class="wrap">
 <section class="hero">
@@ -484,51 +545,6 @@ input,select{width:100%;padding:13px 14px;border-radius:14px;border:1px solid rg
   function clearError(){$('errorBox').classList.add('hidden');$('errorBox').textContent=''}
   function availableTeams(){return (state.teams||[]).filter(t=>!t.taken)}
 
-  function showOpeningCelebration(){
-    const overlay=document.getElementById('openingCelebration');
-    if(!overlay) return;
-    const back=overlay.querySelector('.celebrationBack');
-    if(!back) return;
-
-    back.innerHTML='';
-    overlay.classList.add('active');
-
-    for(let i=0;i<90;i++){
-      const tape=document.createElement('div');
-      tape.className='metalTape '+(i%2===0?'gold':'silver');
-      tape.style.left=(Math.random()*100)+'vw';
-      tape.style.animationDelay=(Math.random()*1.6)+'s';
-      tape.style.animationDuration=(4.6+Math.random()*3.2)+'s';
-      tape.style.transform='rotate('+(Math.random()*180)+'deg)';
-      back.appendChild(tape);
-    }
-
-    for(let i=0;i<26;i++){
-      const ball=document.createElement('img');
-      ball.className='fallingBall';
-      ball.src='assets/world-cup-ball.png';
-      ball.alt='';
-      const size=54+Math.random()*140;
-      ball.style.width=size+'px';
-      ball.style.height=size+'px';
-      ball.style.left=(Math.random()*92)+'vw';
-      ball.style.animationDelay=(Math.random()*1.8)+'s';
-      ball.style.animationDuration=(5.2+Math.random()*3.4)+'s';
-      ball.style.setProperty('--scale',(0.65+Math.random()*0.9).toFixed(2));
-      ball.style.setProperty('--drift',((-150)+Math.random()*300).toFixed(0)+'px');
-      ball.style.setProperty('--startRot',Math.round(Math.random()*360)+'deg');
-      ball.style.setProperty('--endRot',Math.round(720+Math.random()*1080)+'deg');
-      back.appendChild(ball);
-    }
-
-    clearTimeout(window.__openingCelebrationTimer);
-    window.__openingCelebrationTimer=setTimeout(()=>{
-      overlay.classList.remove('active');
-      back.innerHTML='';
-    },18000);
-  }
-
-
 
 
   function showTeamCelebration(teamName){
@@ -595,7 +611,6 @@ input,select{width:100%;padding:13px 14px;border-radius:14px;border:1px solid rg
       state=data.state;
       $('resultBanner').innerHTML='<div><h2>Team Names Have Been Removed From The Wheel To Hide Remaining Teams</h2><p>The Team You Draw Will Appear</p><h2 style="margin-top:12px">Ready to spin</h2><p>Complete the player and payment step first.</p></div>';
       refresh();
-      setTimeout(()=>showOpeningCelebration(), 650);
     }catch(err){
       state={teams:[],draws:[]};
       drawWheel(); renderDraws(); updateStats();
@@ -934,5 +949,60 @@ input,select{width:100%;padding:13px 14px;border-radius:14px;border:1px solid rg
   loadSharedState();
 })();
 </script>
+
+<script>
+(function(){
+  function startSafeOpeningTicker(){
+    try{
+      var overlay=document.getElementById('safeOpeningTicker');
+      if(!overlay) return;
+      var back=overlay.querySelector('.safeTickerBack');
+      if(!back) return;
+      back.querySelectorAll('.safeTape,.safeBall').forEach(function(n){n.remove();});
+      overlay.classList.add('active');
+
+      for(var i=0;i<80;i++){
+        var tape=document.createElement('div');
+        tape.className='safeTape '+(i%2===0?'gold':'silver');
+        tape.style.left=(Math.random()*100)+'vw';
+        tape.style.animationDelay=(Math.random()*1.6)+'s';
+        tape.style.animationDuration=(4.6+Math.random()*3.2)+'s';
+        back.appendChild(tape);
+      }
+
+      for(var b=0;b<24;b++){
+        var ball=document.createElement('img');
+        ball.className='safeBall';
+        ball.src='assets/world-cup-ball.png';
+        ball.alt='';
+        var size=54+Math.random()*140;
+        ball.style.width=size+'px';
+        ball.style.height=size+'px';
+        ball.style.left=(Math.random()*92)+'vw';
+        ball.style.animationDelay=(Math.random()*1.8)+'s';
+        ball.style.animationDuration=(5.2+Math.random()*3.4)+'s';
+        ball.style.setProperty('--scale',(0.65+Math.random()*0.9).toFixed(2));
+        ball.style.setProperty('--drift',((-150)+Math.random()*300).toFixed(0)+'px');
+        ball.style.setProperty('--startRot',Math.round(Math.random()*360)+'deg');
+        ball.style.setProperty('--endRot',Math.round(720+Math.random()*1080)+'deg');
+        back.appendChild(ball);
+      }
+
+      window.setTimeout(function(){
+        overlay.classList.remove('active');
+        back.querySelectorAll('.safeTape,.safeBall').forEach(function(n){n.remove();});
+      },18000);
+    }catch(e){
+      console.warn('Opening ticker failed without affecting draw record:', e);
+    }
+  }
+
+  // Separate from the sweepstake load code so this cannot break the entrants/draw record.
+  window.addEventListener('load', function(){
+    window.setTimeout(startSafeOpeningTicker, 900);
+  });
+})();
+</script>
+
 </body>
 </html>
