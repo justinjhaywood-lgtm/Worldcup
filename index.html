@@ -399,6 +399,34 @@
   text-shadow:0 4px 0 rgba(0,0,0,.55),0 12px 28px rgba(0,0,0,.7);
 }
 
+
+/* Full admin section PIN lock */
+.adminLockShell{
+  margin-top:14px;
+  padding:14px;
+  border-radius:18px;
+  background:rgba(255,207,90,.10);
+  border:1px solid rgba(255,207,90,.38);
+}
+.adminLockedContent{
+  display:none;
+}
+.adminLockShell.unlocked + .adminLockedContent{
+  display:block;
+}
+.adminLockShell.unlocked{
+  background:rgba(46,204,113,.10);
+  border-color:rgba(46,204,113,.45);
+}
+.adminLockMessage{
+  margin:0 0 10px;
+  color:#ffe7a6;
+  font-size:14px;
+}
+.adminLockShell.unlocked .adminLockMessage{
+  color:#b9f6ca;
+}
+
 </style>
 </head>
 <body>
@@ -554,16 +582,16 @@
         <div id="adminLogin">
           <label for="adminPin">Admin PIN</label>
           <input id="adminPin" type="password" placeholder="Enter admin PIN" />
-
-          <div id="simpleAdminGate">
-            <p class="small" style="margin:0 0 8px">Admin tools are locked.</p>
+          <div id="adminLockShell" class="adminLockShell">
+            <p class="adminLockMessage">Admin section locked. Enter PIN 2620 and press Unlock admin.</p>
             <div class="actions">
-              <button id="simpleUnlockBtn" class="secondary" type="button">Unlock admin</button>
+              <button id="unlockFullAdminBtn" class="secondary" type="button">Unlock admin</button>
             </div>
           </div>
+          <div class="adminLockedContent">
 
-          <div id="simpleAdminTools">
-            <h3 style="margin:0 0 8px">World Cup Final Result</h3>
+</div>
+<h3 style="margin:0 0 8px">World Cup Final Result</h3>
             <p class="small">Choose the winning team. This updates the rolling titles immediately.</p>
             <label for="finalWinnerSelect">Winner</label>
             <select id="finalWinnerSelect">
@@ -598,6 +626,7 @@
           <select id="cancelEntrySelect"><option value="">No entries available</option></select>
           <button id="cancelEntryBtn" class="danger" style="margin-top:10px">Cancel selected entry and return team</button>
           <button id="resetBtn" class="danger" style="margin-top:10px">Reset sweepstake</button>
+          </div>
         </div>
         <p class="foot">Admin actions are protected by the Netlify environment variable <strong>ADMIN_PIN</strong>.</p>
       </details>
@@ -858,6 +887,18 @@
     }
   }
 
+
+
+  function unlockFullAdmin(){
+    const pin=$('adminPin') ? $('adminPin').value.trim() : '';
+    const shell=document.getElementById('adminLockShell');
+    if(pin !== '2620'){
+      if(shell) shell.classList.remove('unlocked');
+      alert('Incorrect admin PIN.');
+      return;
+    }
+    if(shell) shell.classList.add('unlocked');
+  }
 
   function drawWheel(){
     const teams=availableTeams(); const w=canvas.width,h=canvas.height,cx=w/2,cy=h/2,r=Math.min(w,h)/2-18;
@@ -1151,10 +1192,11 @@
 
   $('downloadEntrantsBtn').addEventListener('click',downloadEntrantsList);
   $('resetBtn').addEventListener('click',async()=>{const pin=$('adminPin').value.trim(); if(!pin){alert('Enter the admin PIN.');return} if(!confirm('Reset the sweepstake and make all teams available again?'))return; try{const data=await api('reset-sweepstake',{method:'POST',body:JSON.stringify({pin})});state=data.state;paid=false;paidEntries=0;entriesRemaining=0;activePlayer=null;rotation=0;$('resultBanner').innerHTML='<div><h2>Sweepstake reset</h2><p>All teams are available again.</p></div>';refresh();}catch(err){showError(err.message)}});
+if($('setFinalResultBtn')) $('setFinalResultBtn').addEventListener('click',adminSetFinalResult);
 
 
-  if($('simpleUnlockBtn')) $('simpleUnlockBtn').addEventListener('click',simpleUnlockAdmin);
-  if($('setFinalResultBtn')) $('setFinalResultBtn').addEventListener('click',adminSetFinalResult);
+  if($('unlockFullAdminBtn')) $('unlockFullAdminBtn').addEventListener('click',unlockFullAdmin);
+  if($('adminPin')) $('adminPin').addEventListener('keydown',function(e){if(e.key==='Enter') unlockFullAdmin();});
 
   loadSharedState();
   checkFinalResult();
