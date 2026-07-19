@@ -24,8 +24,7 @@ function freshState() {
     createdAt: new Date().toISOString(),
     teams: DEFAULT_TEAMS.map(t => ({...t, taken:false, playerName:null, playerEmail:null, paymentRef:null, drawnAt:null})),
     draws: [],
-    revealTeamsInDrawRecord: false,
-    finalResult: { known: false }
+    revealTeamsInDrawRecord: false
   };
 }
 
@@ -55,8 +54,7 @@ function normaliseState(state) {
   }));
 
   state.revealTeamsInDrawRecord = Boolean(state.revealTeamsInDrawRecord);
-  state.finalResult = state.finalResult && state.finalResult.known ? state.finalResult : { known: false };
-  state.version = 10;
+  state.version = 8;
   return state;
 }
 

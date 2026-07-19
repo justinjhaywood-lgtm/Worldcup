@@ -360,9 +360,10 @@
 }
 
 
-/* v78 final result admin + locked rolling titles */
+/* Separate final result admin panel v75 */
 #finalResultAdminPanel{
-  margin:18px 0;
+  margin:18px auto;
+  max-width:980px;
   padding:16px;
   border-radius:20px;
   background:rgba(0,0,0,.28);
@@ -373,22 +374,10 @@
 #finalResultAdminUnlocked{display:none}
 #finalResultAdminPanel.unlocked #finalResultAdminUnlocked{display:block}
 #finalResultAdminPanel.unlocked #finalResultAdminLocked{display:none}
-#finalResultAdminPanel.resultLocked #finalWinnerSelect,
-#finalResultAdminPanel.resultLocked #setFinalResultBtn,
-#finalResultAdminPanel.resultLocked label[for="finalWinnerSelect"]{display:none!important}
 #finalResultAdminPanel select,
-#finalResultAdminPanel input{width:100%}
-#finalResultLockedMessage{
-  display:none;
-  margin-top:10px;
-  padding:10px 12px;
-  border-radius:12px;
-  background:rgba(46,204,113,.12);
-  border:1px solid rgba(46,204,113,.35);
-  color:#b9f6ca;
-  font-weight:800;
+#finalResultAdminPanel input{
+  width:100%;
 }
-#finalResultAdminPanel.resultLocked #finalResultLockedMessage{display:block}
 #winnersHtmlRoll .championsWord{
   font-size:clamp(38px,8vw,104px);
   color:#ffcf5a;
@@ -411,14 +400,55 @@
 }
 
 
-/* v79 final unlock force */
-#finalResultAdminUnlocked{display:none}
-#finalResultAdminPanel.unlocked #finalResultAdminUnlocked{display:block!important}
-#finalResultAdminPanel.unlocked #finalResultAdminLocked{display:none!important}
+/* v80 simple final-result lock */
+#finalResultAdminPanel.finalLocked #finalWinnerSelect,
+#finalResultAdminPanel.finalLocked #setFinalResultBtn,
+#finalResultAdminPanel.finalLocked label[for="finalWinnerSelect"]{
+  display:none!important;
+}
+#finalResultLockedMessage{
+  display:none;
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:12px;
+  background:rgba(46,204,113,.12);
+  border:1px solid rgba(46,204,113,.35);
+  color:#b9f6ca;
+  font-weight:800;
+}
+#finalResultAdminPanel.finalLocked #finalResultLockedMessage{
+  display:block;
+}
 
 </style>
 </head>
 <body>
+
+    <section id="finalResultAdminPanel" aria-label="World Cup final result admin">
+      <h3>World Cup Final Result Admin</h3>
+      <div id="finalResultAdminLocked">
+        <label for="finalResultPin">PIN</label>
+        <input id="finalResultPin" type="password" placeholder="Enter PIN 2620">
+        <div class="actions">
+          <button id="finalResultUnlockBtn" class="secondary" type="button" onclick="finalResultUnlockV80(event)">Unlock final result controls</button>
+        </div>
+      </div>
+      <div id="finalResultAdminUnlocked">
+        <p class="small">Choose the winner. This updates the rolling titles immediately.</p>
+        <label for="finalWinnerSelect">World Cup winner</label>
+        <select id="finalWinnerSelect">
+          <option value="">Choose winner...</option>
+          <option value="spain">Spain — Richard Bradley wins £150</option>
+          <option value="argentina">Argentina — Mollie Jennings-Parkes wins £150</option>
+        </select>
+        <div class="actions">
+          <button id="setFinalResultBtn" class="goldPay" type="button" onclick="finalResultSetV80(event)">Set final result</button>
+        </div>
+        <p id="finalResultStatus" class="small"></p>
+        <div id="finalResultLockedMessage"></div>
+      </div>
+    </section>
+
 
   <div id="winnersHtmlRoll" aria-hidden="true">
     <div class="rollTrack">
@@ -516,33 +546,6 @@
         <div class="step"><div class="num">3</div><div><h3>Spin the wheel</h3><p>Your team is then removed from the wheel.</p></div></div>
       </div>
     </section>
-
-
-    <section id="finalResultAdminPanel" aria-label="World Cup final result admin">
-      <h3>World Cup Final Result Admin</h3>
-      <div id="finalResultAdminLocked">
-        <label for="finalResultPin">PIN</label>
-        <input id="finalResultPin" type="password" placeholder="Enter PIN 2620">
-        <div class="actions">
-          <button id="finalResultUnlockBtn" class="secondary" type="button">Unlock final result controls</button>
-        </div>
-      </div>
-      <div id="finalResultAdminUnlocked">
-        <p class="small">Choose the winner once. The result is saved with the shared draw record and reapplied after refresh.</p>
-        <label for="finalWinnerSelect">World Cup winner</label>
-        <select id="finalWinnerSelect">
-          <option value="">Choose winner...</option>
-          <option value="spain">Spain — Richard Bradley wins £150</option>
-          <option value="argentina">Argentina — Mollie Jennings-Parkes wins £150</option>
-        </select>
-        <div class="actions">
-          <button id="setFinalResultBtn" class="goldPay" type="button">Set and lock final result</button>
-        </div>
-        <p id="finalResultStatus" class="small"></p>
-        <div id="finalResultLockedMessage"></div>
-      </div>
-    </section>
-
 
     <section class="main">
       <div class="card wheelBox">
@@ -758,74 +761,6 @@
     return data;
   }
 
-
-  function finalResultEscape(str){
-    return String(str || '').replace(/[&<>'"]/g,function(m){
-      return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m];
-    });
-  }
-
-  function finalResultShirtHtml(kind){
-    const isSpain=kind==='spain';
-    const name=isSpain?'Richard<br>Bradley':'Mollie<br>Jennings-Parkes';
-    const cls=isSpain?'spain':'argentina';
-    return '<div class="shirtCard '+cls+' singleWinnerShirt"><div class="shirtName">'+name+'</div><div class="shirtNo">26</div></div>';
-  }
-
-  function applyFinalResultLocked(result){
-    if(!result || !result.known) return false;
-
-    const roll=document.getElementById('winnersHtmlRoll');
-    if(!roll) return false;
-
-    const blocks=Array.from(roll.querySelectorAll('.rollBlock'));
-    let winnerBlocks=blocks.filter(b=>/World Cup 2026 Winners/i.test(b.textContent || ''));
-    if(!winnerBlocks.length && blocks[0]) winnerBlocks=[blocks[0]];
-
-    const runnerBlocks=blocks.filter(b=>/^Runner Up/i.test((b.textContent || '').trim()));
-    if(!runnerBlocks.length && blocks[1]) runnerBlocks.push(blocks[1]);
-
-    winnerBlocks.forEach(block=>{
-      block.classList.add('withShirts');
-      block.innerHTML =
-        '<div class="championsWord">Champions</div>' +
-        finalResultShirtHtml(result.champion.shirt) +
-        '<h2>World Cup 2026 Winners</h2>' +
-        '<p>'+finalResultEscape(result.winner)+'</p>' +
-        '<p class="finalResultLine">Congratulations</p>' +
-        '<p class="finalResultLine">'+finalResultEscape(result.championText)+'</p>';
-    });
-
-    runnerBlocks.forEach(block=>{
-      block.innerHTML =
-        '<h2>Runner Up</h2>' +
-        finalResultShirtHtml(result.runnerUpEntry.shirt) +
-        '<p>'+finalResultEscape(result.runnerUp)+'</p>' +
-        '<p class="finalResultLine">'+finalResultEscape(result.runnerUpText)+'</p>';
-    });
-
-    const panel=document.getElementById('finalResultAdminPanel');
-    const msg=document.getElementById('finalResultLockedMessage');
-    const status=document.getElementById('finalResultStatus');
-    if(panel) panel.classList.add('resultLocked');
-    if(msg) msg.textContent='Final result locked: '+result.winner+' champions. '+result.championText+'.';
-    if(status) status.textContent='Final result is locked and saved with the shared draw record.';
-
-    try{localStorage.setItem('wc2026FinalResultLockedV78', JSON.stringify(result));}catch(e){}
-    return true;
-  }
-
-  function reapplyFinalResultManyTimes(result){
-    if(!result || !result.known) return;
-    [0,100,350,800,1500,3000,6000,10000,15000].forEach(ms=>{
-      setTimeout(()=>applyFinalResultLocked(result), ms);
-    });
-  }
-
-  window.applyFinalResultLocked=applyFinalResultLocked;
-  window.reapplyFinalResultManyTimes=reapplyFinalResultManyTimes;
-
-
   async function loadSharedState(){
     clearError();
     try{
@@ -833,7 +768,6 @@
       state=data.state;
       $('resultBanner').innerHTML='<div><h2>Team Names Have Been Removed From The Wheel To Hide Remaining Teams</h2><p>The Team You Draw Will Appear</p><h2 style="margin-top:12px">Ready to spin</h2><p>Complete the player and payment step first.</p></div>';
       refresh();
-      if(state.finalResult && state.finalResult.known){ reapplyFinalResultManyTimes(state.finalResult); }
       setTimeout(()=>showDrawCelebration(!availableTeams().length), 650);
     }catch(err){
       state={teams:[],draws:[]};
@@ -1165,118 +1099,170 @@
 </script>
 
 
+
 <script>
 (function(){
-  function byId(id){return document.getElementById(id);}
-  function buildResult(winner){
+  var KEY='wc2026_locked_final_winner_v80';
+
+  function $(id){return document.getElementById(id);}
+  function esc(s){
+    return String(s||'').replace(/[&<>'"]/g,function(m){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m];
+    });
+  }
+  function resultFor(winner){
     winner=String(winner||'').toLowerCase();
-    var spain={team:'Spain',player:'Richard Bradley',shirt:'spain'};
-    var argentina={team:'Argentina',player:'Mollie Jennings-Parkes',shirt:'argentina'};
-    if(winner!=='spain' && winner!=='argentina') return {known:false};
+    var spain={team:'Spain', player:'Richard Bradley', shirt:'spain'};
+    var argentina={team:'Argentina', player:'Mollie Jennings-Parkes', shirt:'argentina'};
+    if(winner!=='spain' && winner!=='argentina') return null;
     var champion=winner==='spain'?spain:argentina;
-    var runnerUpEntry=winner==='spain'?argentina:spain;
+    var runner=winner==='spain'?argentina:spain;
     return {
-      known:true,
-      locked:true,
+      winnerKey:winner,
       winner:champion.team,
-      runnerUp:runnerUpEntry.team,
+      runnerUp:runner.team,
       champion:champion,
-      runnerUpEntry:runnerUpEntry,
+      runnerUpEntry:runner,
       championText:champion.player+' wins £150',
-      runnerUpText:runnerUpEntry.player+' wins £50'
+      runnerUpText:runner.player+' wins £50'
     };
   }
-  function applyFinal(r){
-    if(!r || !r.known) return;
-    if(window.reapplyFinalResultManyTimes){
-      window.reapplyFinalResultManyTimes(r);
-    }else if(window.applyFinalResultLocked){
-      window.applyFinalResultLocked(r);
+  function shirt(kind){
+    var isSpain=kind==='spain';
+    var name=isSpain?'Richard<br>Bradley':'Mollie<br>Jennings-Parkes';
+    var cls=isSpain?'spain':'argentina';
+    return '<div class="shirtCard '+cls+' singleWinnerShirt"><div class="shirtName">'+name+'</div><div class="shirtNo">26</div></div>';
+  }
+  function lockAdminMessage(r){
+    var panel=$('finalResultAdminPanel');
+    var msg=$('finalResultLockedMessage');
+    var status=$('finalResultStatus');
+    if(panel){
+      panel.classList.add('unlocked');
+      panel.classList.add('finalLocked');
+    }
+    if(msg){
+      msg.textContent='Final result locked: '+r.winner+' champions. '+r.championText+'.';
+    }
+    if(status){
+      status.textContent='Final result locked. Refreshing the page will keep this result.';
     }
   }
-  function unlockFinalControls(){
-    var pin=byId('finalResultPin') ? byId('finalResultPin').value.trim() : '';
-    var panel=byId('finalResultAdminPanel');
+  function applyWinner(r){
+    if(!r) return;
+
+    var roll=$('winnersHtmlRoll');
+    if(!roll) return;
+
+    var blocks=[].slice.call(roll.querySelectorAll('.rollBlock'));
+
+    blocks.forEach(function(block){
+      var txt=(block.textContent||'').trim();
+
+      if(/World Cup 2026 Winners/i.test(txt)){
+        block.classList.add('withShirts');
+        block.innerHTML =
+          '<div class="championsWord">Champions</div>' +
+          shirt(r.champion.shirt) +
+          '<h2>World Cup 2026 Winners</h2>' +
+          '<p>'+esc(r.winner)+'</p>' +
+          '<p class="finalResultLine">Congratulations</p>' +
+          '<p class="finalResultLine">'+esc(r.championText)+'</p>';
+      }
+
+      if(/^Runner Up/i.test(txt)){
+        block.innerHTML =
+          '<h2>Runner Up</h2>' +
+          shirt(r.runnerUpEntry.shirt) +
+          '<p>'+esc(r.runnerUp)+'</p>' +
+          '<p class="finalResultLine">'+esc(r.runnerUpText)+'</p>';
+      }
+    });
+
+    lockAdminMessage(r);
+  }
+  function saveWinner(winner){
+    var r=resultFor(winner);
+    if(!r) return null;
+    try{
+      localStorage.setItem(KEY, winner);
+      document.cookie='wc2026_final_winner='+winner+';path=/;max-age=31536000;SameSite=Lax';
+    }catch(e){}
+    return r;
+  }
+  function getSavedWinner(){
+    try{
+      var local=localStorage.getItem(KEY);
+      if(local) return local;
+    }catch(e){}
+    var match=document.cookie.match(/(?:^|;\s*)wc2026_final_winner=([^;]+)/);
+    return match ? decodeURIComponent(match[1]) : '';
+  }
+  function reapplySaved(){
+    var winner=getSavedWinner();
+    var r=resultFor(winner);
+    if(r) applyWinner(r);
+  }
+
+  window.finalResultUnlockV80=function(e){
+    if(e) e.preventDefault();
+    var pin=$('finalResultPin') ? $('finalResultPin').value.trim() : '';
+    var panel=$('finalResultAdminPanel');
     if(pin==='2620'){
       if(panel) panel.classList.add('unlocked');
-      var unlocked=byId('finalResultAdminUnlocked');
-      if(unlocked) unlocked.style.display='block';
-      var locked=byId('finalResultAdminLocked');
+      var locked=$('finalResultAdminLocked');
+      var unlocked=$('finalResultAdminUnlocked');
       if(locked) locked.style.display='none';
+      if(unlocked) unlocked.style.display='block';
     }else{
       alert('Incorrect PIN.');
     }
-  }
-  async function setAndLockFinal(){
-    var pin=byId('finalResultPin') ? byId('finalResultPin').value.trim() : '';
-    var winner=byId('finalWinnerSelect') ? byId('finalWinnerSelect').value : '';
-    var status=byId('finalResultStatus');
+  };
 
-    if(pin!=='2620'){alert('Enter PIN 2620 and unlock first.');return;}
-    if(!winner){alert('Choose Spain or Argentina.');return;}
+  window.finalResultSetV80=function(e){
+    if(e) e.preventDefault();
+    var pin=$('finalResultPin') ? $('finalResultPin').value.trim() : '';
+    var winner=$('finalWinnerSelect') ? $('finalWinnerSelect').value : '';
+    if(pin!=='2620'){
+      alert('Enter PIN 2620 and unlock first.');
+      return;
+    }
+    if(!winner){
+      alert('Choose Spain or Argentina.');
+      return;
+    }
+    var r=saveWinner(winner);
+    applyWinner(r);
+    alert('Final result locked.');
+  };
 
-    var localResult=buildResult(winner);
-    try{localStorage.setItem('wc2026FinalResultLockedV79',JSON.stringify(localResult));}catch(e){}
-    applyFinal(localResult);
-    if(status) status.textContent='Final result applied. Saving with shared draw record...';
+  function wire(){
+    var unlockBtn=$('finalResultUnlockBtn');
+    var setBtn=$('setFinalResultBtn');
+    var pin=$('finalResultPin');
 
-    try{
-      var res=await fetch('/.netlify/functions/final-result',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({pin:pin,winner:winner})
-      });
-      var data=await res.json().catch(function(){return null;});
-      if(res.ok && data && data.result && data.result.known){
-        try{localStorage.setItem('wc2026FinalResultLockedV79',JSON.stringify(data.result));}catch(e){}
-        applyFinal(data.result);
-        if(status) status.textContent='Final result saved and locked.';
-      }else{
-        if(status) status.textContent='Applied on this browser. Shared save failed.';
-      }
-    }catch(e){
-      if(status) status.textContent='Applied on this browser. Shared save failed.';
+    if(unlockBtn) unlockBtn.onclick=window.finalResultUnlockV80;
+    if(setBtn) setBtn.onclick=window.finalResultSetV80;
+    if(pin){
+      pin.onkeydown=function(e){
+        if(e.key==='Enter') window.finalResultUnlockV80(e);
+      };
     }
 
-    alert('Final result locked.');
-  }
-  async function loadLockedResult(){
-    try{
-      var raw=localStorage.getItem('wc2026FinalResultLockedV79') || localStorage.getItem('wc2026FinalResultLockedV78') || localStorage.getItem('wc2026FinalResultLockedV77') || localStorage.getItem('wc2026FinalResultLocked');
-      if(raw){
-        var r=JSON.parse(raw);
-        if(r && r.known) applyFinal(r);
-      }
-    }catch(e){}
+    reapplySaved();
 
-    try{
-      var res=await fetch('/.netlify/functions/final-result',{cache:'no-store'});
-      if(res.ok){
-        var data=await res.json();
-        if(data && data.result && data.result.known){
-          try{localStorage.setItem('wc2026FinalResultLockedV79',JSON.stringify(data.result));}catch(e){}
-          applyFinal(data.result);
-        }
-      }
-    }catch(e){}
+    // Keep reapplying because the original ticker/title script can redraw after load.
+    [100,300,700,1200,2000,3500,6000,9000,13000].forEach(function(ms){
+      setTimeout(reapplySaved,ms);
+    });
+    setInterval(reapplySaved,2000);
   }
-  function wireV79(){
-    var unlockBtn=byId('finalResultUnlockBtn');
-    var setBtn=byId('setFinalResultBtn');
-    var pin=byId('finalResultPin');
 
-    if(unlockBtn) unlockBtn.onclick=function(e){e.preventDefault(); unlockFinalControls();};
-    if(setBtn) setBtn.onclick=function(e){e.preventDefault(); setAndLockFinal();};
-    if(pin) pin.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault(); unlockFinalControls();}};
-
-    loadLockedResult();
-    setTimeout(loadLockedResult,500);
-    setTimeout(loadLockedResult,1500);
-    setTimeout(loadLockedResult,4000);
-    setInterval(loadLockedResult,10*60*1000);
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',wire);
+  }else{
+    wire();
   }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',wireV79);
-  else wireV79();
 })();
 </script>
 
