@@ -427,6 +427,64 @@
   color:#b9f6ca;
 }
 
+
+/* Hard hide all admin controls until unlocked */
+body:not(.admin-is-unlocked) #adminTools,
+body:not(.admin-is-unlocked) .adminTools,
+body:not(.admin-is-unlocked) .adminLockedContent,
+body:not(.admin-is-unlocked) #simpleAdminTools,
+body:not(.admin-is-unlocked) #finalResultBox,
+body:not(.admin-is-unlocked) #finalResultPanel,
+body:not(.admin-is-unlocked) .finalResultBox,
+body:not(.admin-is-unlocked) .adminOnly,
+body:not(.admin-is-unlocked) #resetBtn,
+body:not(.admin-is-unlocked) #adminAssignBtn,
+body:not(.admin-is-unlocked) #adminDrawBtn,
+body:not(.admin-is-unlocked) #downloadEntrantsBtn,
+body:not(.admin-is-unlocked) #importEntrantsBtn,
+body:not(.admin-is-unlocked) #saveSettingsBtn,
+body:not(.admin-is-unlocked) #setFinalResultBtn,
+body:not(.admin-is-unlocked) #finalWinnerSelect,
+body:not(.admin-is-unlocked) label[for="finalWinnerSelect"]{
+  display:none!important;
+}
+
+body.admin-is-unlocked .adminLockedContent,
+body.admin-is-unlocked #simpleAdminTools,
+body.admin-is-unlocked #finalResultBox,
+body.admin-is-unlocked #finalResultPanel,
+body.admin-is-unlocked .finalResultBox,
+body.admin-is-unlocked .adminOnly{
+  display:block!important;
+}
+
+body.admin-is-unlocked #finalWinnerSelect{
+  display:block!important;
+}
+
+body.admin-is-unlocked #adminLockShell{
+  background:rgba(46,204,113,.10);
+  border-color:rgba(46,204,113,.45);
+}
+
+
+/* Absolute admin body lock */
+#adminBodyLocked{
+  display:none!important;
+}
+body.admin-is-unlocked #adminBodyLocked{
+  display:block!important;
+}
+body:not(.admin-is-unlocked) #adminBodyLocked *{
+  display:none!important;
+}
+body.admin-is-unlocked #adminBodyLocked *{
+  display:revert;
+}
+body.admin-is-unlocked #adminBodyLocked .actions{
+  display:flex!important;
+}
+
 </style>
 </head>
 <body>
@@ -587,8 +645,9 @@
             <div class="actions">
               <button id="unlockFullAdminBtn" class="secondary" type="button">Unlock admin</button>
             </div>
+          <div id="adminBodyLocked">
           </div>
-          <div class="adminLockedContent">
+          
 
 </div>
 <h3 style="margin:0 0 8px">World Cup Final Result</h3>
@@ -629,7 +688,9 @@
           </div>
         </div>
         <p class="foot">Admin actions are protected by the Netlify environment variable <strong>ADMIN_PIN</strong>.</p>
-      </details>
+      
+          </div>
+</details>
     </section>
   </div>
   <div id="teamCelebration" aria-hidden="true"></div>
@@ -889,16 +950,22 @@
 
 
 
+
+
   function unlockFullAdmin(){
     const pin=$('adminPin') ? $('adminPin').value.trim() : '';
     const shell=document.getElementById('adminLockShell');
     if(pin !== '2620'){
+      document.body.classList.remove('admin-is-unlocked');
       if(shell) shell.classList.remove('unlocked');
       alert('Incorrect admin PIN.');
       return;
     }
+    document.body.classList.add('admin-is-unlocked');
     if(shell) shell.classList.add('unlocked');
   }
+
+
 
   function drawWheel(){
     const teams=availableTeams(); const w=canvas.width,h=canvas.height,cx=w/2,cy=h/2,r=Math.min(w,h)/2-18;
@@ -1193,12 +1260,7 @@
   $('downloadEntrantsBtn').addEventListener('click',downloadEntrantsList);
   $('resetBtn').addEventListener('click',async()=>{const pin=$('adminPin').value.trim(); if(!pin){alert('Enter the admin PIN.');return} if(!confirm('Reset the sweepstake and make all teams available again?'))return; try{const data=await api('reset-sweepstake',{method:'POST',body:JSON.stringify({pin})});state=data.state;paid=false;paidEntries=0;entriesRemaining=0;activePlayer=null;rotation=0;$('resultBanner').innerHTML='<div><h2>Sweepstake reset</h2><p>All teams are available again.</p></div>';refresh();}catch(err){showError(err.message)}});
 if($('setFinalResultBtn')) $('setFinalResultBtn').addEventListener('click',adminSetFinalResult);
-
-
-  if($('unlockFullAdminBtn')) $('unlockFullAdminBtn').addEventListener('click',unlockFullAdmin);
-  if($('adminPin')) $('adminPin').addEventListener('keydown',function(e){if(e.key==='Enter') unlockFullAdmin();});
-
-  loadSharedState();
+loadSharedState();
   checkFinalResult();
   setInterval(checkFinalResult,10*60*1000);
 })();
