@@ -397,6 +397,24 @@
   width:100%;
 }
 
+
+.adminProtected{
+  display:none;
+}
+.adminUnlocked .adminProtected{
+  display:block;
+}
+.adminLockNotice{
+  margin-top:12px;
+  padding:12px 14px;
+  border-radius:14px;
+  background:rgba(255,207,90,.10);
+  border:1px solid rgba(255,207,90,.34);
+  color:#ffe8a6;
+  font-size:13px;
+  line-height:1.4;
+}
+
 </style>
 </head>
 <body>
@@ -995,6 +1013,16 @@
   }
 
   $('spinBtn').addEventListener('click',spin);
+
+  function updateAdminProtection(){
+    const adminSection=document.querySelector('.admin');
+    const hasPin=!!($('adminPin') && $('adminPin').value.trim());
+    if(adminSection){
+      adminSection.classList.toggle('adminUnlocked', hasPin);
+    }
+  }
+
+
   async function setDrawRecordReveal(reveal){
     const pin=$('adminPin').value.trim();
     if(!pin){alert('Enter the admin PIN.');return}
@@ -1093,9 +1121,11 @@
   }
 
   $('downloadEntrantsBtn').addEventListener('click',downloadEntrantsList);
-  $('setFinalResultBtn').addEventListener('click',adminSetFinalResult);
+  if($('setFinalResultBtn')) $('setFinalResultBtn').addEventListener('click',adminSetFinalResult);
   $('resetBtn').addEventListener('click',async()=>{const pin=$('adminPin').value.trim(); if(!pin){alert('Enter the admin PIN.');return} if(!confirm('Reset the sweepstake and make all teams available again?'))return; try{const data=await api('reset-sweepstake',{method:'POST',body:JSON.stringify({pin})});state=data.state;paid=false;paidEntries=0;entriesRemaining=0;activePlayer=null;rotation=0;$('resultBanner').innerHTML='<div><h2>Sweepstake reset</h2><p>All teams are available again.</p></div>';refresh();}catch(err){showError(err.message)}});
 
+  if($('adminPin')) $('adminPin').addEventListener('input',updateAdminProtection);
+  updateAdminProtection();
   loadSharedState();
   setInterval(checkFinalResult, 10*60*1000);
 })();
