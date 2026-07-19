@@ -359,6 +359,44 @@
   display:block !important;
 }
 
+
+#winnersHtmlRoll .championsWord{
+  font-size:clamp(38px,8vw,104px);
+  color:#ffcf5a;
+  font-weight:1000;
+  text-transform:uppercase;
+  text-shadow:
+    0 3px 0 #7c4800,
+    0 6px 0 #3b2100,
+    0 12px 28px rgba(0,0,0,.7),
+    0 0 18px rgba(255,218,90,.48);
+  margin-bottom:18px;
+}
+#winnersHtmlRoll .singleWinnerShirt{
+  width:min(70vw,420px);
+  margin:0 auto 20px;
+}
+#winnersHtmlRoll .finalResultLine{
+  font-size:clamp(24px,4.8vw,60px);
+  color:#fff0b3;
+  font-weight:1000;
+  text-transform:uppercase;
+  text-shadow:0 4px 0 rgba(0,0,0,.55),0 12px 28px rgba(0,0,0,.7);
+}
+#winnersHtmlRoll.resultKnown .preResultQuestion{
+  display:none;
+}
+.finalResultAdminBox{
+  margin-top:12px;
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:rgba(255,255,255,.06);
+}
+.finalResultAdminBox select{
+  width:100%;
+}
+
 </style>
 </head>
 <body>
@@ -378,11 +416,11 @@
           </div>
         </div>
         <h2>World Cup 2026 Winners</h2>
-        <p>?</p>
+        <p class="preResultQuestion">?</p>
       </section>
       <section class="rollBlock">
         <h2>Runner Up</h2>
-        <p>?</p>
+        <p class="preResultQuestion">?</p>
       </section>
       <section class="rollBlock">
         <h2>Third Place</h2>
@@ -694,6 +732,75 @@
 
   window.showDrawCelebration=showDrawCelebration;
 
+
+  function shirtHtml(kind, single=false){
+    const isSpain = kind === 'spain';
+    const name = isSpain ? 'Richard<br>Bradley' : 'Mollie<br>Jennings-Parkes';
+    const cls = isSpain ? 'spain' : 'argentina';
+    return `<div class="shirtCard ${cls}${single ? ' singleWinnerShirt' : ''}">
+      <div class="shirtName">${name}</div>
+      <div class="shirtNo">26</div>
+    </div>`;
+  }
+
+  function applyFinalResult(result){
+    const roll=document.getElementById('winnersHtmlRoll');
+    if(!roll) return;
+
+    const firstBlock=roll.querySelector('.rollBlock.withShirts');
+    const runnerBlock=roll.querySelectorAll('.rollBlock')[1];
+
+    if(!result || !result.known){
+      roll.classList.remove('resultKnown');
+      return;
+    }
+
+    roll.classList.add('resultKnown');
+
+    if(firstBlock){
+      firstBlock.innerHTML = `
+        <div class="championsWord">Champions</div>
+        ${shirtHtml(result.champion.shirt, true)}
+        <h2>World Cup 2026 Winners</h2>
+        <p>${escapeHtml(result.winner)}</p>
+        <p class="finalResultLine">Congratulations</p>
+        <p class="finalResultLine">${escapeHtml(result.championText)}</p>
+      `;
+    }
+
+    if(runnerBlock){
+      runnerBlock.innerHTML = `
+        <h2>Runner Up</h2>
+        ${shirtHtml(result.runnerUpEntry.shirt, true)}
+        <p>${escapeHtml(result.runnerUp)}</p>
+        <p class="finalResultLine">${escapeHtml(result.runnerUpText)}</p>
+      `;
+    }
+  }
+
+  async function checkFinalResult(){
+    try{
+      const data=await api('final-result',{method:'GET'});
+      if(data && data.result) applyFinalResult(data.result);
+    }catch(err){
+      console.warn('Final result check failed', err);
+    }
+  }
+
+  async function adminSetFinalResult(){
+    const pin=$('adminPin').value.trim();
+    const winner=$('finalWinnerSelect').value;
+    if(!pin){alert('Enter the admin PIN first.');return}
+    if(!winner){alert('Choose Spain or Argentina.');return}
+    if(!confirm('Set '+winner+' as World Cup winner in the rolling titles?')) return;
+    try{
+      const data=await api('final-result',{method:'POST',body:JSON.stringify({pin,winner})});
+      applyFinalResult(data.result);
+      alert('Final result updated.');
+    }catch(err){showError(err.message)}
+  }
+
+
   function drawWheel(){
     const teams=availableTeams(); const w=canvas.width,h=canvas.height,cx=w/2,cy=h/2,r=Math.min(w,h)/2-18;
     ctx.clearRect(0,0,w,h);
@@ -898,6 +1005,7 @@
         ? '<div><h2>Teams revealed</h2><p>The draw record now shows selected teams.</p></div>'
         : '<div><h2>Teams hidden</h2><p>The draw record now hides selected teams.</p></div>';
       refresh();
+      checkFinalResult();
     }catch(err){showError(err.message)}
   }
   $('revealBtn').addEventListener('click',()=>setDrawRecordReveal(true));
@@ -985,9 +1093,11 @@
   }
 
   $('downloadEntrantsBtn').addEventListener('click',downloadEntrantsList);
+  $('setFinalResultBtn').addEventListener('click',adminSetFinalResult);
   $('resetBtn').addEventListener('click',async()=>{const pin=$('adminPin').value.trim(); if(!pin){alert('Enter the admin PIN.');return} if(!confirm('Reset the sweepstake and make all teams available again?'))return; try{const data=await api('reset-sweepstake',{method:'POST',body:JSON.stringify({pin})});state=data.state;paid=false;paidEntries=0;entriesRemaining=0;activePlayer=null;rotation=0;$('resultBanner').innerHTML='<div><h2>Sweepstake reset</h2><p>All teams are available again.</p></div>';refresh();}catch(err){showError(err.message)}});
 
   loadSharedState();
+  setInterval(checkFinalResult, 10*60*1000);
 })();
 </script>
 
