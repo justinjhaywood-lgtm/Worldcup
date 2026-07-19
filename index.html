@@ -420,6 +420,52 @@
   display:block;
 }
 
+
+/* v81 hide admin sections until PIN entered */
+#finalResultAdminPanel:not(.unlocked) #finalResultAdminUnlocked{
+  display:none!important;
+}
+#finalResultAdminPanel.unlocked #finalResultAdminUnlocked{
+  display:block!important;
+}
+#finalResultAdminPanel.unlocked #finalResultAdminLocked{
+  display:none!important;
+}
+
+/* Original admin section lock */
+section.card.admin:not(.adminUnlocked) details > *:not(summary):not(#adminGateV81){
+  display:none!important;
+}
+section.card.admin.adminUnlocked details > *{
+  display:revert;
+}
+#adminGateV81{
+  display:block!important;
+  margin:14px 0;
+  padding:14px;
+  border-radius:18px;
+  background:rgba(255,207,90,.10);
+  border:1px solid rgba(255,207,90,.38);
+}
+section.card.admin.adminUnlocked #adminGateV81{
+  display:none!important;
+}
+#adminGateV81 input{
+  width:100%;
+}
+
+
+/* v82 winner controls live inside admin only */
+#finalResultAdminPanel.movedIntoAdmin{
+  margin:14px 0;
+}
+#finalResultAdminPanel.movedIntoAdmin #finalResultAdminLocked{
+  display:none!important;
+}
+#finalResultAdminPanel.movedIntoAdmin #finalResultAdminUnlocked{
+  display:block!important;
+}
+
 </style>
 </head>
 <body>
@@ -1262,6 +1308,42 @@
     document.addEventListener('DOMContentLoaded',wire);
   }else{
     wire();
+  }
+})();
+</script>
+
+
+<script>
+(function(){
+  function moveWinnerPanelIntoAdmin(){
+    var panel=document.getElementById('finalResultAdminPanel');
+    var admin=document.querySelector('section.card.admin');
+    if(!panel || !admin) return;
+
+    var details=admin.querySelector('details') || admin;
+    var gate=document.getElementById('adminGateV81');
+
+    panel.classList.add('movedIntoAdmin');
+
+    // Move the existing World Cup winner panel into the original admin details,
+    // after the PIN gate, so it is hidden until the admin section is unlocked.
+    if(gate && gate.parentNode === details){
+      details.insertBefore(panel, gate.nextSibling);
+    }else{
+      details.appendChild(panel);
+    }
+
+    // The separate final-result PIN panel is no longer needed once inside admin.
+    var locked=document.getElementById('finalResultAdminLocked');
+    var unlocked=document.getElementById('finalResultAdminUnlocked');
+    if(locked) locked.style.display='none';
+    if(unlocked) unlocked.style.display='block';
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',moveWinnerPanelIntoAdmin);
+  }else{
+    moveWinnerPanelIntoAdmin();
   }
 })();
 </script>
