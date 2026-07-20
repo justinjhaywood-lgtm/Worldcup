@@ -466,6 +466,44 @@ section.card.admin.adminUnlocked #adminGateV81{
   display:block!important;
 }
 
+
+/* v83 permanent confirmed gold titles */
+#winnersHtmlRoll .championsWord{
+  font-size:clamp(38px,8vw,104px);
+  color:#ffcf5a;
+  font-weight:1000;
+  text-transform:uppercase;
+  text-shadow:0 3px 0 #7c4800,0 6px 0 #3b2100,0 12px 28px rgba(0,0,0,.7),0 0 18px rgba(255,218,90,.48);
+  margin-bottom:18px;
+}
+#winnersHtmlRoll .singleWinnerShirt{
+  width:clamp(150px,34vw,360px);
+  height:clamp(185px,40vw,430px);
+  margin:0 auto 20px;
+}
+#winnersHtmlRoll .finalResultLine{
+  font-size:clamp(24px,4.8vw,60px);
+  color:#fff0b3;
+  font-weight:1000;
+  text-transform:uppercase;
+  text-shadow:0 4px 0 rgba(0,0,0,.55),0 12px 28px rgba(0,0,0,.7);
+}
+#finalResultAdminPanel.finalLocked #finalWinnerSelect,
+#finalResultAdminPanel.finalLocked #setFinalResultBtn,
+#finalResultAdminPanel.finalLocked label[for="finalWinnerSelect"]{
+  display:none!important;
+}
+#finalResultLockedMessage{
+  display:block;
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:12px;
+  background:rgba(46,204,113,.12);
+  border:1px solid rgba(46,204,113,.35);
+  color:#b9f6ca;
+  font-weight:800;
+}
+
 </style>
 </head>
 <body>
@@ -488,7 +526,7 @@ section.card.admin.adminUnlocked #adminGateV81{
           <option value="argentina">Argentina — Mollie Jennings-Parkes wins £150</option>
         </select>
         <div class="actions">
-          <button id="setFinalResultBtn" class="goldPay" type="button" onclick="finalResultSetV80(event)">Set final result</button>
+          <button id="setFinalResultBtn" class="goldPay" type="button" onclick="finalResultSetV80(event)">Final result locked</button>
         </div>
         <p id="finalResultStatus" class="small"></p>
         <div id="finalResultLockedMessage"></div>
@@ -1344,6 +1382,108 @@ section.card.admin.adminUnlocked #adminGateV81{
     document.addEventListener('DOMContentLoaded',moveWinnerPanelIntoAdmin);
   }else{
     moveWinnerPanelIntoAdmin();
+  }
+})();
+</script>
+
+
+<script>
+(function(){
+  var PERMANENT_FINAL_RESULT = {
+    known:true,
+    locked:true,
+    winner:'Spain',
+    runnerUp:'Argentina',
+    champion:{team:'Spain',player:'Richard Bradley',shirt:'spain'},
+    runnerUpEntry:{team:'Argentina',player:'Mollie Jennings-Parkes',shirt:'argentina'},
+    championText:'Richard Bradley wins £150',
+    runnerUpText:'Mollie Jennings-Parkes wins £50'
+  };
+
+  function byId(id){return document.getElementById(id);}
+  function esc(s){
+    return String(s||'').replace(/[&<>'"]/g,function(m){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m];
+    });
+  }
+  function shirt(kind){
+    var isSpain=kind==='spain';
+    var name=isSpain?'Richard<br>Bradley':'Mollie<br>Jennings-Parkes';
+    var cls=isSpain?'spain':'argentina';
+    return '<div class="shirtCard '+cls+' singleWinnerShirt"><div class="shirtName">'+name+'</div><div class="shirtNo">26</div></div>';
+  }
+  function applyPermanentGoldTitles(){
+    var r=PERMANENT_FINAL_RESULT;
+    var roll=byId('winnersHtmlRoll');
+    if(!roll) return;
+
+    var blocks=[].slice.call(roll.querySelectorAll('.rollBlock'));
+    if(!blocks.length) return;
+
+    blocks.forEach(function(block){
+      var txt=(block.textContent||'').trim();
+
+      if(/World Cup 2026 Winners/i.test(txt) || /\?/.test(txt)){
+        block.classList.add('withShirts');
+        block.innerHTML =
+          '<div class="championsWord">Champions</div>' +
+          shirt(r.champion.shirt) +
+          '<h2>World Cup 2026 Winners</h2>' +
+          '<p>'+esc(r.winner)+'</p>' +
+          '<p class="finalResultLine">Congratulations</p>' +
+          '<p class="finalResultLine">'+esc(r.championText)+'</p>';
+      }
+
+      if(/^Runner Up/i.test(txt)){
+        block.innerHTML =
+          '<h2>Runner Up</h2>' +
+          shirt(r.runnerUpEntry.shirt) +
+          '<p>'+esc(r.runnerUp)+'</p>' +
+          '<p class="finalResultLine">'+esc(r.runnerUpText)+'</p>';
+      }
+    });
+
+    var panel=byId('finalResultAdminPanel');
+    var msg=byId('finalResultLockedMessage');
+    var status=byId('finalResultStatus');
+    var select=byId('finalWinnerSelect');
+
+    if(panel){
+      panel.classList.add('finalLocked');
+      panel.classList.add('resultLocked');
+    }
+    if(msg){
+      msg.textContent='Final result locked into app: Spain champions. Richard Bradley wins £150.';
+    }
+    if(status){
+      status.textContent='Final result is now built into the app and will not reset on refresh.';
+    }
+    if(select){
+      select.value='spain';
+      select.disabled=true;
+    }
+
+    try{
+      localStorage.setItem('wc2026_locked_final_winner_v80','spain');
+      localStorage.setItem('wc2026FinalResultLockedV83',JSON.stringify(r));
+      document.cookie='wc2026_final_winner=spain;path=/;max-age=31536000;SameSite=Lax';
+    }catch(e){}
+  }
+
+  window.applyPermanentGoldTitlesV83=applyPermanentGoldTitles;
+
+  function wire(){
+    applyPermanentGoldTitles();
+    [100,300,700,1200,2000,3500,6000,9000,13000,20000].forEach(function(ms){
+      setTimeout(applyPermanentGoldTitles,ms);
+    });
+    setInterval(applyPermanentGoldTitles,3000);
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',wire);
+  }else{
+    wire();
   }
 })();
 </script>
